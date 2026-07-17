@@ -27,6 +27,12 @@ The repo is a fresh scaffold — as of now it contains only a `LICENSE` file. St
   - Never hand-edit `requirements.txt` — it's generated. Never `pip install` directly into `.venv` without also adding the package to `requirements.in` and recompiling, or the lockfile will drift.
 - `.venv/` is gitignored; `requirements.in` and `requirements.txt` are committed.
 
+## JavaScript setup
+
+- Each JS stage manages its own `package.json`/dependencies inside its own folder — no shared root-level `node_modules` for stage code (see [docs/javascript.md](docs/javascript.md)).
+- The one exception is the repo-root `package.json`: shared dev tooling that isn't specific to any stage, not a stage itself. Currently just [`http-server`](https://github.com/http-party/http-server) (`npm install`, then `npm run serve -- <stage-folder>`) for previewing a stage's static HTML/CSS/JS without Python's `http.server`. Add future repo-wide (not per-stage) JS tooling here the same way.
+- `node_modules/` is gitignored at any depth; `package.json`/`package-lock.json` (root or per-stage) are committed.
+
 ## Coding conventions for this repo
 
 - Audience is a beginner following along with a book — code should be structured according to best practice for the relevant framework/language, but kept easy to follow.

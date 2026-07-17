@@ -43,3 +43,7 @@ scrapy
 # data-scrape: image decoding for scrapy.pipelines.images.ImagesPipeline,
 # which the pokemon_scrapy project uses to download artwork.
 Pillow
+
+# data-analysis: charting library for turning data-process's cleaned
+# dataset into saved PNG charts.
+matplotlib

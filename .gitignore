@@ -40,5 +40,9 @@ data-scrape/compile_pokedex.log
 data-process/pokedex.json
 data-process/images/
 
+# data-analysis: charts - reproducible by running main.py again against
+# data-process/pokedex.json.
+data-analysis/charts/
+
 # pytest's own cache, generated wherever tests are run from
 .pytest_cache/

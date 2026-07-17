@@ -16,6 +16,7 @@ Stages so far:
 - [`data-read-write/`](data-read-write/README.md) — reading a CSV dataset, reshaping it, and round-tripping it through JSON.
 - [`data-scrape/`](data-scrape/README.md) — fetching Pokemon data via a REST API, `requests-cache`, a client library, and BeautifulSoup scraping (with image download); a Scrapy spider+pipeline version of the scrape; and a bulk pipeline compiling all Gen 1-6 Pokemon into one CSV with artwork.
 - [`data-process/`](data-process/README.md) — cleaning `data-scrape`'s raw CSV into one standardized JSON dataset + uniformly-sized images, ready for a web page to consume.
+- [`data-analysis/`](data-analysis/README.md) — charting `data-process`'s dataset into saved PNGs (type/generation/ability distributions, a height-vs-weight scatter).
 - [`webdev101/`](webdev101/README.md) — HTML/CSS/SVG/Canvas fundamentals via a Pokedex home page demo.
 - [`sandpit/`](sandpit/README.md) — scratch area for quick, throwaway experiments (not a curriculum stage).
 
@@ -43,7 +44,20 @@ source .venv/Scripts/activate  # bash
 
 ## JavaScript setup
 
-JS stages manage their own `package.json` and dependencies locally within their stage folder (no shared root-level Node tooling yet).
+JS stages manage their own `package.json` and dependencies locally within their stage folder. The one exception is the repo-root `package.json`, which holds shared dev tooling that isn't specific to any single stage — currently just [`http-server`](https://github.com/http-party/http-server), a zero-config static file server, for previewing any stage's plain HTML/CSS/JS pages without Python's `http.server`.
+
+```bash
+# Install (from the repo root)
+npm install
+
+# Serve a stage's folder (defaults to port 8080)
+npm run serve -- webdev101
+
+# Pass through any http-server flag after --, e.g. a different port
+npm run serve -- webdev101 -p 8081
+```
+
+Then open the URL `http-server` prints (e.g. http://localhost:8080). Commit the root `package.json`/`package-lock.json`; `node_modules/` is gitignored, same as any stage's.
 
 ## Implementation guides
 

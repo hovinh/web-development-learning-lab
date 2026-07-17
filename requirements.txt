@@ -28,6 +28,8 @@ colorama==0.4.6
     # via pytest
 constantly==23.10.4
     # via twisted
+contourpy==1.3.3
+    # via matplotlib
 cryptography==49.0.0
     # via
     #   pyopenssl
@@ -37,6 +39,8 @@ cssselect==1.4.0
     # via
     #   parsel
     #   scrapy
+cycler==0.12.1
+    # via matplotlib
 dataset==2.0.0
     # via -r requirements.in
 defusedxml==0.7.1
@@ -45,6 +49,8 @@ dnspython==2.8.0
     # via pymongo
 filelock==3.30.2
     # via tldextract
+fonttools==4.63.0
+    # via matplotlib
 greenlet==3.5.3
     # via sqlalchemy
 hyperlink==21.0.0
@@ -69,6 +75,8 @@ jmespath==1.1.0
     # via
     #   itemloaders
     #   parsel
+kiwisolver==1.5.0
+    # via matplotlib
 lxml==6.1.1
     # via
     #   parsel
@@ -77,9 +85,16 @@ mako==1.3.12
     # via alembic
 markupsafe==3.0.3
     # via mako
+matplotlib==3.11.0
+    # via -r requirements.in
+numpy==2.4.6
+    # via
+    #   contourpy
+    #   matplotlib
 packaging==26.2
     # via
     #   incremental
+    #   matplotlib
     #   parsel
     #   pytest
     #   scrapy
@@ -88,7 +103,9 @@ parsel==1.11.0
     #   itemloaders
     #   scrapy
 pillow==12.3.0
-    # via -r requirements.in
+    # via
+    #   -r requirements.in
+    #   matplotlib
 platformdirs==4.10.0
     # via requests-cache
 pluggy==1.6.0
@@ -107,8 +124,12 @@ pymongo==4.17.0
     # via -r requirements.in
 pyopenssl==26.3.0
     # via scrapy
+pyparsing==3.3.2
+    # via matplotlib
 pytest==9.1.1
     # via -r requirements.in
+python-dateutil==2.9.0.post0
+    # via matplotlib
 queuelib==1.9.0
     # via scrapy
 requests==2.34.2
@@ -126,6 +147,8 @@ scrapy==2.17.0
     # via -r requirements.in
 service-identity==26.1.0
     # via scrapy
+six==1.17.0
+    # via python-dateutil
 soupsieve==2.8.4
     # via beautifulsoup4
 sqlalchemy==2.0.51

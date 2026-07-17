@@ -1,0 +1,12 @@
+{
+  "name": "web-development-learning-lab",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Repo-root Node tooling shared across stages - not a stage itself. Currently just a local static file server (http-server) for serving any stage's plain HTML/CSS/JS pages.",
+  "scripts": {
+    "serve": "http-server"
+  },
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  }
+}

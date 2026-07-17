@@ -4,9 +4,10 @@ Best practices for implementing JavaScript stages in this repo. This is a learni
 
 ## Environment & dependencies
 
-- Unlike Python, JS stages manage their own dependencies locally — there is no shared root-level `node_modules`. Each JS stage that needs packages gets its own `package.json` inside the stage folder.
-- Install dependencies from within the stage folder (`npm install <package>`), not from the repo root.
+- Unlike Python, JS stages manage their own dependencies locally — there is no shared root-level `node_modules` for stage code. Each JS stage that needs packages gets its own `package.json` inside the stage folder.
+- Install stage dependencies from within the stage folder (`npm install <package>`), not from the repo root.
 - Commit the stage's `package.json` and `package-lock.json`; do not commit `node_modules/` (already covered by the root `.gitignore`).
+- **Exception**: the repo-root `package.json` holds dev tooling shared across stages rather than tied to any one of them — currently just [`http-server`](https://github.com/http-party/http-server) (`npm install` at the repo root, then `npm run serve -- <stage-folder>`), a lighter-weight alternative to `python -m http.server` for previewing a plain static page. It isn't a stage and gets no stage `README.md` — it's documented in the root `README.md`'s "JavaScript setup" section and [CLAUDE.md](../CLAUDE.md) instead. Add future genuinely repo-wide (not stage-specific) JS tooling here the same way; a stage's own dependencies still belong in that stage's own `package.json`.
 
 ## Preferred libraries
 
