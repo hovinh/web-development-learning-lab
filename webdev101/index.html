@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pokedex Home &mdash; webdev101</title>
+
+  <!-- All visual styling lives in style.css, kept separate from markup. -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ============================================================
+       HEADER
+       A small inline SVG "Pokeball" icon next to the page title.
+       Inline SVG (as opposed to an <img src="pokeball.svg">) means
+       the browser parses it as part of the DOM, so we can style and
+       animate its individual shapes with CSS/JS if we want to.
+  ============================================================= -->
+  <header class="site-header">
+    <svg class="pokeball-icon" viewBox="0 0 100 100" width="48" height="48" aria-hidden="true">
+      <circle cx="50" cy="50" r="45" fill="#fff" stroke="#222" stroke-width="4" />
+      <path d="M5,50 A45,45 0 0,1 95,50" fill="#ee1515" stroke="#222" stroke-width="4" />
+      <rect x="5" y="47" width="90" height="6" fill="#222" />
+      <circle cx="50" cy="50" r="12" fill="#fff" stroke="#222" stroke-width="4" />
+      <circle cx="50" cy="50" r="5" fill="#fff" stroke="#222" stroke-width="3" />
+    </svg>
+    <h1>Pokedex</h1>
+  </header>
+
+  <main>
+
+    <!-- ============================================================
+         SECTION 1 — TEXT CONTENT
+         Plain HTML/CSS demo: a hero blurb plus a set of Pokemon
+         "cards" whose text is populated dynamically from a small
+         JS data array (see script.js) rather than hand-typed here.
+         This shows the classic pattern of "data -> DOM".
+    ============================================================= -->
+    <section id="intro" class="panel">
+      <h2>Welcome, Trainer!</h2>
+      <p>
+        The Pokedex is a digital encyclopedia that catalogs every Pokemon
+        species encountered on your journey &mdash; name, type, and a short
+        description. Below is a handful of entries, rendered straight from
+        a JavaScript array so you can see markup and data kept separate.
+      </p>
+
+      <!-- Left empty on purpose: script.js fills this in at load time. -->
+      <ul id="pokemon-list" class="pokemon-list"></ul>
+    </section>
+
+    <!-- ============================================================
+         SECTION 2 — SVG GRAPHICS + ANIMATION
+         SVG is a *vector* format: shapes are described declaratively
+         (circle, path, rect...) rather than as pixels, so they stay
+         crisp at any zoom level. The <animateTransform> tag below is
+         "SMIL" animation, built into SVG itself — no JS required to
+         make it spin.
+    ============================================================= -->
+    <section id="svg-demo" class="panel">
+      <h2>SVG Demo: A Spinning Pokeball</h2>
+      <p>
+        Every shape here (circle, path, rect) is a real DOM element you
+        could inspect in dev tools, style with CSS, or animate with JS.
+        This one animates itself using SVG's built-in
+        <code>&lt;animateTransform&gt;</code>, no JavaScript involved.
+      </p>
+
+      <svg class="pokeball-large" viewBox="0 0 200 200" width="180" height="180">
+        <g>
+          <!-- The whole ball is grouped in <g> so one rotation animates
+               every shape inside it together, around a shared center. -->
+          <circle cx="100" cy="100" r="90" fill="#fff" stroke="#222" stroke-width="6" />
+          <path d="M10,100 A90,90 0 0,1 190,100" fill="#ee1515" stroke="#222" stroke-width="6" />
+          <rect x="10" y="94" width="180" height="12" fill="#222" />
+          <circle cx="100" cy="100" r="24" fill="#fff" stroke="#222" stroke-width="6" />
+          <circle cx="100" cy="100" r="10" fill="#fff" stroke="#222" stroke-width="4" />
+
+          <!-- Rotates the parent <g> a full 360 degrees, forever. -->
+          <animateTransform
+            attributeName="transform"
+            type="rotate"
+            from="0 100 100"
+            to="360 100 100"
+            dur="6s"
+            repeatCount="indefinite" />
+        </g>
+      </svg>
+    </section>
+
+    <!-- ============================================================
+         SECTION 3 — 2D CANVAS ANIMATION
+         Unlike SVG, <canvas> is a raster surface: JS draws pixels
+         onto it frame-by-frame (via the Canvas 2D API), and nothing
+         drawn is remembered as a DOM element — to animate, we clear
+         the canvas and redraw every frame ourselves.
+    ============================================================= -->
+    <section id="canvas-2d-demo" class="panel">
+      <h2>Canvas 2D Demo: Bouncing Shapes</h2>
+      <p>
+        A handful of geometric shapes (circle, square, triangle) bounce
+        around the canvas, each redrawn every animation frame using
+        <code>requestAnimationFrame</code>.
+      </p>
+
+      <canvas id="canvas-2d" width="480" height="300"></canvas>
+
+      <div class="controls">
+        <button id="btn-2d-toggle" type="button">Pause</button>
+        <button id="btn-2d-reset" type="button">Reset</button>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SECTION 4 — PSEUDO-3D CANVAS ANIMATION
+         True 3D graphics normally use WebGL, but WebGL's API is a lot
+         of boilerplate for a first look at "3D". Instead, this demo
+         hand-rolls the classic wireframe-cube trick: keep the cube's
+         8 corners as (x, y, z) points, rotate them with basic
+         trigonometry, then *project* each 3D point down onto the flat
+         2D canvas before drawing lines between them. Same canvas
+         element and 2D drawing API as above — the "3D" is just math.
+    ============================================================= -->
+    <section id="canvas-3d-demo" class="panel">
+      <h2>Canvas 3D-ish Demo: Rotating Wireframe Cube</h2>
+      <p>
+        A cube defined by 8 corner points in 3D space, rotated every
+        frame and projected onto the flat 2D canvas below &mdash; the
+        same manual technique used before 3D APIs like WebGL existed.
+      </p>
+
+      <canvas id="canvas-3d" width="480" height="300"></canvas>
+
+      <div class="controls">
+        <button id="btn-3d-toggle" type="button">Pause</button>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <p>webdev101 &mdash; HTML, CSS, SVG, and Canvas fundamentals.</p>
+  </footer>
+
+  <!-- jQuery, loaded from a CDN since this stage has no build step
+       (per docs/javascript.md's guidance for plain browser pages). -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <!-- Our own code, loaded after jQuery so it's available to us. -->
+  <script src="script.js"></script>
+</body>
+</html>

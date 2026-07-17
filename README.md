@@ -14,6 +14,7 @@ Stages so far:
 
 - [`javascript-prototype/`](javascript-prototype/README.md) — JS prototypal inheritance vs Python class-based OOP.
 - [`read-write-data/`](read-write-data/README.md) — reading a CSV dataset, reshaping it, and round-tripping it through JSON.
+- [`webdev101/`](webdev101/README.md) — HTML/CSS/SVG/Canvas fundamentals via a Pokedex home page demo.
 - [`sandpit/`](sandpit/README.md) — scratch area for quick, throwaway experiments (not a curriculum stage).
 
 ## Python setup
