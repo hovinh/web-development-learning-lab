@@ -1,4 +1,4 @@
-# read-write-data
+# data-read-write
 
 Practice stage for reading a tabular dataset (CSV) into Python data
 structures, reshaping it, writing it back out as JSON, reading that JSON
@@ -243,8 +243,8 @@ Add the new dependency first, if you haven't already synced the venv:
 Then, from the repo root with `.venv` active:
 
 ```bash
-python read-write-data/main.py
-python read-write-data/dataset_demo.py
+python data-read-write/main.py
+python data-read-write/dataset_demo.py
 ```
 
 `mongo_demo.py` additionally needs a MongoDB server reachable at
@@ -259,5 +259,5 @@ docker run -d -p 27017:27017 --name mongodb mongo
 Then:
 
 ```bash
-python read-write-data/mongo_demo.py
+python data-read-write/mongo_demo.py
 ```

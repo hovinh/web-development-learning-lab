@@ -8,7 +8,7 @@ stage's earlier building blocks:
 
 "Generations 1-6" here means the 721 *base species* PokeAPI lists under
 generations I-VI (confirmed via GET .../generation/{1..6} - 151+100+135+
-107+156+72 = 721), not the 800-row count in read-write-data/pokemon.csv.
+107+156+72 = 721), not the 800-row count in data-read-write/pokemon.csv.
 That other dataset's 800 rows include alternate forms (Mega Evolutions,
 etc.) as separate rows; those don't have a name/slug that lines up
 cleanly across PokeAPI, pokebase, and pokemondb.net (pokemondb.net in

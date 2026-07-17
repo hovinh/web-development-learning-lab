@@ -195,7 +195,7 @@ master list of all 721 Generation 1-6 species from PokeAPI's
 `requests_basics`-style PokeAPI logic and `pokemondb_scraper.scrape_pokemon()`
 + `download_artwork()`, and writes one combined row to `pokedex.csv`.
 
-- **"721", not "800"**: read-write-data/pokemon.csv (a different stage)
+- **"721", not "800"**: data-read-write/pokemon.csv (a different stage)
   has 800 rows for the same generations because it includes alternate
   forms (Mega Evolutions, etc.) as separate rows. Those don't have a
   name/slug that lines up cleanly across PokeAPI, pokebase, and

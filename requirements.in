@@ -5,14 +5,14 @@
 # Example:
 # fastapi
 
-# read-write-data: ORM access to the SQLite database.
+# data-read-write: ORM access to the SQLite database.
 SQLAlchemy
 
-# read-write-data: lower-boilerplate SQLite access, for comparison with
+# data-read-write: lower-boilerplate SQLite access, for comparison with
 # the raw SQLAlchemy ORM version.
 dataset
 
-# read-write-data: MongoDB access, for comparison with the SQL versions.
+# data-read-write: MongoDB access, for comparison with the SQL versions.
 pymongo
 
 # data-scrape: HTTP client for calling REST APIs (PokeAPI) and fetching

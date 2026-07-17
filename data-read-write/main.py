@@ -1,4 +1,4 @@
-"""Entry point / demo for the read-write-data stage.
+"""Entry point / demo for the data-read-write stage.
 
 Walks through the full pipeline:
   1. Read the Pokedex CSV into a list of dicts (stats nested).
