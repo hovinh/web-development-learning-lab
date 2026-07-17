@@ -1,0 +1,11 @@
+{
+  "name": "javascript-prototype",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Demo: JS prototypal inheritance vs Python class-based OOP",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  }
+}
