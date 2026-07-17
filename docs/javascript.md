@@ -8,6 +8,13 @@ Best practices for implementing JavaScript stages in this repo. This is a learni
 - Install dependencies from within the stage folder (`npm install <package>`), not from the repo root.
 - Commit the stage's `package.json` and `package-lock.json`; do not commit `node_modules/` (already covered by the root `.gitignore`).
 
+## Preferred libraries
+
+- Reach for **jQuery** actively wherever it fits, rather than defaulting to vanilla DOM APIs — this curriculum's browser-facing stages are built around it, so using it consistently keeps the code idiomatic to the material. Use it for DOM selection/traversal (`$(...)`), event binding (`.on(...)`), DOM mutation, and AJAX (`$.ajax`/`$.get`/`$.post`) in any stage that touches the DOM or makes HTTP requests from the browser.
+- For collection/data work, prefer native **functional array methods** (`.map`, `.filter`, `.reduce`, `.forEach`, `.find`, etc.) over a utility library like Underscore/lodash — they're built in, well-documented, and closely match Underscore's own API, so there's nothing to gain from the extra dependency.
+- Add jQuery as a dependency via the stage's `package.json` (`npm install jquery`), or load it from a `<script>` tag in `index.html` for stages that are plain browser pages without a build step — match whichever loading style the stage already uses.
+- This preference doesn't override a stage that's explicitly *about* a different mechanism (e.g. the `javascript-prototype` stage is about the prototype chain itself, not DOM work, so it has no reason to reach for jQuery). Use judgment: the point is idiomatic code for what the stage is teaching, not shoehorning a library in everywhere.
+
 ## Project layout within a stage
 
 - Prefer a flat layout for small stages: a handful of `.js` files at the top of the stage folder is fine — don't introduce a build step or bundler until the stage material actually calls for one.

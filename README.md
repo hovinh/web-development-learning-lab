@@ -10,7 +10,11 @@ A personal, hands-on lab for working through a web development curriculum/book, 
 - Each stage folder has its own `README.md` explaining the idea and implementation for that stage — that's the place to look for details on any specific topic.
 - Languages are primarily Python and JavaScript, chosen per stage based on what the curriculum covers at that point.
 
-_No stage folders exist yet — this repo is a fresh scaffold. This list will grow as stages are added._
+Stages so far:
+
+- [`javascript-prototype/`](javascript-prototype/README.md) — JS prototypal inheritance vs Python class-based OOP.
+- [`read-write-data/`](read-write-data/README.md) — reading a CSV dataset, reshaping it, and round-tripping it through JSON.
+- [`sandpit/`](sandpit/README.md) — scratch area for quick, throwaway experiments (not a curriculum stage).
 
 ## Python setup
 

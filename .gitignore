@@ -7,3 +7,6 @@ __pycache__/
 
 # Node
 node_modules/
+
+# Generated output (reproducible by running the stage's script)
+read-write-data/pokemon.json
