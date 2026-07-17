@@ -1,0 +1,48 @@
+<!--
+Trimmed-down excerpt of https://pokemondb.net/pokedex/bulbasaur, saved
+2026-07-17. Only the "Pokedex data" vitals-table and the artwork <img>
+are kept - the parts parse_pokemon_page() in pokemondb_scraper.py
+actually reads - so this test fixture is small and doesn't change if
+pokemondb.net redesigns unrelated parts of the page.
+-->
+<html>
+<body>
+<div class="grid-col span-md-6 span-lg-4 text-center">
+    <p><a rel="lightbox" href="https://img.pokemondb.net/artwork/large/bulbasaur.jpg" data-title="Bulbasaur official artwork"><picture>
+        <source srcset="https://img.pokemondb.net/artwork/avif/bulbasaur.avif" width="360" height="336" type="image/avif">
+        <img src="https://img.pokemondb.net/artwork/bulbasaur.jpg" width="360" height="336" alt="Bulbasaur artwork by Ken Sugimori" fetchpriority="high">
+    </picture></a></p>
+</div>
+
+<table class="vitals-table">
+<tbody>
+<tr>
+    <th>National &#8470;</th>
+    <td><strong>0001</strong></td>
+</tr>
+<tr>
+    <th>Type</th>
+    <td>
+        <a class="type-icon type-grass" href="/type/grass">Grass</a><a class="type-icon type-poison" href="/type/poison">Poison</a>
+    </td>
+</tr>
+<tr>
+    <th>Species</th>
+    <td>Seed Pok&eacute;mon</td>
+</tr>
+<tr>
+    <th>Height</th>
+    <td>0.7&nbsp;m (2&#8242;04&#8243;)</td>
+</tr>
+<tr>
+    <th>Weight</th>
+    <td>6.9&nbsp;kg (15.2&nbsp;lbs)</td>
+</tr>
+<tr>
+    <th>Abilities</th>
+    <td><span class="text-muted">1. <a href="/ability/overgrow" title="Powers up Grass-type moves in a pinch.">Overgrow</a></span><br><small class="text-muted"><a href="/ability/chlorophyll" title="Boosts the Pokemon's Speed in sunshine.">Chlorophyll</a> (hidden ability)</small><br></td>
+</tr>
+</tbody>
+</table>
+</body>
+</html>
