@@ -21,6 +21,7 @@ Best practices for implementing Python stages in this repo. This is a learning l
       test_<topic>.py
   ```
 - Keep one concept per file. Beginners (future-you) should be able to guess a file's contents from its name.
+- Exception: a framework that mandates its own project layout (e.g. Scrapy's `scrapy startproject` scaffold - see `data-scrape/pokemon_scrapy/`) keeps that layout as-is rather than being forced into the shape above. Following the framework's own convention is more legible to anyone who already knows it than inventing a repo-specific variant.
 
 ## Style & readability
 

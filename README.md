@@ -14,6 +14,8 @@ Stages so far:
 
 - [`javascript-prototype/`](javascript-prototype/README.md) — JS prototypal inheritance vs Python class-based OOP.
 - [`read-write-data/`](read-write-data/README.md) — reading a CSV dataset, reshaping it, and round-tripping it through JSON.
+- [`data-scrape/`](data-scrape/README.md) — fetching Pokemon data via a REST API, `requests-cache`, a client library, and BeautifulSoup scraping (with image download); a Scrapy spider+pipeline version of the scrape; and a bulk pipeline compiling all Gen 1-6 Pokemon into one CSV with artwork.
+- [`data-process/`](data-process/README.md) — cleaning `data-scrape`'s raw CSV into one standardized JSON dataset + uniformly-sized images, ready for a web page to consume.
 - [`webdev101/`](webdev101/README.md) — HTML/CSS/SVG/Canvas fundamentals via a Pokedex home page demo.
 - [`sandpit/`](sandpit/README.md) — scratch area for quick, throwaway experiments (not a curriculum stage).
 

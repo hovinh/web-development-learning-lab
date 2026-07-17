@@ -14,3 +14,31 @@ read-write-data/pokedex.db
 read-write-data/pokedex_dataset.db
 read-write-data/gen_1_legendaries.csv
 read-write-data/gen_1_legendaries.json
+
+# data-scrape: HTTP/API response caches and downloaded artwork - all
+# reproducible by running main.py again.
+data-scrape/http_cache.sqlite
+data-scrape/pokemondb_cache.sqlite
+data-scrape/pokebase_cache/
+data-scrape/images/
+
+# data-scrape/pokemon_scrapy: Scrapy's own HTTP cache, downloaded
+# artwork, and this project's documented default feed export filename -
+# all reproducible by running `scrapy crawl pokemondb` again.
+data-scrape/pokemon_scrapy/.scrapy/
+data-scrape/pokemon_scrapy/images/
+data-scrape/pokemon_scrapy/pokemon_scrapy_output.json
+
+# data-scrape: the full compiled dataset - reproducible by running
+# compile_pokedex.py again (which saves artwork into the same
+# data-scrape/images/ ignored above, and its own progress log).
+data-scrape/pokedex.csv
+data-scrape/compile_pokedex.log
+
+# data-process: the standardized dataset + resized images - reproducible
+# by running process_pokedex.py again against data-scrape/pokedex.csv.
+data-process/pokedex.json
+data-process/images/
+
+# pytest's own cache, generated wherever tests are run from
+.pytest_cache/

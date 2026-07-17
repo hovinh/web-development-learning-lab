@@ -14,3 +14,32 @@ dataset
 
 # read-write-data: MongoDB access, for comparison with the SQL versions.
 pymongo
+
+# data-scrape: HTTP client for calling REST APIs (PokeAPI) and fetching
+# HTML pages to scrape.
+requests
+
+# data-scrape: transparent, drop-in HTTP response caching for requests.
+requests-cache
+
+# data-scrape: HTML parsing for the pokemondb.net scrape (no public API
+# covers that data).
+beautifulsoup4
+
+# data-scrape: dedicated PokeAPI client library, for comparison with the
+# raw `requests` version of the same calls.
+pokebase
+
+# data-scrape: unit tests for the HTML-parsing logic (see
+# docs/python-implementation.md's testing conventions). First stage to
+# need a test runner.
+pytest
+
+# data-scrape: the Scrapy framework itself (spider + item pipeline
+# exercise), for comparison with the hand-rolled requests+BeautifulSoup
+# version in pokemondb_scraper.py.
+scrapy
+
+# data-scrape: image decoding for scrapy.pipelines.images.ImagesPipeline,
+# which the pokemon_scrapy project uses to download artwork.
+Pillow
