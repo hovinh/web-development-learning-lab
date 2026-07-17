@@ -4,3 +4,10 @@
 #
 # Example:
 # fastapi
+
+# read-write-data: ORM access to the SQLite database.
+SQLAlchemy
+
+# read-write-data: lower-boilerplate SQLite access, for comparison with
+# the raw SQLAlchemy ORM version.
+dataset

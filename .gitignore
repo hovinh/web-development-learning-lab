@@ -10,3 +10,7 @@ node_modules/
 
 # Generated output (reproducible by running the stage's script)
 read-write-data/pokemon.json
+read-write-data/pokedex.db
+read-write-data/pokedex_dataset.db
+read-write-data/gen_1_legendaries.csv
+read-write-data/gen_1_legendaries.json
