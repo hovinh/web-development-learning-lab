@@ -26,6 +26,7 @@ Best practices for implementing JavaScript stages in this repo. This is a learni
 ## Style & readability
 
 - Use modern ES module syntax (`import`/`export`) rather than CommonJS (`require`), unless the specific stage/framework requires CommonJS (check the book's example first).
+- Start plain (non-module) scripts with `'use strict';` as the first line to opt into strict mode — it catches common mistakes early (silent assignment to undeclared variables, duplicate parameter names, etc.), which is valuable while learning. ES modules are strict by default, so omit the directive there — it would be redundant.
 - Use `const` by default, `let` only when a variable is genuinely reassigned; avoid `var`.
 - Prefer `async`/`await` over raw `.then()` chains for asynchronous code — it reads closer to synchronous logic, which is easier to follow when learning.
 - **Comment generously**, per the repo-wide convention: explain *why* a step is needed (e.g. why a particular event is awaited, why a library was chosen over a built-in browser/Node API), not just what the line does.
