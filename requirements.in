@@ -1,0 +1,6 @@
+# Top-level Python dependencies for this repo.
+# List only direct dependencies here; run `pip-compile` to generate the
+# fully pinned, transitively-resolved requirements.txt.
+#
+# Example:
+# fastapi
