@@ -11,3 +11,6 @@ SQLAlchemy
 # read-write-data: lower-boilerplate SQLite access, for comparison with
 # the raw SQLAlchemy ORM version.
 dataset
+
+# read-write-data: MongoDB access, for comparison with the SQL versions.
+pymongo
