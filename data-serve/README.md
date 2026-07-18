@@ -244,10 +244,14 @@ python data-serve/load_sqlite.py
 DATA_SERVE_BACKEND=sqlite python data-serve/app.py
 ```
 
-Requires `data-process/pokedex.json` (and, for the `sqlite` backend,
-`data-process/images/`) to already exist - run
-`data-process/process_pokedex.py` first if you haven't (see that stage's
-README).
+Requires `data-process/pokedex.json` and `data-process/images/` - both
+are committed to this repo (see that stage's README's "Files" section),
+so a fresh clone already has them and the `file` backend needs nothing
+else to run. The `sqlite` backend only reads them once, when
+`load_sqlite.py` builds `pokedex.db`; after that the backend runs off
+`pokedex.db` alone. If you ever need to regenerate `pokedex.json`/
+`images/` from scratch, run `data-process/process_pokedex.py` (see that
+stage's README).
 
 The server defaults to `http://localhost:5000` (Flask's default); set
 `PORT` to change it.
