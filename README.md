@@ -21,6 +21,7 @@ Stages so far:
 - [`d3-interactive-web/`](d3-interactive-web/README.md) — an interactive Pokedex page (D3, via CDN) that consumes `data-serve`'s REST API: filter by type/generation, click a Pokemon for its mini-biography, and four D3-drawn charts covering the same ground as `data-analysis`'s saved PNGs.
 - [`webdev101/`](webdev101/README.md) — HTML/CSS/SVG/Canvas fundamentals via a Pokedex home page demo.
 - [`sandpit/`](sandpit/README.md) — scratch area for quick, throwaway experiments (not a curriculum stage).
+- [`deploy/`](deploy/README.md) — puts `data-serve` and `d3-interactive-web` on free public hosting (Render + GitHub Pages), auto-deploying on every push (not a curriculum stage).
 
 ## Python setup
 
@@ -60,6 +61,14 @@ npm run serve -- webdev101 -p 8081
 ```
 
 Then open the URL `http-server` prints (e.g. http://localhost:8080). Commit the root `package.json`/`package-lock.json`; `node_modules/` is gitignored, same as any stage's.
+
+## Deployment
+
+`data-serve` and `d3-interactive-web` are also live on free public
+hosting, kept in sync with `main` automatically — see
+[deploy/README.md](deploy/README.md) for the setup and the two
+platforms involved (Render for the API, GitHub Pages for the static
+page).
 
 ## Implementation guides
 

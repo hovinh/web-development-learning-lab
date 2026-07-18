@@ -1,0 +1,47 @@
+# Render "Blueprint" spec for data-serve's API - see ../README.md's
+# "First-time setup" for how this file gets picked up, and
+# https://render.com/docs/blueprint-spec for the full field reference.
+#
+# Once the service below exists, every `git push` to the branch it was
+# created from triggers Render to rebuild and redeploy it automatically -
+# this file only matters again if the service's shape changes (new env
+# var, different command, ...).
+
+services:
+  - type: web
+    name: pokedex-learning-lab-api
+    runtime: python
+    plan: free
+    region: oregon
+    branch: main
+    rootDir: data-serve
+
+    # Same lockfile-install step as local dev (see root README.md's
+    # "Python setup"), just non-interactively via pip instead of
+    # piptools sync - then rebuild pokedex.db from data-process's
+    # committed pokedex.json + images/ (see load_sqlite.py's own
+    # docstring for why this is safe to rerun on every deploy).
+    buildCommand: "pip install -r ../requirements.txt && python load_sqlite.py"
+
+    # gunicorn, not `python app.py` - see app.py's comment on why a
+    # production WSGI server replaces Flask's own dev server here.
+    # Render provides $PORT itself; binding 0.0.0.0 (not the loopback
+    # default) is what makes the service reachable from outside its
+    # own container.
+    startCommand: "gunicorn app:app --bind 0.0.0.0:$PORT"
+
+    envVars:
+      # Picked up by app.py's create_app() - see app.py's docstring.
+      # The sqlite backend is chosen (over "file") because it's the one
+      # this Blueprint's buildCommand rebuilds from committed data on
+      # every deploy, with no persistent disk required (Render's free
+      # tier doesn't include one).
+      - key: DATA_SERVE_BACKEND
+        value: sqlite
+      - key: PYTHON_VERSION
+        value: 3.11.9
+
+    # Free-tier services spin down after 15 minutes with no traffic and
+    # take ~30-50s to wake back up on the next request - expected
+    # behavior for a free demo, not a bug. See ../README.md's "Free-tier
+    # tradeoffs".

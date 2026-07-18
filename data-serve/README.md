@@ -139,9 +139,11 @@ served by `http-server` on its own port (typically `localhost:8080`)
 while this API runs on `localhost:5000`: without CORS headers, the
 browser blocks the response before that page's JavaScript ever sees
 it, even though both are `localhost`. `origins: "*"` is fine for a
-local learning server with no auth or write endpoints to protect; a
-real deployment would scope this to the actual frontend's origin
-instead of allowing any.
+local learning server with no auth or write endpoints to protect - and
+stays fine in the public deployment (see `../deploy/README.md`) since
+that's also a read-only API over public data; a deployment with
+anything sensitive behind it would scope this to the actual frontend's
+origin instead of allowing any.
 
 ## Notes on flask-restless (evaluated, not used)
 
@@ -255,3 +257,14 @@ stage's README).
 
 The server defaults to `http://localhost:5000` (Flask's default); set
 `PORT` to change it.
+
+## Deployment
+
+`app.py` also defines `app` at module level (not just inside
+`if __name__ == "__main__":`), so a production WSGI server can import
+it as `app:app` instead of using Flask's own single-threaded dev
+server. That's what [`../deploy/render.yaml`](../deploy/render.yaml)
+does, running `gunicorn app:app` on Render's free tier - see
+[`../deploy/README.md`](../deploy/README.md) for the full setup, why
+the `sqlite` backend is the one deployed, and free-tier tradeoffs like
+cold starts.

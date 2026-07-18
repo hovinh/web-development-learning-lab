@@ -3,12 +3,25 @@
 // its own module so every other file talks to "the API" through these
 // two functions rather than building fetch() calls/URLs itself.
 
-// data-serve defaults to this address when run with `python
-// data-serve/app.py` and no PORT override (see that stage's README).
-// Hardcoded rather than made configurable: this is a learning stage
-// meant to be run locally alongside the API it demonstrates, not a
-// deployable client.
-export const API_BASE = "http://localhost:5000";
+// This page runs in two places (see ../../deploy/README.md):
+// - locally, alongside `python data-serve/app.py`, which defaults to
+//   this address with no PORT override (see that stage's README);
+// - deployed to GitHub Pages, where there's no localhost API to talk
+//   to, so it must call the API's public Render URL instead.
+// Picking between them by hostname (rather than a build step) keeps
+// this a plain static file with no bundler/templating - the same
+// js/api.js file is served in both places unmodified.
+const LOCAL_API_BASE = "http://localhost:5000";
+
+// Filled in once, after deploy/render.yaml's service is created for
+// the first time - see deploy/README.md's "First-time setup" section.
+// Render assigns this URL from the service's `name:` in render.yaml
+// (https://<name>.onrender.com), so it only needs setting once, not
+// on every deploy.
+const DEPLOYED_API_BASE = "https://pokedex-learning-lab-api.onrender.com";
+
+const isLocalHost = ["localhost", "127.0.0.1"].includes(window.location.hostname);
+export const API_BASE = isLocalHost ? LOCAL_API_BASE : DEPLOYED_API_BASE;
 
 /**
  * Fetch a page of Pokemon, optionally filtered by type/generation.

@@ -68,6 +68,8 @@ fonttools==4.63.0
     # via matplotlib
 greenlet==3.5.3
     # via sqlalchemy
+gunicorn==26.0.0
+    # via -r requirements.in
 hyperlink==21.0.0
     # via twisted
 idna==3.18
@@ -116,6 +118,7 @@ numpy==2.4.6
     #   matplotlib
 packaging==26.2
     # via
+    #   gunicorn
     #   incremental
     #   matplotlib
     #   parsel

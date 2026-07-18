@@ -1,0 +1,58 @@
+# Publishes d3-interactive-web/ to GitHub Pages on every push to main
+# that touches it. This is the automation half of the frontend
+# deployment described in ../../deploy/README.md - the other half
+# (enabling Pages in the first place) is a one-time repo setting that
+# can't be done from inside a workflow, see that README's "First-time
+# setup".
+#
+# GitHub requires workflow files to live under .github/workflows/ - this
+# one can't move into deploy/ alongside render.yaml, so it's referenced
+# from there instead.
+name: Deploy frontend to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "d3-interactive-web/**"
+      - ".github/workflows/deploy-frontend-pages.yml"
+  # Lets you trigger a redeploy by hand from the Actions tab, e.g. after
+  # updating DEPLOYED_API_BASE in js/api.js without touching anything
+  # else under d3-interactive-web/.
+  workflow_dispatch:
+
+# Pages deploys need these specific permissions (not just the default
+# `contents: read`) to publish via actions/deploy-pages.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Only one Pages deploy at a time; let an in-flight one finish rather
+# than cancel it, since a cancelled deploy can leave Pages serving a
+# half-published site.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # d3-interactive-web has no build step (D3 loads from a CDN, see
+      # its README) - the folder as committed *is* the deployable site,
+      # so this just packages it as-is for Pages.
+      - name: Upload d3-interactive-web as the Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: d3-interactive-web
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

@@ -30,12 +30,18 @@ npm run serve -- d3-interactive-web
 Then open the URL `http-server` prints (typically
 http://localhost:8080). The page fetches from
 `http://localhost:5000` (data-serve's default address) - if you started
-`data-serve/app.py` with a different `PORT`, update `API_BASE` in
+`data-serve/app.py` with a different `PORT`, update `LOCAL_API_BASE` in
 `js/api.js` to match.
 
 If `data-serve/app.py` isn't running (or is unreachable), the page
 shows an inline message telling you to start it - it doesn't fail
 silently or show a blank page.
+
+This page is also deployed and publicly reachable with no local setup
+at all, at `https://hovinh.github.io/web-development-learning-lab/` -
+see [`../deploy/README.md`](../deploy/README.md). `js/api.js` picks
+between the local and deployed API by checking the page's own hostname
+(`API_BASE`), so the exact same files run in both places unmodified.
 
 ## What's on the page
 

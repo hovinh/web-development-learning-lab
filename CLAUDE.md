@@ -11,6 +11,7 @@ The repo is a fresh scaffold — as of now it contains only a `LICENSE` file. St
 ## Intended structure
 
 - One top-level folder per stage/topic of the curriculum (e.g. `web-scraping/`, `fastapi-backend/`, ...). Each stage is a self-contained unit — do not let later stages silently depend on earlier ones unless the book's material genuinely builds that way.
+- `deploy/` is the one top-level folder that isn't a curriculum stage — it hosts `data-serve`/`d3-interactive-web` on free public infrastructure (Render + GitHub Pages) rather than teaching a new topic. See [deploy/README.md](deploy/README.md).
 - Each stage folder gets its own `README.md` explaining the idea and implementation for that stage, written so the user can come back months later and quickly recall *why* the code is shaped the way it is — not just what it does. Update a stage's README whenever its implementation changes.
 - Languages are primarily Python and JavaScript, chosen per-stage based on what the book covers at that point (e.g. a Python-based scraping stage, a Node/JS frontend stage, a FastAPI backend stage).
 - Python dependencies are managed with a single **repo-root** virtual environment (`.venv`), not one per stage — see Python setup below. JS stages that need their own `package.json`/`node_modules` still work per-stage as needed.
@@ -44,6 +45,10 @@ The repo is a fresh scaffold — as of now it contains only a `LICENSE` file. St
 
 - [docs/python-implementation.md](docs/python-implementation.md) — project layout, style, formatting/linting, and testing conventions for Python stages.
 - [docs/javascript.md](docs/javascript.md) — project layout, style, formatting/linting, and testing conventions for JavaScript stages.
+
+## Deployment
+
+`data-serve` and `d3-interactive-web` are additionally deployed to free public hosting (Render for the Flask API, GitHub Pages for the static page), auto-redeploying on every push to `main` that touches either. Config lives in `deploy/render.yaml` and `.github/workflows/deploy-frontend-pages.yml` (the latter must stay under `.github/workflows/` — GitHub requires that exact location). See [deploy/README.md](deploy/README.md) for the one-time setup and free-tier tradeoffs (spin-down cold starts, no persistent disk). When editing `data-serve/app.py` or `d3-interactive-web/js/api.js`, keep the module-level `app` object (gunicorn's import target) and the hostname-based `API_BASE` switch intact — both exist specifically for this deployment path.
 
 ## Keeping docs in sync
 

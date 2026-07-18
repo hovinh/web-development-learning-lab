@@ -62,3 +62,9 @@ Flask-SQLAlchemy
 # from a different origin/port by http-server) is allowed to fetch it
 # from the browser - see data-serve/README.md's "CORS" section.
 Flask-Cors
+
+# deploy: production WSGI server for data-serve. Flask's own app.run()
+# (used for local dev, see app.py's __main__ block) is single-threaded
+# and explicitly not meant for the public internet - see
+# deploy/render.yaml, which runs `gunicorn app:app` instead.
+gunicorn

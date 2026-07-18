@@ -4,7 +4,7 @@
 // handed - this file is the only one that holds app state and decides
 // when to re-render what.
 import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
-import { fetchPokemon } from "./api.js";
+import { API_BASE, fetchPokemon } from "./api.js";
 import { drawAllCharts } from "./charts.js";
 import { initFilters, setFilterFormValues } from "./filters.js";
 import { renderPokemonList } from "./pokemonList.js";
@@ -96,7 +96,7 @@ function reportLoadError(error) {
     .append("p")
     .attr("class", "detail-placeholder")
     .text(
-      "Couldn't reach data-serve's API at http://localhost:5000. Start it first: " +
+      `Couldn't reach data-serve's API at ${API_BASE}. Start it first: ` +
         "`python data-serve/app.py` (see data-serve/README.md), then reload this page.",
     );
 }

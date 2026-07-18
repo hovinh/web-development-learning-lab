@@ -108,7 +108,13 @@ def create_app(
     return app
 
 
+# Module-level, not just inside __main__: a production WSGI server
+# (gunicorn, used by ../deploy/render.yaml) imports this module and
+# looks for an `app` attribute to serve - it never executes __main__ -
+# so create_app() has to run at import time, not just when this file is
+# run directly with `python app.py`.
+app = create_app()
+
 if __name__ == "__main__":
-    app = create_app()
     print(f"Starting data-serve with the {app.config['BACKEND_NAME']!r} backend")
     app.run(debug=True, port=int(os.environ.get("PORT", 5000)))
