@@ -24,6 +24,7 @@ from __future__ import annotations
 import os
 
 from flask import Flask, abort, jsonify, request
+from flask_cors import CORS
 
 from config import IMAGES_DIR, POKEDEX_JSON_PATH, SQLITE_DATABASE_URI
 from file_repository import FileRepository
@@ -52,6 +53,13 @@ def create_app(
 
     app = Flask(__name__)
     app.config["BACKEND_NAME"] = backend_name
+
+    # d3-interactive-web is served by http-server on its own port (e.g.
+    # localhost:8080), so its browser-side fetch()/d3.json() calls to this
+    # API (localhost:5000) are cross-origin - without this, the browser
+    # blocks the response before JS ever sees it. Only /api/* needs it;
+    # this app has no other routes to protect.
+    CORS(app, resources={r"/api/*": {"origins": "*"}})
 
     if backend_name == "file":
         repository = FileRepository(

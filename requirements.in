@@ -57,3 +57,8 @@ Flask
 # unmaintained since 2015 and fails to even import under this repo's
 # Flask/Werkzeug versions.
 Flask-SQLAlchemy
+
+# data-serve: CORS headers on the API, so d3-interactive-web (served
+# from a different origin/port by http-server) is allowed to fetch it
+# from the browser - see data-serve/README.md's "CORS" section.
+Flask-Cors

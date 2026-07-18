@@ -18,6 +18,7 @@ Stages so far:
 - [`data-process/`](data-process/README.md) — cleaning `data-scrape`'s raw CSV into one standardized JSON dataset + uniformly-sized images, ready for a web page to consume.
 - [`data-analysis/`](data-analysis/README.md) — charting `data-process`'s dataset into saved PNGs (type/generation/ability distributions, a height-vs-weight scatter).
 - [`data-serve/`](data-serve/README.md) — serving `data-process`'s dataset as a REST API via Flask, with interchangeable file/SQLite backends and Python + JS smoke-test scripts.
+- [`d3-interactive-web/`](d3-interactive-web/README.md) — an interactive Pokedex page (D3, via CDN) that consumes `data-serve`'s REST API: filter by type/generation, click a Pokemon for its mini-biography, and four D3-drawn charts covering the same ground as `data-analysis`'s saved PNGs.
 - [`webdev101/`](webdev101/README.md) — HTML/CSS/SVG/Canvas fundamentals via a Pokedex home page demo.
 - [`sandpit/`](sandpit/README.md) — scratch area for quick, throwaway experiments (not a curriculum stage).
 

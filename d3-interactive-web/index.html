@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Pokedex — D3 Interactive Web</title>
+    <!-- Same Pokeball as the header, inlined as a data URI so the
+         browser tab gets an icon with no extra file to fetch/commit. -->
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%23fff' stroke='%23222' stroke-width='4'/%3E%3Cpath d='M5,50 A45,45 0 0,1 95,50' fill='%23ee1515' stroke='%23222' stroke-width='4'/%3E%3Crect x='5' y='47' width='90' height='6' fill='%23222'/%3E%3Ccircle cx='50' cy='50' r='12' fill='%23fff' stroke='%23222' stroke-width='4'/%3E%3Ccircle cx='50' cy='50' r='5' fill='%23fff' stroke='%23222' stroke-width='3'/%3E%3C/svg%3E"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <div class="viz-root">
+      <header class="page-header">
+        <!-- Same inline Pokeball SVG as webdev101's header (see that
+             stage's README on why inline SVG rather than <img>) -
+             reused here rather than redrawn, so every Pokedex-themed
+             stage in this repo shares one icon. -->
+        <svg class="pokeball-icon" viewBox="0 0 100 100" width="44" height="44" aria-hidden="true">
+          <circle cx="50" cy="50" r="45" fill="#fff" stroke="#222" stroke-width="4" />
+          <path d="M5,50 A45,45 0 0,1 95,50" fill="#ee1515" stroke="#222" stroke-width="4" />
+          <rect x="5" y="47" width="90" height="6" fill="#222" />
+          <circle cx="50" cy="50" r="12" fill="#fff" stroke="#222" stroke-width="4" />
+          <circle cx="50" cy="50" r="5" fill="#fff" stroke="#222" stroke-width="3" />
+        </svg>
+        <div class="page-header-text">
+          <h1>Pokedex</h1>
+          <p class="tagline">
+            Browse, filter, and chart the dataset built across
+            <a href="../data-scrape/README.md">data-scrape</a> →
+            <a href="../data-process/README.md">data-process</a> →
+            <a href="../data-serve/README.md">data-serve</a> — this page is
+            the first stage that only <em>reads</em> from the pipeline, via
+            data-serve's REST API, rather than producing part of it.
+          </p>
+        </div>
+      </header>
+
+      <!-- One filter row, above everything it scopes - see
+           docs/interaction conventions in the dataviz skill this stage
+           follows. It only scopes the pokemon list below; the charts
+           further down always summarize the whole dataset (see the note
+           in #charts). -->
+      <section class="filters-row" aria-label="Filter the Pokemon list">
+        <label class="filter-control">
+          Type
+          <select id="type-filter">
+            <option value="">All types</option>
+          </select>
+        </label>
+        <label class="filter-control">
+          Generation
+          <select id="generation-filter">
+            <option value="">All generations</option>
+          </select>
+        </label>
+        <button id="reset-filters" type="button" class="reset-button">
+          Reset
+        </button>
+        <span id="result-count" class="result-count" aria-live="polite"></span>
+      </section>
+
+      <main>
+        <section class="browse-grid" aria-label="Pokemon list and mini-biography">
+          <div id="pokemon-list" class="pokemon-list" aria-label="Pokemon list"></div>
+          <aside id="detail-panel" class="detail-panel" aria-label="Selected Pokemon mini-biography">
+            <p class="detail-placeholder">
+              Select a Pokemon from the list, or a point on the height vs.
+              weight chart below, to see its mini-biography.
+            </p>
+          </aside>
+        </section>
+
+        <section id="charts" class="charts-section" aria-label="Dataset charts">
+          <h2>Dataset charts</h2>
+          <p class="charts-note">
+            These four always summarize the <strong>whole</strong> dataset —
+            the same four questions
+            <a href="../data-analysis/README.md">data-analysis</a>'s saved
+            PNGs answer, just recomputed live from data-serve and drawn with
+            D3 instead of matplotlib. Clicking a type or generation bar sets
+            the filter above (a second way to drive the same filter, not a
+            way to shrink the chart you're looking at); clicking a point on
+            the scatter opens that Pokemon's mini-biography.
+          </p>
+
+          <!-- Shared color key for the type chart and the scatter -
+               both color their marks by Pokemon type (see
+               js/typeColors.js), so one legend covers both rather than
+               repeating 18 swatches twice. Populated by
+               js/typeLegend.js. -->
+          <div id="type-legend" class="type-legend" aria-label="Pokemon type color legend"></div>
+
+          <div class="charts-grid">
+            <figure class="chart-card">
+              <figcaption>Pokemon per type</figcaption>
+              <div id="chart-type" class="chart"></div>
+            </figure>
+            <figure class="chart-card">
+              <figcaption>Pokemon per generation</figcaption>
+              <div id="chart-generation" class="chart"></div>
+            </figure>
+            <figure class="chart-card">
+              <figcaption>Top 15 abilities</figcaption>
+              <div id="chart-abilities" class="chart"></div>
+            </figure>
+            <figure class="chart-card">
+              <figcaption>Height vs. weight (log scale)</figcaption>
+              <div id="chart-scatter" class="chart"></div>
+            </figure>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- Shared tooltip for every chart - one element, repositioned and
+         re-filled on hover rather than one per chart (see charts.js). -->
+    <div id="tooltip" class="viz-tooltip" role="status" hidden></div>
+
+    <script type="module" src="js/app.js"></script>
+  </body>
+</html>

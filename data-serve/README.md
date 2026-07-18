@@ -128,6 +128,21 @@ to see once, not the recommended way to actually run this:
   stays the point of comparison - see that stage's `mongo_store.py` for
   what MongoDB actually looks like here.
 
+## CORS
+
+Every `/api/*` route is wrapped in [Flask-Cors](https://flask-cors.readthedocs.io/)
+(`CORS(app, resources={r"/api/*": {"origins": "*"}})` in `app.py`), so a
+browser page served from a *different* origin - not this server - is
+allowed to call this API with `fetch()`/`d3.json()`. That's needed
+because [`d3-interactive-web`](../d3-interactive-web/README.md) is
+served by `http-server` on its own port (typically `localhost:8080`)
+while this API runs on `localhost:5000`: without CORS headers, the
+browser blocks the response before that page's JavaScript ever sees
+it, even though both are `localhost`. `origins: "*"` is fine for a
+local learning server with no auth or write endpoints to protect; a
+real deployment would scope this to the actual frontend's origin
+instead of allowing any.
+
 ## Notes on flask-restless (evaluated, not used)
 
 [Flask-Restless](https://flask-restless.readthedocs.io/) auto-generates

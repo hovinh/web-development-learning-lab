@@ -1,0 +1,464 @@
+/* Palette: the repo's dataviz skill's validated default palette (also
+   the same blue data-analysis's matplotlib charts already use as
+   SERIES_COLOR, so the two stages' charts read as one system). Defined
+   as CSS custom properties on .viz-root per the skill's convention, so
+   every chart/component below references a role (--series-1,
+   --text-primary, ...) instead of a raw hex, and light/dark swap in
+   this one place. This page has no manual theme toggle, so only the
+   prefers-color-scheme media query is wired (no data-theme scope). */
+.viz-root {
+  color-scheme: light;
+  --page-plane: #f9f9f7;
+  --surface-1: #fcfcfb;
+  --text-primary: #0b0b0b;
+  --text-secondary: #52514e;
+  --text-muted: #898781;
+  --gridline: #e1e0d9;
+  --baseline: #c3c2b7;
+  --border: rgba(11, 11, 11, 0.1);
+  /* The dataviz skill's validated 8-slot categorical order (first 6
+     used here, for the generation chart's 6 bars) - each generation
+     always gets the same slot (see charts.js), never reassigned by
+     whatever's currently filtered. */
+  --series-1: #2a78d6; /* blue */
+  --series-2: #008300; /* green */
+  --series-3: #e87ba4; /* magenta */
+  --series-4: #eda100; /* yellow */
+  --series-5: #1baf7a; /* aqua */
+  --series-6: #eb6834; /* orange */
+}
+
+@media (prefers-color-scheme: dark) {
+  .viz-root {
+    color-scheme: dark;
+    --page-plane: #0d0d0d;
+    --surface-1: #1a1a19;
+    --text-primary: #ffffff;
+    --text-secondary: #c3c2b7;
+    --text-muted: #898781;
+    --gridline: #2c2c2a;
+    --baseline: #383835;
+    --border: rgba(255, 255, 255, 0.1);
+    --series-1: #3987e5;
+    --series-2: #008300;
+    --series-3: #d55181;
+    --series-4: #c98500;
+    --series-5: #199e70;
+    --series-6: #d95926;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family:
+    system-ui,
+    -apple-system,
+    "Segoe UI",
+    sans-serif;
+  background: var(--page-plane);
+  color: var(--text-primary);
+}
+
+.viz-root {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px 20px 64px;
+}
+
+/* ---------- Header ---------- */
+
+.page-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.pokeball-icon {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.page-header h1 {
+  margin: 0 0 4px;
+  font-size: 28px;
+}
+
+.tagline {
+  margin: 0 0 24px;
+  color: var(--text-secondary);
+  max-width: 70ch;
+  line-height: 1.5;
+}
+
+.tagline a {
+  color: var(--series-1);
+}
+
+/* ---------- Filters ---------- */
+
+.filters-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 16px;
+  margin-bottom: 20px;
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.filter-control {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.filter-control select {
+  font: inherit;
+  font-size: 14px;
+  color: var(--text-primary);
+  background: var(--page-plane);
+  border: 1px solid var(--baseline);
+  border-radius: 6px;
+  padding: 6px 8px;
+}
+
+.reset-button {
+  align-self: flex-end;
+  font: inherit;
+  font-size: 14px;
+  color: var(--text-secondary);
+  background: transparent;
+  border: 1px solid var(--baseline);
+  border-radius: 6px;
+  padding: 7px 12px;
+  cursor: pointer;
+}
+
+.reset-button:hover {
+  color: var(--text-primary);
+  border-color: var(--text-secondary);
+}
+
+.result-count {
+  margin-left: auto;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+/* ---------- Browse: list + detail ---------- */
+
+.browse-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 20px;
+  margin-bottom: 40px;
+}
+
+@media (max-width: 760px) {
+  .browse-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.pokemon-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+  gap: 8px;
+  align-content: start;
+  max-height: 520px;
+  overflow-y: auto;
+  padding: 12px;
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.pokemon-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 4px;
+  font: inherit;
+  color: var(--text-primary);
+  background: var(--page-plane);
+  border: 1px solid transparent;
+  border-radius: 6px;
+  cursor: pointer;
+  text-align: center;
+}
+
+.pokemon-card:hover {
+  border-color: var(--baseline);
+}
+
+.pokemon-card.is-selected {
+  border-color: var(--series-1);
+  background: color-mix(in srgb, var(--series-1) 12%, var(--page-plane));
+}
+
+.pokemon-card-sprite {
+  width: 48px;
+  height: 48px;
+  image-rendering: pixelated;
+}
+
+.pokemon-card-name {
+  font-size: 12px;
+  color: var(--text-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
+
+.detail-panel {
+  padding: 16px;
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow-y: auto;
+  max-height: 520px;
+}
+
+.detail-placeholder {
+  color: var(--text-muted);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.detail-artwork {
+  width: 100%;
+  max-width: 220px;
+  display: block;
+  margin: 0 auto 12px;
+}
+
+.detail-name {
+  margin: 0 0 2px;
+  font-size: 18px;
+}
+
+.detail-species {
+  margin: 0 0 12px;
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-style: italic;
+}
+
+.detail-types {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.type-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  padding: 3px 10px 3px 8px;
+  border-radius: 999px;
+  background: var(--page-plane);
+  border: 1px solid var(--baseline);
+  color: var(--text-secondary);
+}
+
+/* The colored mark carries the type identity (see typeColors.js);
+   the label text stays in a text token - "text never wears the data
+   color" (dataviz skill's marks-and-anatomy rule), so a light type
+   color like Ice or Fairy never has to double as legible text. */
+.type-badge-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.detail-facts {
+  margin: 0;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 6px 12px;
+  font-size: 13px;
+}
+
+.detail-facts dt {
+  color: var(--text-muted);
+}
+
+.detail-facts dd {
+  margin: 0;
+  color: var(--text-primary);
+}
+
+/* ---------- Charts ---------- */
+
+.charts-section h2 {
+  margin: 0 0 4px;
+  font-size: 20px;
+}
+
+.charts-note {
+  margin: 0 0 16px;
+  color: var(--text-secondary);
+  font-size: 13px;
+  max-width: 80ch;
+  line-height: 1.5;
+}
+
+.charts-note a {
+  color: var(--series-1);
+}
+
+.charts-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+@media (max-width: 760px) {
+  .charts-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.chart-card {
+  margin: 0;
+  padding: 12px;
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.chart-card figcaption {
+  font-size: 14px;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.chart {
+  width: 100%;
+}
+
+.chart svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  overflow: visible;
+}
+
+/* Chart marks: default fill is the flat accent blue (the abilities
+   chart, which has no per-bar identity to color by, uses exactly
+   this); the type and generation charts override fill per-datum from
+   JS (typeColors.js / --series-1..6) since each bar's color there
+   depends on its own data, not a single fixed role. Selection is
+   layered on top as a stroke ring rather than swapping the fill, so a
+   selected bar/point keeps showing its identity color. */
+.mark-bar {
+  fill: var(--series-1);
+}
+
+.mark-bar.is-selected {
+  stroke: var(--text-primary);
+  stroke-width: 2px;
+  stroke-linejoin: round;
+}
+
+.bar-value-label {
+  font-size: 11px;
+  fill: var(--text-secondary);
+}
+
+.scatter-point {
+  fill: var(--series-1);
+  fill-opacity: 0.75;
+  stroke: var(--surface-1);
+  stroke-width: 1;
+}
+
+.scatter-point-group.is-selected .scatter-point {
+  stroke: var(--text-primary);
+  stroke-width: 2;
+  fill-opacity: 1;
+  r: 5;
+}
+
+.scatter-hit-target {
+  fill: transparent;
+}
+
+/* ---------- Type color legend ---------- */
+
+.type-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  margin-bottom: 16px;
+  padding: 10px 12px;
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.type-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.type-legend-swatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.gridlines line {
+  stroke: var(--gridline);
+  stroke-width: 1;
+  shape-rendering: crispEdges;
+}
+
+.axis .domain {
+  stroke: var(--baseline);
+}
+
+.axis .tick line {
+  stroke: var(--baseline);
+}
+
+.axis text {
+  fill: var(--text-muted);
+  font-size: 11px;
+}
+
+.axis-title {
+  fill: var(--text-secondary);
+  font-size: 11px;
+}
+
+/* ---------- Tooltip ---------- */
+
+.viz-tooltip {
+  position: fixed;
+  z-index: 10;
+  pointer-events: none;
+  background: var(--text-primary);
+  color: var(--surface-1);
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  white-space: nowrap;
+}

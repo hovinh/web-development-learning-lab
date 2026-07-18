@@ -1,0 +1,10 @@
+{
+  "name": "d3-interactive-web",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Interactive D3 Pokedex: filters, a mini-biography panel, and four charts fed by data-serve's REST API.",
+  "scripts": {
+    "test": "node tests/chartData.test.js"
+  }
+}
