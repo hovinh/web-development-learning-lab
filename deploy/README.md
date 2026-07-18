@@ -5,6 +5,10 @@ Puts [`data-serve`](../data-serve/README.md) and
 internet, for free, so the Pokedex page can be shown to someone without
 them cloning the repo or running anything locally.
 
+**Currently live at:**
+- Page: https://hovinh.github.io/web-development-learning-lab/
+- API: https://pokedex-learning-lab-api.onrender.com/api/meta
+
 This is the first stage that isn't part of the curriculum pipeline
 itself - it doesn't produce or transform data, it just hosts two stages
 that already exist. Unlike every other stage folder, `deploy/` has no

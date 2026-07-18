@@ -65,10 +65,16 @@ Then open the URL `http-server` prints (e.g. http://localhost:8080). Commit the 
 ## Deployment
 
 `data-serve` and `d3-interactive-web` are also live on free public
-hosting, kept in sync with `main` automatically — see
-[deploy/README.md](deploy/README.md) for the setup and the two
+hosting, kept in sync with `main` automatically:
+
+- **Live page**: https://hovinh.github.io/web-development-learning-lab/
+- **Live API**: https://pokedex-learning-lab-api.onrender.com/api/meta
+
+See [deploy/README.md](deploy/README.md) for the setup and the two
 platforms involved (Render for the API, GitHub Pages for the static
-page).
+page). The API is on Render's free tier, so it spins down after 15
+minutes idle — the first request after a quiet spell takes ~30-50s to
+wake it back up.
 
 ## Implementation guides
 
