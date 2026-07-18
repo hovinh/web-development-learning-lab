@@ -47,3 +47,13 @@ Pillow
 # data-analysis: charting library for turning data-process's cleaned
 # dataset into saved PNG charts.
 matplotlib
+
+# data-serve: the web framework the REST API is built on.
+Flask
+
+# data-serve: SQLAlchemy integration for the sqlite backend (Flask-scoped
+# sessions, `db.Model` base class). flask-restless was also evaluated
+# for this stage (see data-serve/README.md) and rejected - it's been
+# unmaintained since 2015 and fails to even import under this repo's
+# Flask/Werkzeug versions.
+Flask-SQLAlchemy

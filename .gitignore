@@ -44,5 +44,9 @@ data-process/images/
 # data-process/pokedex.json.
 data-analysis/charts/
 
+# data-serve: the sqlite backend's database - reproducible by running
+# load_sqlite.py again against data-process's output.
+data-serve/pokedex.db
+
 # pytest's own cache, generated wherever tests are run from
 .pytest_cache/

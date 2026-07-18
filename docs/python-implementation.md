@@ -42,6 +42,7 @@ Best practices for implementing Python stages in this repo. This is a learning l
 - Use [`pytest`](https://docs.pytest.org/). Put tests in a `tests/` folder inside the stage, named `test_*.py`.
 - Not every stage needs exhaustive tests — this is a learning lab, so tests are most valuable where they help verify understanding of the stage's core mechanic (e.g. a parsing function in a scraping stage), not as blanket coverage.
 - Run a single stage's tests from the repo root with the venv active: `pytest <stage>/tests`.
+- **Always test one stage at a time — never `pytest` bare from the repo root, and never pass more than one stage's `tests/` folder in the same invocation.** Every stage's flat layout relies on its own `conftest.py` inserting that stage's directory onto `sys.path` (see any stage's `conftest.py`), so its plain-named modules (`config.py`, `main.py`, ...) are importable without a package. Multiple stages sharing the same module name (e.g. `data-scrape/config.py` and `data-serve/config.py` both exist) is fine as long as only one stage's directory is ever on `sys.path` in a given pytest process — combine two stages' test runs and whichever `conftest.py` pytest happens to import last wins that name for the whole session, silently breaking the other stage's imports. To run every stage's tests in one command anyway, run pytest once per stage instead of once total, e.g.: `for d in data-scrape data-process data-analysis data-serve; do pytest "$d/tests" || break; done`.
 
 ## Running stage code
 
