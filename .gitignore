@@ -53,5 +53,12 @@ data-analysis/charts/
 # load_sqlite.py again against data-process's output.
 data-serve/pokedex.db
 
+# django: the moviereviews project's local dev database and uploaded
+# media - reproducible by running `manage.py migrate` again; media
+# files are whatever's been uploaded through the running dev site, not
+# tracked content. See django/README.md.
+django/moviereviews/db.sqlite3
+django/moviereviews/media/
+
 # pytest's own cache, generated wherever tests are run from
 .pytest_cache/

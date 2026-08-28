@@ -14,6 +14,8 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django.conf import settings
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path
 
@@ -28,3 +30,9 @@ urlpatterns = [
     # mailing-list form's `action` in movie/templates/movie/home.html.
     path('signup/', movieViews.signup, name='signup'),
 ]
+
+# Only wired up when DEBUG=True (local dev) - see MEDIA_URL/MEDIA_ROOT
+# in settings.py. Without this, uploaded Movie.image files would save
+# to disk fine but 404 when a template tries to display them.
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

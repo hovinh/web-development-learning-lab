@@ -118,6 +118,16 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+# Media files (user-uploaded content, e.g. Movie.image) - distinct from
+# STATIC_URL/STATIC_ROOT above, which is for this project's own
+# CSS/JS/images. MEDIA_ROOT is where uploaded files are saved on disk;
+# MEDIA_URL is the prefix used to build their public URLs. Serving
+# these from Django itself (see moviereviews/urls.py) is only fine for
+# local dev - a real deployment would serve them from a proper file
+# host/CDN instead.
+MEDIA_URL = 'media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 

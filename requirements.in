@@ -42,6 +42,8 @@ scrapy
 
 # data-scrape: image decoding for scrapy.pipelines.images.ImagesPipeline,
 # which the pokemon_scrapy project uses to download artwork.
+# django: also required by Django's own ImageField (movie/models.py's
+# Movie.image) - Django raises an error at migration time without it.
 Pillow
 
 # data-analysis: charting library for turning data-process's cleaned

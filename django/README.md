@@ -175,3 +175,35 @@ python django/moviereviews/manage.py runserver
     the address filled in; `/signup/` with no query string shows the
     same page with an empty `<strong>` (expected - no email submitted
     yet).
+- **2026-08-28** - added the first data model, `Movie`, in
+  `movie/models.py` - `title` (`CharField`), `description`
+  (`TextField`), `image` (`ImageField`), `url` (`URLField`). A model
+  class is the single source of truth for the DB schema: Django reads
+  it to generate migrations, rather than hand-written `CREATE TABLE`.
+  - `ImageField` needs [Pillow](https://pillow.readthedocs.io/) to
+    validate uploaded files are real images - already a repo dependency
+    (added earlier for `data-scrape`'s `ImagesPipeline`), so this was
+    just a comment update in `requirements.in` explaining the second
+    consumer, not a new pin. No recompile/sync needed since the pinned
+    version was already installed.
+  - Added `MEDIA_URL`/`MEDIA_ROOT` to `moviereviews/settings.py`
+    (distinct from `STATIC_URL` - media is *uploaded* content like
+    `Movie.image`, static is this project's own CSS/JS) and wired
+    `moviereviews/urls.py` to serve `MEDIA_ROOT` under `MEDIA_URL` when
+    `DEBUG=True`, so an uploaded image is actually reachable by URL in
+    local dev instead of 404ing.
+  - Generated the migration: `python manage.py makemigrations movie` ->
+    `movie/migrations/0001_initial.py` (one `CreateModel` operation with
+    all four fields, matching the model exactly). Applied it with
+    `python manage.py migrate`, which also applied Django's own
+    built-in migrations (`admin`, `auth`, `contenttypes`, `sessions`) -
+    first time `migrate` had been run in this project, so those had
+    never been applied to `db.sqlite3` either.
+  - **Every model change from here needs a new migration** -
+    `makemigrations` generates one from whatever's changed since the
+    last migration, `migrate` applies it to the actual database. Skipping
+    `makemigrations` after editing `models.py` leaves the code and the
+    live schema out of sync.
+  - Verified by inspecting `db.sqlite3`'s generated schema directly
+    (`sqlite_master`) - the `movie_movie` table's columns match
+    `Movie`'s fields column-for-column.
