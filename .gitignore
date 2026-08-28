@@ -60,5 +60,12 @@ data-serve/pokedex.db
 django/moviereviews/db.sqlite3
 django/moviereviews/media/
 
+# django: collectstatic's output (see moviereviews/settings.py's
+# STATIC_ROOT) - only ever needed on a real deployment (DEBUG=False),
+# reproducible there with `manage.py collectstatic`. Never populated
+# during local dev, since the dev server serves static files itself
+# without this when DEBUG=True.
+django/moviereviews/staticfiles/
+
 # pytest's own cache, generated wherever tests are run from
 .pytest_cache/

@@ -22,7 +22,7 @@ Stages so far:
 - [`webdev101/`](webdev101/README.md) — HTML/CSS/SVG/Canvas fundamentals via a Pokedex home page demo.
 - [`django/`](django/README.md) — Django fundamentals via a `moviereviews` project; that README doubles as a running learning log.
 - [`sandpit/`](sandpit/README.md) — scratch area for quick, throwaway experiments (not a curriculum stage).
-- [`deploy/`](deploy/README.md) — puts `data-serve` and `d3-interactive-web` on free public hosting (Render + GitHub Pages), auto-deploying on every push (not a curriculum stage).
+- [`deploy/`](deploy/README.md) — puts `data-serve`/`d3-interactive-web` (Render + GitHub Pages, auto-deploying on every push) and `django/moviereviews` ([PythonAnywhere](deploy/pythonanywhere.md), manual redeploy) on free public hosting (not a curriculum stage).
 
 ## Python setup
 
@@ -76,6 +76,14 @@ platforms involved (Render for the API, GitHub Pages for the static
 page). The API is on Render's free tier, so it spins down after 15
 minutes idle — the first request after a quiet spell takes ~30-50s to
 wake it back up.
+
+`django/moviereviews` is separately deployed to
+[PythonAnywhere](https://www.pythonanywhere.com/) — see
+[deploy/pythonanywhere.md](deploy/pythonanywhere.md). Unlike the two
+above, this one has no auto-deploy on push (PythonAnywhere's free tier
+has no equivalent to Render's Blueprints or GitHub Pages' Actions), so
+redeploying a change means following that guide's steps by hand each
+time.
 
 ## Implementation guides
 

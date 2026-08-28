@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -18,14 +19,50 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
+#
+# The three settings below all read from an environment variable first,
+# falling back to the original hardcoded dev value if it's unset - so
+# local development (manage.py runserver, no env vars set) behaves
+# exactly as before, and only a deployment that explicitly sets these
+# (e.g. PythonAnywhere's WSGI file - see deploy/pythonanywhere.md)
+# changes anything. Never hand-edit these fallbacks to "production"
+# values directly - that would defeat the point of DEBUG being off and
+# a real secret key being used only where it's actually deployed.
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-g!kkt%9xl#7-$yqo35iy$27+az0p6tk0k)=o&%fe&-d%*9*adt'
+# The fallback here is the original `startproject`-generated key -
+# fine for local dev (nothing sensitive relies on it), but a real
+# deployment must override it via DJANGO_SECRET_KEY so this value never
+# ends up protecting a live site (it's sitting in git history, so it
+# can never be treated as secret again once anyone's seen this file).
+SECRET_KEY = os.environ.get(
+    "DJANGO_SECRET_KEY",
+    'django-insecure-g!kkt%9xl#7-$yqo35iy$27+az0p6tk0k)=o&%fe&-d%*9*adt',
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get("DJANGO_DEBUG", "True") == "True"
 
-ALLOWED_HOSTS = []
+# Comma-separated in the env var (e.g. "someuser.pythonanywhere.com") -
+# split into the list Django expects. Empty/unset means an empty list,
+# same as the original hardcoded value - harmless for local dev, since
+# Django's runserver always allows localhost/127.0.0.1 regardless of
+# ALLOWED_HOSTS when DEBUG=True.
+ALLOWED_HOSTS = [
+    host.strip()
+    for host in os.environ.get("DJANGO_ALLOWED_HOSTS", "").split(",")
+    if host.strip()
+]
+
+# HTTPS-only cookies/redirect - derived from DEBUG rather than its own
+# env var, since there's no scenario here where DEBUG=False but the
+# site isn't served over HTTPS (PythonAnywhere terminates HTTPS itself
+# for *.pythonanywhere.com). Off for local dev (DEBUG=True, plain
+# http://127.0.0.1), on for anything deployed with DEBUG=False - see
+# `manage.py check --deploy`, which flags these by default otherwise.
+SECURE_SSL_REDIRECT = not DEBUG
+SESSION_COOKIE_SECURE = not DEBUG
+CSRF_COOKIE_SECURE = not DEBUG
 
 
 # Application definition
@@ -128,6 +165,15 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
+
+# Where `manage.py collectstatic` gathers every app's static files
+# (mainly the Django admin's own CSS/JS - this project has no custom
+# static/ files of its own) into one folder, ready to hand off to a
+# real web server. Only matters once DEBUG=False - Django's own
+# dev server serves static files directly without this when DEBUG=True,
+# which is why local dev has worked fine without it until now. See
+# deploy/pythonanywhere.md for where this actually gets used.
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Media files (user-uploaded content, e.g. Movie.image) - distinct from
 # STATIC_URL/STATIC_ROOT above, which is for this project's own

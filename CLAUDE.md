@@ -11,7 +11,7 @@ The repo is a fresh scaffold — as of now it contains only a `LICENSE` file. St
 ## Intended structure
 
 - One top-level folder per stage/topic of the curriculum (e.g. `web-scraping/`, `fastapi-backend/`, ...). Each stage is a self-contained unit — do not let later stages silently depend on earlier ones unless the book's material genuinely builds that way.
-- `deploy/` is the one top-level folder that isn't a curriculum stage — it hosts `data-serve`/`d3-interactive-web` on free public infrastructure (Render + GitHub Pages) rather than teaching a new topic. See [deploy/README.md](deploy/README.md).
+- `deploy/` is the one top-level folder that isn't a curriculum stage — it hosts `data-serve`/`d3-interactive-web` (Render + GitHub Pages) and `django/moviereviews` (PythonAnywhere) on free public infrastructure rather than teaching a new topic. See [deploy/README.md](deploy/README.md) and [deploy/pythonanywhere.md](deploy/pythonanywhere.md).
 - Each stage folder gets its own `README.md` explaining the idea and implementation for that stage, written so the user can come back months later and quickly recall *why* the code is shaped the way it is — not just what it does. Update a stage's README whenever its implementation changes.
 - Languages are primarily Python and JavaScript, chosen per-stage based on what the book covers at that point (e.g. a Python-based scraping stage, a Node/JS frontend stage, a FastAPI backend stage).
 - Python dependencies are managed with a single **repo-root** virtual environment (`.venv`), not one per stage — see Python setup below. JS stages that need their own `package.json`/`node_modules` still work per-stage as needed.
@@ -49,6 +49,8 @@ The repo is a fresh scaffold — as of now it contains only a `LICENSE` file. St
 ## Deployment
 
 `data-serve` and `d3-interactive-web` are additionally deployed to free public hosting (Render for the Flask API, GitHub Pages for the static page), auto-redeploying on every push to `main` that touches either. Config lives in `deploy/render.yaml` and `.github/workflows/deploy-frontend-pages.yml` (the latter must stay under `.github/workflows/` — GitHub requires that exact location). See [deploy/README.md](deploy/README.md) for the one-time setup and free-tier tradeoffs (spin-down cold starts, no persistent disk). When editing `data-serve/app.py` or `d3-interactive-web/js/api.js`, keep the module-level `app` object (gunicorn's import target) and the hostname-based `API_BASE` switch intact — both exist specifically for this deployment path.
+
+`django/moviereviews` is separately deployed to PythonAnywhere — **manually, not auto-deploying on push** (PythonAnywhere has no free-tier equivalent to Render's Blueprints/GitHub Pages' Actions). See [deploy/pythonanywhere.md](deploy/pythonanywhere.md) for the full setup and redeploy steps. `moviereviews/settings.py`'s `SECRET_KEY`/`DEBUG`/`ALLOWED_HOSTS`/secure-cookie settings read from environment variables (falling back to local-dev values when unset — never hardcode a "production" value into the fallback itself), and `django/moviereviews/requirements-pythonanywhere.txt` is a deliberately separate, minimal dependency list scoped to just this app (not the repo-root `requirements.txt`, which locks every stage in the monorepo). Keep both intact when editing that settings file or app's dependencies.
 
 ## Keeping docs in sync
 

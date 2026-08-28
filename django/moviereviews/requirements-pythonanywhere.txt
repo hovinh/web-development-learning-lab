@@ -1,0 +1,13 @@
+# Dependencies for deploying THIS project (moviereviews) to
+# PythonAnywhere - see ../../deploy/pythonanywhere.md.
+#
+# Deliberately separate from the repo-root requirements.txt: that file
+# is the lockfile for every stage in this monorepo (Scrapy, Flask,
+# matplotlib, pymongo, ...), which would be slow to install and mostly
+# wasted disk on PythonAnywhere's free-tier quota for an app that only
+# needs Django + Pillow. Versions below are copied from the root
+# lockfile so this deploys the exact same versions as local dev - if
+# either changes there (via `piptools compile`), update the matching
+# line here too.
+Django==5.2.17
+Pillow==12.3.0

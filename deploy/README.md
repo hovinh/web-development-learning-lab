@@ -1,19 +1,27 @@
 # deploy
 
-Puts [`data-serve`](../data-serve/README.md) and
-[`d3-interactive-web`](../d3-interactive-web/README.md) on the public
-internet, for free, so the Pokedex page can be shown to someone without
-them cloning the repo or running anything locally.
+Puts stages that already exist on the public internet, for free, so
+they can be shown to someone without them cloning the repo or running
+anything locally. Not a curriculum stage itself - it doesn't produce or
+transform data, and (aside from `pythonanywhere.md`'s guide) has no
+Python/JS code of its own to run.
+
+## [`data-serve`](../data-serve/README.md) + [`d3-interactive-web`](../d3-interactive-web/README.md)
 
 **Currently live at:**
 - Page: https://hovinh.github.io/web-development-learning-lab/
 - API: https://pokedex-learning-lab-api.onrender.com/api/meta
 
-This is the first stage that isn't part of the curriculum pipeline
-itself - it doesn't produce or transform data, it just hosts two stages
-that already exist. Unlike every other stage folder, `deploy/` has no
-Python/JS code of its own to run; it's Blueprint/workflow config plus a
-couple of verification scripts.
+Render + GitHub Pages, auto-deploying on every relevant `git push` -
+covered by the rest of this file, below. Config: `render.yaml` + the
+Pages workflow.
+
+## [`django/moviereviews`](../django/README.md)
+
+See [`pythonanywhere.md`](pythonanywhere.md) - PythonAnywhere, **not**
+auto-deploying on push (that platform has no free-tier equivalent to
+Render's Blueprints/GitHub Pages' Actions - see that file's "Why this
+is different" section).
 
 ## Why two separate hosts
 
