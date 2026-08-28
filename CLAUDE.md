@@ -60,3 +60,5 @@ There are two overview docs, the language implementation guides, plus one per st
 - `<stage>/README.md` — one per stage folder, covering that stage's idea and implementation.
 
 **Every code change that affects structure, setup, tooling, or conventions must update `CLAUDE.md`, the root `README.md`, and the relevant implementation guide together, plus the relevant stage `README.md` if a stage was added or changed.** Don't let these drift — a stale root doc defeats the point of this repo, which is to make prior work easy to recall.
+
+**Exception: `django/`.** That stage's `README.md` doubles as a running learning log (see [django/README.md](django/README.md)'s "Log" section), updated as the user progresses through the material. Routine additions to that log stay inside `django/README.md` only — they don't need matching edits to this file, the root `README.md`, or `docs/python-implementation.md`. Only touch the outer docs for `django/` if something genuinely structural changes (e.g. a new dependency, a new top-level tool, a change to how the stage is run).

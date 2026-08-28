@@ -20,6 +20,7 @@ Stages so far:
 - [`data-serve/`](data-serve/README.md) — serving `data-process`'s dataset as a REST API via Flask, with interchangeable file/SQLite backends and Python + JS smoke-test scripts.
 - [`d3-interactive-web/`](d3-interactive-web/README.md) — an interactive Pokedex page (D3, via CDN) that consumes `data-serve`'s REST API: filter by type/generation, click a Pokemon for its mini-biography, and four D3-drawn charts covering the same ground as `data-analysis`'s saved PNGs.
 - [`webdev101/`](webdev101/README.md) — HTML/CSS/SVG/Canvas fundamentals via a Pokedex home page demo.
+- [`django/`](django/README.md) — Django fundamentals via a `moviereviews` project; that README doubles as a running learning log.
 - [`sandpit/`](sandpit/README.md) — scratch area for quick, throwaway experiments (not a curriculum stage).
 - [`deploy/`](deploy/README.md) — puts `data-serve` and `d3-interactive-web` on free public hosting (Render + GitHub Pages), auto-deploying on every push (not a curriculum stage).
 

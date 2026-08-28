@@ -68,3 +68,7 @@ Flask-Cors
 # and explicitly not meant for the public internet - see
 # deploy/render.yaml, which runs `gunicorn app:app` instead.
 gunicorn
+
+# django: the framework itself, for the moviereviews project - see
+# django/README.md.
+Django

@@ -6,6 +6,8 @@
 #
 alembic==1.18.5
     # via dataset
+asgiref==3.12.1
+    # via django
 attrs==26.1.0
     # via
     #   cattrs
@@ -51,6 +53,8 @@ dataset==2.0.0
     # via -r requirements.in
 defusedxml==0.7.1
     # via scrapy
+django==5.2.17
+    # via -r requirements.in
 dnspython==2.8.0
     # via pymongo
 filelock==3.30.2
@@ -183,6 +187,8 @@ sqlalchemy==2.0.51
     #   alembic
     #   dataset
     #   flask-sqlalchemy
+sqlparse==0.6.0
+    # via django
 tldextract==5.3.1
     # via scrapy
 twisted==26.4.0
@@ -195,6 +201,8 @@ typing-extensions==4.16.0
     #   pyopenssl
     #   sqlalchemy
     #   twisted
+tzdata==2026.3
+    # via django
 url-normalize==3.0.0
     # via requests-cache
 urllib3==2.7.0
