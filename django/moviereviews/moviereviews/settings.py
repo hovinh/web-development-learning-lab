@@ -125,7 +125,7 @@ STATIC_URL = 'static/'
 # these from Django itself (see moviereviews/urls.py) is only fine for
 # local dev - a real deployment would serve them from a proper file
 # host/CDN instead.
-MEDIA_URL = 'media/'
+MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 # Default primary key field type

@@ -207,3 +207,39 @@ python django/moviereviews/manage.py runserver
   - Verified by inspecting `db.sqlite3`'s generated schema directly
     (`sqlite_master`) - the `movie_movie` table's columns match
     `Movie`'s fields column-for-column.
+- **2026-08-28** - wired up the Django admin site so the database is
+  browsable/editable through a UI instead of raw SQL:
+  - `path('admin/', admin.site.urls)` in `moviereviews/urls.py` was
+    already there (it's part of `startproject`'s default scaffold) -
+    nothing to change, the admin site was reachable at `/admin/` from
+    day one, it just had nothing registered and no user able to log in.
+  - Registered `Movie` in `movie/admin.py` with
+    `admin.site.register(Movie)` - a model has to be explicitly
+    registered to show up in the admin UI, existing in the database
+    isn't enough on its own.
+  - **Admin login: username `admin`, password `1234`.** Local dev only
+    - not meant to be a real secret. Created with:
+    ```python
+    from django.contrib.auth import get_user_model
+    get_user_model().objects.create_superuser('admin', '', '1234')
+    ```
+    run through `manage.py shell -c`, not `manage.py createsuperuser
+    --noinput` - that flag explicitly can't set a password (Django's
+    own message: "Superusers created with --noinput will not be able to
+    log in until they're given a valid password"), so a password would
+    still have needed setting separately. Went via `create_superuser()`
+    directly instead, which also conveniently **skips Django's password
+    validators** (min length 8, not-all-numeric, etc., configured in
+    `AUTH_PASSWORD_VALIDATORS`) - those only run inside the interactive
+    `createsuperuser` command/admin forms, not the manager method
+    itself, which is the only reason a 4-digit numeric password like
+    `1234` was accepted at all.
+  - `MEDIA_URL` in `moviereviews/settings.py` changed from `'media/'` to
+    `'/media/'` (leading slash) - `MEDIA_ROOT` was already `BASE_DIR /
+    'media'` from the earlier `Movie.image` work, no change needed
+    there.
+  - Verified end-to-end over real HTTP (`manage.py runserver` + curl):
+    fetched the CSRF token from `/admin/login/`, POSTed
+    `admin`/`1234`, got a `302` (successful login redirect), then
+    fetched `/admin/movie/movie/` and confirmed it renders the "Select
+    movie to change" list page with an "Add movie" button.
