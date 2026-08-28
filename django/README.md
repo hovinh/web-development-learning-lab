@@ -133,3 +133,23 @@ python django/moviereviews/manage.py runserver
   - Verified by running `manage.py runserver` locally and curling `/`
     and `/about/` - both render the styled page with the name filled
     in.
+- **2026-08-28** - added Bootstrap and a movie search box on the home
+  page:
+  - Bootstrap is pulled in as a plain CDN `<link>` in `base.html`'s
+    `<head>` (no build step, no local install - simplest option for a
+    small learning-lab site). Placed *before* our own `<style>` block
+    so the cascade still lets our custom rules win on overlap.
+  - `home.html` gained a `<form method="GET">` with one `name="searchTerm"`
+    text input. Used `GET` (not `POST`) since a search is read-only and
+    this way the query shows up as `?searchTerm=...` in the URL - makes
+    the result bookmarkable/shareable, and is the conventional choice
+    for HTML search forms.
+  - `movie/views.py`'s `home()` reads it back with
+    `request.GET.get("searchTerm", "")` and adds it to the render
+    context. Submitting a term re-renders the home page with "You
+    searched for: `<term>`" - no actual movie lookup wired up yet, this
+    was just about getting the round trip (form -> view -> template)
+    working.
+  - Verified with `manage.py runserver` + curl: `/` shows the empty
+    form, `/?searchTerm=Inception` shows the search-result line with
+    "Inception" filled in.
