@@ -363,3 +363,23 @@ python django/moviereviews/manage.py runserver
     authenticated admin session (same login flow as the `Movie` admin
     check earlier), `/admin/news/news/` renders with an "Add news"
     button and lists the seeded stories.
+- **2026-08-28** - swapped `base.html`'s hand-rolled `<nav>` (a plain
+  `<a>` list + custom CSS) for Bootstrap's actual **navbar component**:
+  `<nav class="navbar navbar-expand-lg navbar-dark bg-dark">` with a
+  `navbar-brand`, a `navbar-toggler` button, and the Home/About/News
+  links inside `<ul class="navbar-nav">`. `navbar-expand-lg` is what
+  makes this worth doing over the old version - the links collapse
+  behind the toggler button below the `lg` breakpoint instead of
+  wrapping/overflowing on narrow screens.
+  - The toggler needs actual JavaScript to open/close, not just
+    Bootstrap's CSS - added
+    `bootstrap.bundle.min.js` (the build that includes Popper) via CDN
+    at the end of `<body>`, the site's first bit of JS. `defer`/async
+    wasn't needed since it's already the last thing in the body.
+  - Deleted the old `nav`/`nav a`/`nav a:hover` rules from `base.html`'s
+    `<style>` block - Bootstrap's own navbar classes replace all of
+    that styling now.
+  - Verified with `manage.py runserver` + curl: the `navbar-brand`
+    markup and the JS bundle `<script>` tag both appear on `/`,
+    `/about/`, and `/news/` (all three extend the same `base.html`, so
+    one change reaches every page).

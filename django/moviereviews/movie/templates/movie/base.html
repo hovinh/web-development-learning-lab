@@ -22,19 +22,6 @@
             background: #f4f4f8;
             color: #222;
         }
-        nav {
-            background: #20232a;
-            padding: 1rem 2rem;
-        }
-        nav a {
-            color: #fff;
-            text-decoration: none;
-            margin-right: 1.5rem;
-            font-weight: 600;
-        }
-        nav a:hover {
-            color: #61dafb;
-        }
         main {
             /* Widened from an earlier 640px once home.html started
                laying out a grid of movie cards - about.html/signup.html
@@ -53,13 +40,48 @@
     </style>
 </head>
 <body>
-    <nav>
-        <a href="/">Home</a>
-        <a href="/about/">About</a>
-        <a href="/news/">News</a>
+    {# Bootstrap's own navbar component (replaces the earlier hand-      #}
+    {# rolled <nav>/<a> + custom CSS) - navbar-expand-lg keeps the links #}
+    {# inline on wide screens and collapses them behind the toggler      #}
+    {# button below that breakpoint, which the plain CSS version never   #}
+    {# had. The toggler needs Bootstrap's JS (loaded at the bottom of    #}
+    {# <body>, not just its CSS) to actually open/close on click.        #}
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">Movie Reviews</a>
+            <button
+                class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarNav"
+                aria-controls="navbarNav"
+                aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/about/">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/news/">News</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
     </nav>
     <main>
         {% block content %}{% endblock %}
     </main>
+
+    {# Bundle build includes Popper, needed for the navbar toggler       #}
+    {# (and later, if used, dropdowns/tooltips). Placed at the end of    #}
+    {# <body> so it doesn't block the page's HTML from rendering while   #}
+    {# it downloads.                                                     #}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
