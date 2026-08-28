@@ -72,6 +72,15 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'moviereviews.wsgi.application'
 
+# Where @login_required (used on movie/views.py's review CRUD views)
+# sends an anonymous visitor, with a ?next=<original path> query string
+# attached so accounts/views.py's loginuser() can send them back after
+# logging in. 'login' is accounts/urls.py's name for '/accounts/login/'
+# - which happens to already be Django's own *default* LOGIN_URL, but
+# it's set explicitly here so that stays true even if the accounts
+# app's routes ever move.
+LOGIN_URL = 'login'
+
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases

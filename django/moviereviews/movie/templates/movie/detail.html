@@ -22,4 +22,52 @@
             <a href="/" class="btn btn-link">Back to Home</a>
         </div>
     </div>
+
+    <hr>
+
+    <div class="text-start">
+        <h2>Reviews</h2>
+
+        {# user_review (from movie/views.py's detail()) is None unless   #}
+        {# the logged-in visitor already has a review on this movie -   #}
+        {# Review.Meta.unique_together (models.py) guarantees at most   #}
+        {# one, so "Write a Review" only makes sense when this is None. #}
+        {% if not user_review %}
+            {# Same href either way - @login_required on add_review     #}
+            {# (movie/views.py) already redirects an anonymous visitor  #}
+            {# to the login page with ?next= set to this URL, so they   #}
+            {# land right back here after logging in. Only the label    #}
+            {# changes, to set expectations before they click.          #}
+            <a href="{% url 'add-review' movie.id %}" class="btn btn-primary btn-sm mb-3">
+                {% if user.is_authenticated %}Write a Review{% else %}Log in to write a review{% endif %}
+            </a>
+        {% endif %}
+
+        {% for review in reviews %}
+            <div class="mb-3 pb-3 border-bottom">
+                <p class="mb-1">
+                    <strong>{{ review.user.username }}</strong>
+                    <span class="text-muted small">- {{ review.created_at|date:"N j, Y" }}</span>
+                </p>
+                <p class="mb-1">{{ review.text }}</p>
+                {# review.user is compared to the logged-in `user` -     #}
+                {# only the review's own author sees Edit/Delete for it, #}
+                {# matching the ownership check movie/views.py's         #}
+                {# edit_review()/delete_review() enforce server-side     #}
+                {# (this is just UI convenience, not the actual          #}
+                {# authorization - a user typing another review's edit   #}
+                {# URL directly still gets rejected with a 403 there).   #}
+                {% if review.user == user %}
+                    <a href="{% url 'edit-review' review.id %}" class="btn btn-outline-secondary btn-sm">
+                        Edit
+                    </a>
+                    <a href="{% url 'delete-review' review.id %}" class="btn btn-outline-danger btn-sm">
+                        Delete
+                    </a>
+                {% endif %}
+            </div>
+        {% empty %}
+            <p>No reviews yet - be the first to write one.</p>
+        {% endfor %}
+    </div>
 {% endblock %}

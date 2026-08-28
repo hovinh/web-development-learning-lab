@@ -1,5 +1,6 @@
 from django.contrib.auth import login, logout
 from django.shortcuts import redirect, render
+from django.utils.http import url_has_allowed_host_and_scheme
 from django.views.decorators.http import require_POST
 
 from .forms import LoginForm, SignUpForm
@@ -35,6 +36,25 @@ def loginuser(request):
     """Login page ('login/' in accounts/urls.py, reachable at
     '/accounts/login/' - see moviereviews/urls.py).
     """
+    # ?next=<path> is how @login_required (see movie/views.py's review
+    # views) says "come back here once you're logged in" - settings.py's
+    # LOGIN_URL is what makes it redirect here in the first place with
+    # that query string attached. GET reads it off the query string
+    # (first visit); POST reads it back off the hidden field
+    # accounts/templates/accounts/login.html renders, since a form
+    # submission doesn't carry the original URL's query string.
+    next_url = request.POST.get("next") or request.GET.get("next") or "/"
+    # An unvalidated ?next= is an open-redirect risk (a crafted login
+    # link could send a user somewhere malicious right after they
+    # authenticate) - url_has_allowed_host_and_scheme is the same check
+    # Django's own built-in LoginView applies to its next parameter.
+    # Falls back to "/" for anything that doesn't pass, rather than
+    # rejecting the login itself.
+    if not url_has_allowed_host_and_scheme(
+        next_url, allowed_hosts={request.get_host()}, require_https=request.is_secure()
+    ):
+        next_url = "/"
+
     if request.method == "POST":
         # AuthenticationForm takes the request itself (not just the
         # POST data) so it can rate-limit/log failed attempts per
@@ -42,14 +62,14 @@ def loginuser(request):
         form = LoginForm(request, data=request.POST)
         if form.is_valid():
             login(request, form.get_user())
-            return redirect("/")
+            return redirect(next_url)
         # Invalid credentials: form.non_field_errors() now has the
         # generic "Please enter a correct username and password" message
         # - falls through to re-render with that shown.
     else:
         form = LoginForm()
 
-    return render(request, "accounts/login.html", {"form": form})
+    return render(request, "accounts/login.html", {"form": form, "next": next_url})
 
 
 @require_POST

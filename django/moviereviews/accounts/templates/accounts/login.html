@@ -20,6 +20,12 @@
 
         <form method="POST">
             {% csrf_token %}
+            {# Carries ?next=<path> (see accounts/views.py's             #}
+            {# loginuser()) through the POST - a form submission doesn't #}
+            {# keep the page's own query string, so without this,        #}
+            {# @login_required's "come back here after logging in"       #}
+            {# would be lost on submit.                                  #}
+            <input type="hidden" name="next" value="{{ next }}">
             {% for field in form %}
                 <div class="mb-3">
                     <label for="{{ field.id_for_label }}" class="form-label">

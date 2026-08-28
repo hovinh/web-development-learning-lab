@@ -1,0 +1,37 @@
+{% extends "movie/base.html" %}
+
+{# `mode` (from movie/views.py's add_review()/edit_review()) is just    #}
+{# "add" or "edit" - this one template covers both since the form      #}
+{# itself (ReviewForm) and its markup are identical either way, only    #}
+{# the wording differs.                                                #}
+{% block title %}
+    {% if mode == "edit" %}Edit{% else %}Write a{% endif %} Review - {{ movie.title }}
+{% endblock %}
+
+{% block content %}
+    <div class="mx-auto text-start" style="max-width: 500px;">
+        <h1 class="text-center">
+            {% if mode == "edit" %}Edit Your Review{% else %}Write a Review{% endif %}
+        </h1>
+        <p class="text-center text-muted">{{ movie.title }}</p>
+
+        <form method="POST">
+            {% csrf_token %}
+            {% for field in form %}
+                <div class="mb-3">
+                    {{ field }}
+                    {% for error in field.errors %}
+                        <div class="text-danger small">{{ error }}</div>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+            <button type="submit" class="btn btn-primary w-100">
+                {% if mode == "edit" %}Save Changes{% else %}Post Review{% endif %}
+            </button>
+        </form>
+
+        <p class="text-center mt-3">
+            <a href="{% url 'movie-detail' movie.id %}">Back to {{ movie.title }}</a>
+        </p>
+    </div>
+{% endblock %}
