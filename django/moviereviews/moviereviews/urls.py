@@ -17,7 +17,7 @@ Including another URLconf
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import path
+from django.urls import include, path
 
 from movie import views as movieViews
 
@@ -29,6 +29,11 @@ urlpatterns = [
     # {% url 'signup' %} instead of hard-coding the path - see the
     # mailing-list form's `action` in movie/templates/movie/home.html.
     path('signup/', movieViews.signup, name='signup'),
+    # include() hands everything under 'news/' off to news/urls.py's
+    # own urlpatterns, instead of listing news's routes here directly
+    # (the way movie's are above) - keeps each app's routing table in
+    # that app's own folder as the project grows.
+    path('news/', include('news.urls')),
 ]
 
 # Only wired up when DEBUG=True (local dev) - see MEDIA_URL/MEDIA_ROOT

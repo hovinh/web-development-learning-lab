@@ -1,0 +1,26 @@
+{# Reuses the movie app's shared shell rather than duplicating the     #}
+{# nav/CSS in a news-app copy - {% extends %} isn't limited to         #}
+{# templates within the same app, "movie/base.html" just has to be     #}
+{# somewhere APP_DIRS can find it (see movie/templates/movie/base.html). #}
+{% extends "movie/base.html" %}
+
+{% block title %}News - Movie Reviews{% endblock %}
+
+{% block content %}
+    <h1>News</h1>
+
+    {# news_list is already ordered most-recent-first by news/views.py's #}
+    {# index() (order_by('-date')) - this template just renders that     #}
+    {# order, it doesn't re-sort anything itself.                        #}
+    <div class="text-start">
+        {% for story in news_list %}
+            <article class="mb-4 pb-3 border-bottom">
+                <h3>{{ story.headline }}</h3>
+                <p class="text-muted mb-1">{{ story.date }}</p>
+                <p>{{ story.body }}</p>
+            </article>
+        {% empty %}
+            <p>No news yet.</p>
+        {% endfor %}
+    </div>
+{% endblock %}
