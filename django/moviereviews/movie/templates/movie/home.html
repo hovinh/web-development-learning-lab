@@ -1,0 +1,11 @@
+{% extends "movie/base.html" %}
+
+{% block title %}Home - Movie Reviews{% endblock %}
+
+{% block content %}
+    <h1>Welcome to Home Page</h1>
+    <!-- {{ name }} comes from the context dict passed to render() in
+         movie/views.py's home() - this is how Python data reaches a
+         Django template. -->
+    <p>Hi {{ name }}, thanks for stopping by!</p>
+{% endblock %}

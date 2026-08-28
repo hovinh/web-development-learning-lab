@@ -102,3 +102,34 @@ python django/moviereviews/manage.py runserver
   `path('', ...)` matches the site root (`/`); `path('about/', ...)`
   matches `/about/`. Visiting either now returns the corresponding
   plain-text welcome message.
+- **2026-08-28** - swapped the plain-text `HttpResponse`s for real
+  templates, and passed data into them:
+  - Templates live under `movie/templates/movie/` - the extra nested
+    `movie/` (app name repeated) is Django's "app-namespaced" template
+    convention: with `APP_DIRS: True` (the `startproject` default, see
+    `moviereviews/settings.py`), every installed app's `templates/`
+    folder is searched as one flat pool, so two apps' `home.html` would
+    collide without the extra per-app subfolder to disambiguate.
+  - `base.html` is a shared shell (nav bar + CSS) with a `{% block
+    content %}`; `home.html`/`about.html` do `{% extends "movie/base.html"
+    %}` and only fill in that block - avoids repeating the `<head>`/nav
+    markup on every page.
+  - **Gotcha hit while writing `base.html`**: an explanatory comment
+    used HTML's `<!-- -->` syntax but happened to spell out
+    `{% block content %}` as literal text inside it. Django's template
+    lexer scans for `{% %}`/`{{ }}` tags everywhere in the file,
+    including inside HTML comments - it doesn't know HTML comment
+    syntax at all - so that counted as a second `content` block and
+    Django raised `TemplateSyntaxError: 'block' tag with name 'content'
+    appears more than once`. Fixed by using Django's own comment syntax
+    (`{# ... #}`) for anything that needs to mention a tag name, since
+    HTML comments aren't safe for that here.
+  - `movie/views.py`'s `home`/`about` now call
+    `render(request, "movie/home.html", {"name": "Xuan Vinh"})` (and
+    the `about.html` equivalent) instead of returning `HttpResponse`
+    directly. The dict is the template's *context* - each key becomes a
+    `{{ variable }}` the template can use, which is how the page prints
+    "Hi Xuan Vinh, thanks for stopping by!".
+  - Verified by running `manage.py runserver` locally and curling `/`
+    and `/about/` - both render the styled page with the name filled
+    in.

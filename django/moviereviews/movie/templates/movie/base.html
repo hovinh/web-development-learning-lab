@@ -1,0 +1,54 @@
+{# Shared page shell for the movie app: nav bar + a little CSS, so    #}
+{# home.html/about.html only need to fill in the "content" block.    #}
+{# Comment in Django's own curly-brace-hash style here, not an HTML   #}
+{# comment - the template lexer parses template tags even inside an  #}
+{# HTML comment, so spelling out a tag name there breaks parsing.    #}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Movie Reviews{% endblock %}</title>
+    <style>
+        body {
+            font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+            margin: 0;
+            background: #f4f4f8;
+            color: #222;
+        }
+        nav {
+            background: #20232a;
+            padding: 1rem 2rem;
+        }
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            margin-right: 1.5rem;
+            font-weight: 600;
+        }
+        nav a:hover {
+            color: #61dafb;
+        }
+        main {
+            max-width: 640px;
+            margin: 3rem auto;
+            padding: 2rem;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            text-align: center;
+        }
+        h1 {
+            color: #20232a;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="/">Home</a>
+        <a href="/about/">About</a>
+    </nav>
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>
