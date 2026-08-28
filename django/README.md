@@ -153,3 +153,25 @@ python django/moviereviews/manage.py runserver
   - Verified with `manage.py runserver` + curl: `/` shows the empty
     form, `/?searchTerm=Inception` shows the search-result line with
     "Inception" filled in.
+- **2026-08-28** - added a "Join our mailing list" form below the
+  search form, submitting to its own confirmation page:
+  - New route in `moviereviews/urls.py`:
+    `path('signup/', movieViews.signup, name='signup')`. Unlike the
+    existing `''`/`'about/'` routes, this one has `name='signup'` - a
+    named URL can be referenced from a template with `{% url 'signup' %}`
+    instead of hard-coding `"/signup/"`, so the link keeps working even
+    if the path itself ever changes.
+  - `home.html`'s mailing-list `<form method="GET" action="{% url
+    'signup' %}">` has one `type="email" name="email"` input (browsers
+    do basic format validation on `type="email"` for free) - same GET
+    pattern as the search form, but this one needs an explicit `action`
+    since submitting should navigate to `/signup/`, not reload home.
+  - `movie/views.py`'s new `signup()` reads `request.GET.get("email",
+    "")` and renders it into a new `movie/templates/movie/signup.html`,
+    which confirms the address and links back to home (`<a
+    href="/">Back to Home</a>`).
+  - Verified with `manage.py runserver` + curl:
+    `/signup/?email=xuanvinh@example.com` shows the confirmation with
+    the address filled in; `/signup/` with no query string shows the
+    same page with an empty `<strong>` (expected - no email submitted
+    yet).

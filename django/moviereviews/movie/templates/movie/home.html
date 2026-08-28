@@ -28,4 +28,23 @@
         {# empty/missing searchTerm means the page was loaded fresh.    #}
         <p>You searched for: <strong>{{ searchTerm }}</strong></p>
     {% endif %}
+
+    <hr>
+
+    <h2>Join our mailing list</h2>
+    {# Same shape as the search form above (GET, no action needed for   #}
+    {# same-page forms) but this one *does* need an action, since       #}
+    {# submitting should navigate to the signup confirmation page       #}
+    {# rather than reloading home. {% url 'signup' %} resolves to       #}
+    {# "/signup/" via the name='signup' path in moviereviews/urls.py -  #}
+    {# if that path ever moves, this doesn't need to change.            #}
+    <form method="GET" action="{% url 'signup' %}" class="d-flex justify-content-center my-3">
+        <input
+            type="email"
+            name="email"
+            class="form-control w-auto"
+            placeholder="you@example.com"
+            required>
+        <button type="submit" class="btn btn-success ms-2">Sign Up</button>
+    </form>
 {% endblock %}

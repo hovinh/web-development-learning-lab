@@ -23,4 +23,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', movieViews.home),
     path('about/', movieViews.about),
+    # name='signup' lets templates link/submit to this URL with
+    # {% url 'signup' %} instead of hard-coding the path - see the
+    # mailing-list form's `action` in movie/templates/movie/home.html.
+    path('signup/', movieViews.signup, name='signup'),
 ]

@@ -1,0 +1,12 @@
+{% extends "movie/base.html" %}
+
+{% block title %}Signed Up - Movie Reviews{% endblock %}
+
+{% block content %}
+    <h1>Thanks for signing up!</h1>
+    {# {{ email }} comes from movie/views.py's signup(), which read it #}
+    {# off the mailing-list form's ?email=... query string.            #}
+    <p>We'll send movie updates to <strong>{{ email }}</strong>.</p>
+
+    <a href="/" class="btn btn-link">Back to Home</a>
+{% endblock %}

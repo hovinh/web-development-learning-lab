@@ -22,3 +22,13 @@ def about(request):
     """The site's about page ('about/' in moviereviews/urls.py)."""
     context = {"name": "Xuan Vinh"}
     return render(request, "movie/about.html", context)
+
+
+def signup(request):
+    """Mailing-list signup confirmation ('signup/' in moviereviews/urls.py).
+
+    Reached by submitting the mailing-list form on the home page.
+    """
+    email = request.GET.get("email", "")
+    context = {"email": email}
+    return render(request, "movie/signup.html", context)
