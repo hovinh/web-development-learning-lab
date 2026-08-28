@@ -84,3 +84,21 @@ python django/moviereviews/manage.py runserver
   but the explicit form is what `startapp` itself scaffolds and is
   needed if the app ever grows custom `AppConfig` behavior (e.g. a
   `ready()` hook).
+- **2026-08-28** - added the first two views, in `movie/views.py`:
+  `home` and `about`, each just a function taking `request` and
+  returning `HttpResponse` with a fixed string. Wired them up in the
+  *project's* `moviereviews/urls.py` (not an app-level `urls.py` yet -
+  the app is small enough that routing straight from the project is
+  still readable):
+  ```python
+  from movie import views as movieViews
+
+  urlpatterns = [
+      path('admin/', admin.site.urls),
+      path('', movieViews.home),
+      path('about/', movieViews.about),
+  ]
+  ```
+  `path('', ...)` matches the site root (`/`); `path('about/', ...)`
+  matches `/about/`. Visiting either now returns the corresponding
+  plain-text welcome message.
