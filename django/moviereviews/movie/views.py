@@ -1,5 +1,7 @@
 from django.shortcuts import render
 
+from .models import Movie
+
 # Create your views here.
 
 
@@ -11,10 +13,20 @@ def home(request):
     # doesn't blow up with a KeyError.
     search_term = request.GET.get("searchTerm", "")
 
+    # `icontains` is a case-insensitive substring match (Django's ORM
+    # turns this into SQL's `LIKE '%term%'` under the hood) - "batman"
+    # should still find "The Dark Knight"'s title only if "batman"
+    # literally appears in it, so this is a title search, not a fuzzy
+    # one. An empty search_term (fresh page load) shows every movie.
+    if search_term:
+        movies = Movie.objects.filter(title__icontains=search_term)
+    else:
+        movies = Movie.objects.all()
+
     # The dict passed as render()'s third argument is the template's
     # *context* - each key becomes a variable the template can use with
     # {{ name }}. See movie/templates/movie/home.html.
-    context = {"name": "Xuan Vinh", "searchTerm": search_term}
+    context = {"name": "Xuan Vinh", "searchTerm": search_term, "movies": movies}
     return render(request, "movie/home.html", context)
 
 

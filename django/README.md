@@ -243,3 +243,62 @@ python django/moviereviews/manage.py runserver
     `admin`/`1234`, got a `302` (successful login redirect), then
     fetched `/admin/movie/movie/` and confirmed it renders the "Select
     movie to change" list page with an "Add movie" button.
+- **2026-08-28** - seeded the database with 10 sample movies via a new
+  **management command**, `movie/management/commands/seed_movies.py`,
+  run with:
+  ```bash
+  python manage.py seed_movies
+  ```
+  - A management command (any module under
+    `<app>/management/commands/`) is the idiomatic Django way to script
+    an admin/data task - it reuses `manage.py`'s settings/DB setup,
+    unlike a bare standalone script. Chose this over a one-off shell
+    command so the seed data is a real, re-runnable file instead of
+    something that only existed in terminal history.
+  - `Movie.image` is required (no `blank=True`), and there's no real
+    poster artwork to seed with - so the command **generates a
+    placeholder poster per movie with Pillow**: a solid colour (derived
+    by hashing the title, so it's stable across runs, not random) with
+    the title drawn on it, saved as a JPEG into
+    `MEDIA_ROOT/movie_images/` via `movie.image.save(name, content,
+    save=False)`.
+  - `url` is filled with a made-up `https://example.com/movies/<slug>`
+    placeholder rather than a real external link - this command doesn't
+    know a verified real URL for each film, and a wrong/guessed one
+    would be worse than an obviously-fake placeholder.
+  - The 10 titles/one-line descriptions are just well-known movies with
+    original (not copied) descriptions, picked for variety, not
+    curriculum-specific.
+  - Uses `Movie.objects.get_or_create(title=...)` so re-running the
+    command is safe - already-seeded titles are skipped rather than
+    duplicated. Verified this directly: ran it twice, second run
+    reported "0 movie(s) created, 10 already existed."
+  - Verified the result three ways: `Movie.objects.count()` in the
+    shell (10), the generated `.jpg` files existing under
+    `media/movie_images/`, and visually inspecting one poster to
+    confirm the title text actually renders legibly (bumped
+    `ImageFont.load_default()` to `size=28` after the first attempt
+    came out too small to read at 300x450).
+- **2026-08-28** - home page now renders every `Movie` as a Bootstrap
+  card, and the search box filters them by title:
+  - `movie/views.py`'s `home()` queries `Movie.objects.all()` by
+    default, or `Movie.objects.filter(title__icontains=search_term)`
+    when a search term was submitted - `icontains` is a case-insensitive
+    substring match (Django's ORM compiles it to SQL `LIKE`), so it's a
+    literal title search, not fuzzy/fuzzy-ranked matching. Both are
+    passed to the template as `movies`.
+  - `home.html` loops `{% for movie in movies %}` inside a Bootstrap
+    `row row-cols-*` grid, one `card` per movie showing
+    `movie.image.url` (an actual `<img>`, resolved from `MEDIA_URL` +
+    the field's stored path), `movie.title`, `movie.description`, and a
+    "More Info" link to `movie.url`. `{% empty %}` covers both an empty
+    database and a search with zero matches with one "No movies found."
+    message - no separate Python-side check needed for that.
+  - `base.html`'s shared `main` max-width went from `640px` to
+    `1100px` to give the card grid room - the earlier width was sized
+    for the single-column welcome text, not a multi-column grid;
+    about.html/signup.html still read fine centered in the extra space.
+  - Verified with `manage.py runserver` + curl: `/` lists all 10 movie
+    titles as cards, `/?searchTerm=Dark` narrows to just "The Dark
+    Knight", `/?searchTerm=zzzz` shows "No movies found", and a poster
+    image URL (`/media/movie_images/inception.jpg`) returns `200`.

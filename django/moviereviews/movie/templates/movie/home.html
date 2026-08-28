@@ -29,6 +29,42 @@
         <p>You searched for: <strong>{{ searchTerm }}</strong></p>
     {% endif %}
 
+    {# text-start overrides base.html's centered `main` text-align -    #}
+    {# card content (title/description) reads better left-aligned.     #}
+    {# row-cols-* controls how many cards fit per row at each Bootstrap #}
+    {# breakpoint; g-4 adds gutters between cards.                     #}
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4 text-start">
+        {% for movie in movies %}
+            <div class="col">
+                <div class="card h-100">
+                    {# movie.image.url is built from MEDIA_URL +        #}
+                    {# the field's upload_to path (see models.py) -     #}
+                    {# not a raw file path, so it works as a <img src>. #}
+                    <img
+                        src="{{ movie.image.url }}"
+                        class="card-img-top"
+                        alt="{{ movie.title }} poster">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">{{ movie.title }}</h5>
+                        <p class="card-text">{{ movie.description }}</p>
+                        <a
+                            href="{{ movie.url }}"
+                            class="btn btn-outline-primary btn-sm mt-auto"
+                            target="_blank"
+                            rel="noopener">
+                            More Info
+                        </a>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            {# Covers both an empty database and a search with zero      #}
+            {# matches - {% empty %} only renders when the for loop      #}
+            {# above iterated over nothing.                              #}
+            <p>No movies found.</p>
+        {% endfor %}
+    </div>
+
     <hr>
 
     <h2>Join our mailing list</h2>
