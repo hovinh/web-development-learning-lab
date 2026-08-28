@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
 
 from .models import Movie
 
@@ -24,9 +24,14 @@ def home(request):
         movies = Movie.objects.all()
 
     # The dict passed as render()'s third argument is the template's
-    # *context* - each key becomes a variable the template can use with
-    # {{ name }}. See movie/templates/movie/home.html.
-    context = {"name": "Xuan Vinh", "searchTerm": search_term, "movies": movies}
+    # *context* - each key becomes a variable the template can use.
+    # See movie/templates/movie/home.html. No "name" key here anymore -
+    # the greeting there now reads the logged-in user directly off
+    # `request.user` (available in every template for free via
+    # settings.py's auth context processor), instead of a hardcoded
+    # name that stayed "Xuan Vinh" regardless of who was actually
+    # signed in.
+    context = {"searchTerm": search_term, "movies": movies}
     return render(request, "movie/home.html", context)
 
 
@@ -44,3 +49,17 @@ def signup(request):
     email = request.GET.get("email", "")
     context = {"email": email}
     return render(request, "movie/signup.html", context)
+
+
+def detail(request, movie_id):
+    """One movie's detail page ('<int:movie_id>/' in movie/urls.py,
+    reachable at '/movie/<id>/' - see moviereviews/urls.py).
+
+    Reached by clicking a movie card's "Detail" button on the home page.
+    """
+    # get_object_or_404 is a shortcut for the try/except Movie.DoesNotExist
+    # -> raise Http404 pattern - so visiting e.g. /movie/9999/ (an id
+    # that doesn't exist) renders Django's normal 404 page instead of
+    # the view crashing with an unhandled exception.
+    movie = get_object_or_404(Movie, pk=movie_id)
+    return render(request, "movie/detail.html", {"movie": movie})

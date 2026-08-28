@@ -1,0 +1,42 @@
+{% extends "movie/base.html" %}
+
+{% block title %}Sign Up - Movie Reviews{% endblock %}
+
+{% block content %}
+    {# max-width + mx-auto keeps the form a readable card-like width    #}
+    {# instead of stretching across base.html's now-1100px-wide main.   #}
+    <div class="mx-auto text-start" style="max-width: 400px;">
+        <h1 class="text-center">Create an Account</h1>
+
+        <form method="POST">
+            {% csrf_token %}
+            {# Looping fields (instead of {{ form.as_p }}) is what lets  #}
+            {# each one get wrapped in Bootstrap's mb-3/form-label       #}
+            {# markup - {{ field }} alone still renders the actual      #}
+            {# <input>, already carrying the form-control class that    #}
+            {# SignUpForm's __init__ (accounts/forms.py) added to it.   #}
+            {% for field in form %}
+                <div class="mb-3">
+                    <label for="{{ field.id_for_label }}" class="form-label">
+                        {{ field.label }}
+                    </label>
+                    {{ field }}
+                    {% if field.help_text %}
+                        <div class="form-text">{{ field.help_text }}</div>
+                    {% endif %}
+                    {% for error in field.errors %}
+                        {# e.g. "A user with that username already      #}
+                        {# exists." - see SignUpForm's docstring for     #}
+                        {# where that error actually comes from.        #}
+                        <div class="text-danger small">{{ error }}</div>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+            <button type="submit" class="btn btn-primary w-100">Sign Up</button>
+        </form>
+
+        <p class="text-center mt-3">
+            Already have an account? <a href="{% url 'login' %}">Log in</a>
+        </p>
+    </div>
+{% endblock %}

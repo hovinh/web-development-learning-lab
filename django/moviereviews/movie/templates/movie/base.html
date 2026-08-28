@@ -71,6 +71,37 @@
                         <a class="nav-link" href="/news/">News</a>
                     </li>
                 </ul>
+                {# request.user is available in every template without   #}
+                {# any view passing it explicitly - settings.py's        #}
+                {# TEMPLATES/OPTIONS/context_processors already includes #}
+                {# 'django.contrib.auth.context_processors.auth', which  #}
+                {# is what makes the plain `user` variable exist here.   #}
+                <ul class="navbar-nav ms-3">
+                    {% if user.is_authenticated %}
+                        <li class="nav-item">
+                            <span class="nav-link disabled">
+                                Hi, {{ user.username }}
+                            </span>
+                        </li>
+                        <li class="nav-item d-flex align-items-center">
+                            {# POST, not a plain link - see              #}
+                            {# accounts/views.py's logoutuser() for why. #}
+                            <form method="POST" action="{% url 'logout' %}" class="mb-0">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-outline-light btn-sm">
+                                    Log Out
+                                </button>
+                            </form>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'login' %}">Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'signupaccount' %}">Sign Up</a>
+                        </li>
+                    {% endif %}
+                </ul>
             </div>
         </div>
     </nav>

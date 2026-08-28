@@ -1,0 +1,25 @@
+{% extends "movie/base.html" %}
+
+{% block title %}{{ movie.title }} - Movie Reviews{% endblock %}
+
+{% block content %}
+    <div class="row text-start">
+        <div class="col-md-4 mb-3">
+            <img
+                src="{{ movie.image.url }}"
+                class="img-fluid rounded"
+                alt="{{ movie.title }} poster">
+        </div>
+        <div class="col-md-8">
+            <h1>{{ movie.title }}</h1>
+            <p>{{ movie.description }}</p>
+            {# No "More Info" link to movie.url here - it's a          #}
+            {# placeholder from seed_movies.py (https://example.com/   #}
+            {# movies/<slug-of-title>), not a real per-movie link, so   #}
+            {# it never pointed anywhere applicable. Dropped from the   #}
+            {# home page cards for the same reason - see django's       #}
+            {# README.md log.                                           #}
+            <a href="/" class="btn btn-link">Back to Home</a>
+        </div>
+    </div>
+{% endblock %}

@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     # Local apps
     'movie.apps.MovieConfig',  # movie listing/review app - see movie/apps.py
     'news.apps.NewsConfig',  # news listing app - see news/apps.py
+    'accounts.apps.AccountsConfig',  # signup/login/logout - see accounts/apps.py
 ]
 
 MIDDLEWARE = [

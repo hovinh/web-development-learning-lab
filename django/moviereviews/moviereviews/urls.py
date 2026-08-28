@@ -34,6 +34,16 @@ urlpatterns = [
     # (the way movie's are above) - keeps each app's routing table in
     # that app's own folder as the project grows.
     path('news/', include('news.urls')),
+    # movie's detail page uses the same include() pattern - see
+    # movie/urls.py. home/about/signup above predate this file and stay
+    # where they are rather than being moved, just to avoid churn.
+    path('movie/', include('movie.urls')),
+    # accounts/urls.py's own 'signup/' route ends up at
+    # '/accounts/signup/', named 'signupaccount' - deliberately
+    # different from this file's own name='signup' above (the movie
+    # app's mailing-list form), which is an unrelated route that just
+    # happens to share the word "signup".
+    path('accounts/', include('accounts.urls')),
 ]
 
 # Only wired up when DEBUG=True (local dev) - see MEDIA_URL/MEDIA_ROOT

@@ -4,10 +4,18 @@
 
 {% block content %}
     <h1>Welcome to Home Page</h1>
-    <!-- {{ name }} comes from the context dict passed to render() in
-         movie/views.py's home() - this is how Python data reaches a
-         Django template. -->
-    <p>Hi {{ name }}, thanks for stopping by!</p>
+    {# `user` isn't passed in movie/views.py's home() context - it's    #}
+    {# already available in every template via settings.py's           #}
+    {# 'django.contrib.auth.context_processors.auth' (same source as    #}
+    {# base.html's nav greeting). Using the real logged-in user here    #}
+    {# instead of a hardcoded name is the actual fix for what this      #}
+    {# used to say ("Hi Xuan Vinh" for literally everyone, logged in    #}
+    {# or not).                                                         #}
+    {% if user.is_authenticated %}
+        <p>Hi {{ user.username }}, thanks for stopping by!</p>
+    {% else %}
+        <p>Hi there, thanks for stopping by!</p>
+    {% endif %}
 
     {# GET (not POST) so the search term shows up in the URL as         #}
     {# ?searchTerm=... - fine for a read-only search, and means the     #}
@@ -47,12 +55,21 @@
                     <div class="card-body d-flex flex-column">
                         <h5 class="card-title">{{ movie.title }}</h5>
                         <p class="card-text">{{ movie.description }}</p>
+                        {# Used to be two buttons here ("Detail" ->      #}
+                        {# the internal /movie/<id>/ page, "More Info"   #}
+                        {# -> movie.url) but they did the same job from  #}
+                        {# a visitor's perspective, and movie.url is a   #}
+                        {# placeholder built from the title (see         #}
+                        {# seed_movies.py), not a real external link -   #}
+                        {# nothing distinct for "More Info" to actually  #}
+                        {# offer here. detail.html still shows movie.url #}
+                        {# as its own link, so that data isn't lost,     #}
+                        {# just no longer duplicated as a second button  #}
+                        {# on every card.                                #}
                         <a
-                            href="{{ movie.url }}"
-                            class="btn btn-outline-primary btn-sm mt-auto"
-                            target="_blank"
-                            rel="noopener">
-                            More Info
+                            href="{% url 'movie-detail' movie.id %}"
+                            class="btn btn-primary btn-sm mt-auto">
+                            Detail
                         </a>
                     </div>
                 </div>
