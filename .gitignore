@@ -76,3 +76,7 @@ django-impatient/moviereviews/staticfiles/
 
 # pytest's own cache, generated wherever tests are run from
 .pytest_cache/
+
+# library-crud: the SQLite database - reproducible by running app.py
+# again (create_app() calls db.create_all() on startup).
+rest-apis-flask/library-crud/library.db

@@ -27,6 +27,9 @@ Books so far:
 - [`django-for-beginners/`](django-for-beginners/README.md) — *Django for Beginners* (William Vincent): Django fundamentals (URLs/Views/Models/Templates flow) via a separate small project per chapter.
   - [`pages/`](django-for-beginners/pages/) — first project (`django_project` + `pages` app): URLs/views/templates without a database.
   - [`message-board/`](django-for-beginners/message-board/README.md) — second project (`django_project` + `message_board` app): a `Post` model (just `text`) listed on the homepage, seeded via a `seed_posts` management command, editable through Django's built-in admin site.
+- [`rest-apis-flask/`](rest-apis-flask/README.md) — *Building REST APIs with Flask* (Kunal Relan):
+  - [`hello-world/`](rest-apis-flask/hello-world/README.md) — smallest possible Flask app: one route, one plain-text response.
+  - [`library-crud/`](rest-apis-flask/library-crud/README.md) — full CRUD REST API for `Author`/`Book` (one-to-many), using Flask-SQLAlchemy and Marshmallow together.
 
 Cross-cutting, not book folders:
 

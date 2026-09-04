@@ -74,3 +74,8 @@ gunicorn
 # django: the framework itself, for django-impatient/moviereviews and
 # the django-for-beginners/ per-chapter projects.
 Django
+
+# rest-apis-flask/library-crud: request validation and DB<->JSON
+# serialization for the Author/Book CRUD API - see
+# rest-apis-flask/README.md's "Persistence and serialization" section.
+marshmallow
