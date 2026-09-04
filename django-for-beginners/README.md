@@ -148,3 +148,98 @@ order:
    `{% url 'name' %}` rather than a hardcoded path.
 7. **Run and check** - `python manage.py runserver`, visit the new
    URL, confirm it renders as expected.
+
+## Sending email
+
+Reference notes only - not implemented in any stage yet, add it when
+a chapter actually needs it (e.g. signup confirmation or password
+reset emails later in the book).
+
+Django's mail API is backend-agnostic: code calls
+`django.core.mail.send_mail(subject, message, from_email, [to_email])`
+(or the more flexible `EmailMessage` class), and one setting -
+`EMAIL_BACKEND` in `settings.py` - decides where that mail actually
+goes. The view/model/form code never changes between backends, only
+the setting:
+
+- **Console backend** (`django.core.mail.backends.console.EmailBackend`)
+  - the dev default worth reaching for first: prints the email to the
+  terminal instead of sending it, so signup/password-reset flows can
+  be built and tested without a real mail provider.
+- **File-based backend**
+  (`django.core.mail.backends.filebased.EmailBackend`) - same idea,
+  writes each email to a file instead of the terminal.
+- **SMTP backend** (`django.core.mail.backends.smtp.EmailBackend`) -
+  actually sends mail, via `EMAIL_HOST`/`EMAIL_PORT`/
+  `EMAIL_HOST_USER`/`EMAIL_HOST_PASSWORD`/`EMAIL_USE_TLS`. Works with
+  Gmail SMTP (needs an app password, not the account password) or any
+  provider's SMTP endpoint.
+- **A transactional email provider** (SendGrid, Mailgun, Amazon SES,
+  Postmark, ...) - what the book reaches for once a project needs
+  production email: better deliverability than raw SMTP, a dashboard
+  for debugging bounces, and a generous free tier for learning-project
+  volume. Typically wired in via
+  [django-anymail](https://github.com/anymail/django-anymail) rather
+  than hand-rolled SMTP settings.
+
+A couple of things worth remembering when this actually gets
+implemented:
+
+- **Credentials go in environment variables, never hardcoded** - same
+  pattern this repo already uses in
+  `django-impatient/moviereviews/moviereviews/settings.py` for
+  `SECRET_KEY`/`DEBUG`/etc: read from `os.environ`, with a local-dev
+  fallback that is never a real credential.
+- **Django's built-in auth views already send email for free** -
+  `django.contrib.auth.views.PasswordResetView` sends the reset-link
+  email automatically once `EMAIL_BACKEND` (and, for SMTP, the host
+  settings) are configured; no custom email-sending code is needed for
+  that flow specifically.
+- **Tests don't need a real inbox** - Django's test runner swaps in a
+  test backend automatically, and every message sent during a test
+  lands in `django.core.mail.outbox` (a plain list) for assertions
+  like `self.assertEqual(len(mail.outbox), 1)`.
+
+## Authorization with mixins (`LoginRequiredMixin`)
+
+Reference notes only - not implemented in any stage yet, add it when
+a chapter's view actually needs to be restricted to logged-in users.
+
+Class-based views (CBVs) gate access by adding a **mixin** - a class
+that adds one piece of reusable behavior - ahead of the actual view
+class in its bases:
+
+```python
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic import ListView
+
+class PostListView(LoginRequiredMixin, ListView):
+    model = Post
+```
+
+- `LoginRequiredMixin` **must come first** in the base list - Python's
+  method resolution order (MRO) reads left to right, and the mixin
+  needs to run its check inside `dispatch()` before `ListView`'s own
+  `dispatch()` does any real work.
+- An anonymous user hitting this view is **redirected**, not shown a
+  403 - to `settings.LOGIN_URL` (defaults to `/accounts/login/`), with
+  a `?next=` query param pointing back at the page they wanted, so
+  Django's login view can send them there after a successful login.
+  Set `raise_exception = True` on the mixin instead to get a hard 403
+  (`PermissionDenied`) rather than a redirect.
+- **Function-based views use a decorator, not a mixin** - the
+  equivalent for a plain `def` view is
+  `@login_required` from `django.contrib.auth.decorators`, applied
+  above the function. Same underlying check, just decorator-shaped
+  instead of class-shaped since a bare function has no MRO to insert
+  into.
+- **Related mixins** for finer-grained checks than "just logged in":
+  `PermissionRequiredMixin` (set `permission_required = 'app.can_edit'`)
+  checks a specific Django permission; `UserPassesTestMixin` (define
+  `test_func(self)`) runs arbitrary custom logic, e.g. "is this user
+  the post's own author."
+- **This is a view-layer guard, not a template one** - hiding a link
+  with `{% if user.is_authenticated %}` only changes what's rendered;
+  it does nothing to stop someone hitting the URL directly. The mixin
+  (or decorator) is what actually blocks the request before any view
+  logic - including any database query - runs.
