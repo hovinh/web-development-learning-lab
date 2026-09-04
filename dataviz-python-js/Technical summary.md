@@ -214,4 +214,4 @@ a map, not a replacement:
 - [`data-analysis/README.md`](data-analysis/README.md)
 - [`data-serve/README.md`](data-serve/README.md)
 - [`d3-interactive-web/README.md`](d3-interactive-web/README.md)
-- [`docs/python-implementation.md`](docs/python-implementation.md) / [`docs/javascript.md`](docs/javascript.md) — language-level conventions
+- [`docs/python-implementation.md`](../docs/python-implementation.md) / [`docs/javascript.md`](../docs/javascript.md) — language-level conventions

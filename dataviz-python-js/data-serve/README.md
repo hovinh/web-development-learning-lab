@@ -263,8 +263,8 @@ The server defaults to `http://localhost:5000` (Flask's default); set
 `app.py` also defines `app` at module level (not just inside
 `if __name__ == "__main__":`), so a production WSGI server can import
 it as `app:app` instead of using Flask's own single-threaded dev
-server. That's what [`../deploy/render.yaml`](../deploy/render.yaml)
+server. That's what [`../../deploy/render.yaml`](../../deploy/render.yaml)
 does, running `gunicorn app:app` on Render's free tier - see
-[`../deploy/README.md`](../deploy/README.md) for the full setup, why
+[`../../deploy/README.md`](../../deploy/README.md) for the full setup, why
 the `sqlite` backend is the one deployed, and free-tier tradeoffs like
 cold starts.

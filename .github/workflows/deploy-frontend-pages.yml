@@ -1,9 +1,9 @@
-# Publishes d3-interactive-web/ to GitHub Pages on every push to main
-# that touches it. This is the automation half of the frontend
-# deployment described in ../../deploy/README.md - the other half
-# (enabling Pages in the first place) is a one-time repo setting that
-# can't be done from inside a workflow, see that README's "First-time
-# setup".
+# Publishes dataviz-python-js/d3-interactive-web/ to GitHub Pages on
+# every push to main that touches it. This is the automation half of
+# the frontend deployment described in ../../deploy/README.md - the
+# other half (enabling Pages in the first place) is a one-time repo
+# setting that can't be done from inside a workflow, see that README's
+# "First-time setup".
 #
 # GitHub requires workflow files to live under .github/workflows/ - this
 # one can't move into deploy/ alongside render.yaml, so it's referenced
@@ -14,7 +14,7 @@ on:
   push:
     branches: [main]
     paths:
-      - "d3-interactive-web/**"
+      - "dataviz-python-js/d3-interactive-web/**"
       - ".github/workflows/deploy-frontend-pages.yml"
   # Lets you trigger a redeploy by hand from the Actions tab, e.g. after
   # updating DEPLOYED_API_BASE in js/api.js without touching anything
@@ -51,7 +51,7 @@ jobs:
       - name: Upload d3-interactive-web as the Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: d3-interactive-web
+          path: dataviz-python-js/d3-interactive-web
 
       - name: Deploy to GitHub Pages
         id: deployment

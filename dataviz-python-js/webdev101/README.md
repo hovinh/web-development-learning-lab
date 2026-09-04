@@ -52,7 +52,7 @@ file server.
 
 ## Why jQuery here
 
-Per [docs/javascript.md](../docs/javascript.md), stages that touch the
+Per [docs/javascript.md](../../docs/javascript.md), stages that touch the
 DOM lean on jQuery for selection and event binding rather than raw
 `document.querySelector`/`addEventListener`. It's loaded from a CDN
 `<script>` tag in `index.html` (no `package.json`/bundler) since this

@@ -14,14 +14,17 @@ services:
     plan: free
     region: oregon
     branch: main
-    rootDir: data-serve
+    rootDir: dataviz-python-js/data-serve
 
     # Same lockfile-install step as local dev (see root README.md's
     # "Python setup"), just non-interactively via pip instead of
     # piptools sync - then rebuild pokedex.db from data-process's
     # committed pokedex.json + images/ (see load_sqlite.py's own
-    # docstring for why this is safe to rerun on every deploy).
-    buildCommand: "pip install -r ../requirements.txt && python load_sqlite.py"
+    # docstring for why this is safe to rerun on every deploy). Two
+    # levels up, not one - rootDir now nests data-serve inside
+    # dataviz-python-js/, one level deeper than the repo-root
+    # requirements.txt this reaches for.
+    buildCommand: "pip install -r ../../requirements.txt && python load_sqlite.py"
 
     # gunicorn, not `python app.py` - see app.py's comment on why a
     # production WSGI server replaces Flask's own dev server here.

@@ -39,7 +39,7 @@ silently or show a blank page.
 
 This page is also deployed and publicly reachable with no local setup
 at all, at `https://hovinh.github.io/web-development-learning-lab/` -
-see [`../deploy/README.md`](../deploy/README.md). `js/api.js` picks
+see [`../../deploy/README.md`](../../deploy/README.md). `js/api.js` picks
 between the local and deployed API by checking the page's own hostname
 (`API_BASE`), so the exact same files run in both places unmodified.
 
@@ -157,7 +157,7 @@ see that stage's README for the full explanation.
 
 ## Why D3, not jQuery, for the DOM work
 
-Per [docs/javascript.md](../docs/javascript.md), stages that touch the
+Per [docs/javascript.md](../../docs/javascript.md), stages that touch the
 DOM normally reach for jQuery - but that guide also carves out an
 exception for a stage that's explicitly *about* a different DOM
 mechanism (it names `javascript-prototype` as the existing example).

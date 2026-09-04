@@ -6,23 +6,29 @@ A personal, hands-on lab for working through a web development curriculum/book, 
 
 ## Structure
 
-- One top-level folder per stage/topic (e.g. `web-scraping/`, `fastapi-backend/`, ...). Stages are self-contained; a later stage only depends on an earlier one if the book's material genuinely builds that way.
+- One top-level folder per **book** — this lab works through more than one book over time, so each gets its own folder rather than piling all their stages loose at the repo root.
+- Inside a book folder, one subfolder per stage/topic of that book's curriculum. Stages are self-contained; a later stage only depends on an earlier one if the book's material genuinely builds that way.
 - Each stage folder has its own `README.md` explaining the idea and implementation for that stage — that's the place to look for details on any specific topic.
 - Languages are primarily Python and JavaScript, chosen per stage based on what the curriculum covers at that point.
+- `deploy/`, `docs/`, and `sandpit/` are top-level too, but aren't book folders — they're cross-cutting and serve every book (deployment config, language guides, and scratch space respectively).
 
-Stages so far:
+Books so far:
 
-- [`javascript-prototype/`](javascript-prototype/README.md) — JS prototypal inheritance vs Python class-based OOP.
-- [`data-read-write/`](data-read-write/README.md) — reading a CSV dataset, reshaping it, and round-tripping it through JSON.
-- [`data-scrape/`](data-scrape/README.md) — fetching Pokemon data via a REST API, `requests-cache`, a client library, and BeautifulSoup scraping (with image download); a Scrapy spider+pipeline version of the scrape; and a bulk pipeline compiling all Gen 1-6 Pokemon into one CSV with artwork.
-- [`data-process/`](data-process/README.md) — cleaning `data-scrape`'s raw CSV into one standardized JSON dataset + uniformly-sized images, ready for a web page to consume.
-- [`data-analysis/`](data-analysis/README.md) — charting `data-process`'s dataset into saved PNGs (type/generation/ability distributions, a height-vs-weight scatter).
-- [`data-serve/`](data-serve/README.md) — serving `data-process`'s dataset as a REST API via Flask, with interchangeable file/SQLite backends and Python + JS smoke-test scripts.
-- [`d3-interactive-web/`](d3-interactive-web/README.md) — an interactive Pokedex page (D3, via CDN) that consumes `data-serve`'s REST API: filter by type/generation, click a Pokemon for its mini-biography, and four D3-drawn charts covering the same ground as `data-analysis`'s saved PNGs.
-- [`webdev101/`](webdev101/README.md) — HTML/CSS/SVG/Canvas fundamentals via a Pokedex home page demo.
-- [`django/`](django/README.md) — Django fundamentals via a `moviereviews` project; that README doubles as a running learning log.
+- [`dataviz-python-js/`](dataviz-python-js/) — *Data Visualization with Python & JavaScript* (see [dataviz-python-js/Technical summary.md](dataviz-python-js/Technical%20summary.md) for the pipeline overview):
+  - [`javascript-prototype/`](dataviz-python-js/javascript-prototype/README.md) — JS prototypal inheritance vs Python class-based OOP.
+  - [`data-read-write/`](dataviz-python-js/data-read-write/README.md) — reading a CSV dataset, reshaping it, and round-tripping it through JSON.
+  - [`data-scrape/`](dataviz-python-js/data-scrape/README.md) — fetching Pokemon data via a REST API, `requests-cache`, a client library, and BeautifulSoup scraping (with image download); a Scrapy spider+pipeline version of the scrape; and a bulk pipeline compiling all Gen 1-6 Pokemon into one CSV with artwork.
+  - [`data-process/`](dataviz-python-js/data-process/README.md) — cleaning `data-scrape`'s raw CSV into one standardized JSON dataset + uniformly-sized images, ready for a web page to consume.
+  - [`data-analysis/`](dataviz-python-js/data-analysis/README.md) — charting `data-process`'s dataset into saved PNGs (type/generation/ability distributions, a height-vs-weight scatter).
+  - [`data-serve/`](dataviz-python-js/data-serve/README.md) — serving `data-process`'s dataset as a REST API via Flask, with interchangeable file/SQLite backends and Python + JS smoke-test scripts.
+  - [`d3-interactive-web/`](dataviz-python-js/d3-interactive-web/README.md) — an interactive Pokedex page (D3, via CDN) that consumes `data-serve`'s REST API: filter by type/generation, click a Pokemon for its mini-biography, and four D3-drawn charts covering the same ground as `data-analysis`'s saved PNGs.
+  - [`webdev101/`](dataviz-python-js/webdev101/README.md) — HTML/CSS/SVG/Canvas fundamentals via a Pokedex home page demo.
+- [`django-impatient/`](django-impatient/README.md) — *Django 4 for the Impatient*: Django fundamentals via a `moviereviews` project; that README doubles as a running learning log.
+
+Cross-cutting, not book folders:
+
 - [`sandpit/`](sandpit/README.md) — scratch area for quick, throwaway experiments (not a curriculum stage).
-- [`deploy/`](deploy/README.md) — puts `data-serve`/`d3-interactive-web` (Render + GitHub Pages, auto-deploying on every push) and `django/moviereviews` ([PythonAnywhere](deploy/pythonanywhere.md), manual redeploy) on free public hosting (not a curriculum stage).
+- [`deploy/`](deploy/README.md) — puts `dataviz-python-js/data-serve`+`d3-interactive-web` (Render + GitHub Pages, auto-deploying on every push) and `django-impatient/moviereviews` ([PythonAnywhere](deploy/pythonanywhere.md), manual redeploy) on free public hosting.
 
 ## Python setup
 
@@ -55,7 +61,7 @@ JS stages manage their own `package.json` and dependencies locally within their 
 npm install
 
 # Serve a stage's folder (defaults to port 8080)
-npm run serve -- webdev101
+npm run serve -- dataviz-python-js/webdev101
 
 # Pass through any http-server flag after --, e.g. a different port
 npm run serve -- webdev101 -p 8081
@@ -65,7 +71,7 @@ Then open the URL `http-server` prints (e.g. http://localhost:8080). Commit the 
 
 ## Deployment
 
-`data-serve` and `d3-interactive-web` are also live on free public
+`dataviz-python-js/data-serve` and `dataviz-python-js/d3-interactive-web` are also live on free public
 hosting, kept in sync with `main` automatically:
 
 - **Live page**: https://hovinh.github.io/web-development-learning-lab/
@@ -77,7 +83,7 @@ page). The API is on Render's free tier, so it spins down after 15
 minutes idle — the first request after a quiet spell takes ~30-50s to
 wake it back up.
 
-`django/moviereviews` is separately deployed to
+`django-impatient/moviereviews` is separately deployed to
 [PythonAnywhere](https://www.pythonanywhere.com/) — see
 [deploy/pythonanywhere.md](deploy/pythonanywhere.md). Unlike the two
 above, this one has no auto-deploy on push (PythonAnywhere's free tier

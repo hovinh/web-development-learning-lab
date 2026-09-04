@@ -6,15 +6,19 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This is a personal learning lab for web development, built by the user working through a book/curriculum topic by topic. The user directs Claude to implement each stage; Claude is not just writing production code, it is producing *teaching-quality* reference code the user can revisit later to recall how something works.
 
-The repo is a fresh scaffold — as of now it contains only a `LICENSE` file. Structure, tooling, and conventions below reflect how the user wants the repo built out, not how it currently exists. Update this file as real folders and tooling are added.
+Structure, tooling, and conventions below reflect how the user wants the repo built out. Update this file as new books, stages, or tooling are added.
 
 ## Intended structure
 
-- One top-level folder per stage/topic of the curriculum (e.g. `web-scraping/`, `fastapi-backend/`, ...). Each stage is a self-contained unit — do not let later stages silently depend on earlier ones unless the book's material genuinely builds that way.
-- `deploy/` is the one top-level folder that isn't a curriculum stage — it hosts `data-serve`/`d3-interactive-web` (Render + GitHub Pages) and `django/moviereviews` (PythonAnywhere) on free public infrastructure rather than teaching a new topic. See [deploy/README.md](deploy/README.md) and [deploy/pythonanywhere.md](deploy/pythonanywhere.md).
+- One top-level folder per **book**, not per stage — this repo works through multiple books over time, and each book gets its own folder so they don't pile up loose at the repo root. Currently: [`dataviz-python-js/`](dataviz-python-js/) for *Data Visualization with Python & JavaScript*, and [`django-impatient/`](django-impatient/) for *Django 4 for the Impatient*.
+- Inside a book folder, one subfolder per stage/topic of that book's curriculum (e.g. `dataviz-python-js/data-scrape/`, ...). Each stage is a self-contained unit — do not let later stages silently depend on earlier ones unless the book's material genuinely builds that way.
+- `deploy/`, `docs/`, and `sandpit/` are top-level but are **not** book folders — they're cross-cutting and serve every book:
+  - `deploy/` hosts `dataviz-python-js/data-serve`+`d3-interactive-web` (Render + GitHub Pages) and `django-impatient/moviereviews` (PythonAnywhere) on free public infrastructure rather than teaching a new topic. See [deploy/README.md](deploy/README.md) and [deploy/pythonanywhere.md](deploy/pythonanywhere.md).
+  - `docs/` holds the language implementation guides (below), which apply to any book's Python/JS stages, not just one.
+  - `sandpit/` is scratch space for quick, throwaway experiments, independent of whichever book is current.
 - Each stage folder gets its own `README.md` explaining the idea and implementation for that stage, written so the user can come back months later and quickly recall *why* the code is shaped the way it is — not just what it does. Update a stage's README whenever its implementation changes.
 - Languages are primarily Python and JavaScript, chosen per-stage based on what the book covers at that point (e.g. a Python-based scraping stage, a Node/JS frontend stage, a FastAPI backend stage).
-- Python dependencies are managed with a single **repo-root** virtual environment (`.venv`), not one per stage — see Python setup below. JS stages that need their own `package.json`/`node_modules` still work per-stage as needed.
+- Python dependencies are managed with a single **repo-root** virtual environment (`.venv`), not one per stage or per book — see Python setup below. JS stages that need their own `package.json`/`node_modules` still work per-stage as needed.
 
 ## Python setup
 
@@ -48,9 +52,9 @@ The repo is a fresh scaffold — as of now it contains only a `LICENSE` file. St
 
 ## Deployment
 
-`data-serve` and `d3-interactive-web` are additionally deployed to free public hosting (Render for the Flask API, GitHub Pages for the static page), auto-redeploying on every push to `main` that touches either. Config lives in `deploy/render.yaml` and `.github/workflows/deploy-frontend-pages.yml` (the latter must stay under `.github/workflows/` — GitHub requires that exact location). See [deploy/README.md](deploy/README.md) for the one-time setup and free-tier tradeoffs (spin-down cold starts, no persistent disk). When editing `data-serve/app.py` or `d3-interactive-web/js/api.js`, keep the module-level `app` object (gunicorn's import target) and the hostname-based `API_BASE` switch intact — both exist specifically for this deployment path.
+`dataviz-python-js/data-serve` and `dataviz-python-js/d3-interactive-web` are additionally deployed to free public hosting (Render for the Flask API, GitHub Pages for the static page), auto-redeploying on every push to `main` that touches either. Config lives in `deploy/render.yaml` and `.github/workflows/deploy-frontend-pages.yml` (the latter must stay under `.github/workflows/` — GitHub requires that exact location). See [deploy/README.md](deploy/README.md) for the one-time setup and free-tier tradeoffs (spin-down cold starts, no persistent disk). When editing `data-serve/app.py` or `d3-interactive-web/js/api.js`, keep the module-level `app` object (gunicorn's import target) and the hostname-based `API_BASE` switch intact — both exist specifically for this deployment path.
 
-`django/moviereviews` is separately deployed to PythonAnywhere — **manually, not auto-deploying on push** (PythonAnywhere has no free-tier equivalent to Render's Blueprints/GitHub Pages' Actions). See [deploy/pythonanywhere.md](deploy/pythonanywhere.md) for the full setup and redeploy steps. `moviereviews/settings.py`'s `SECRET_KEY`/`DEBUG`/`ALLOWED_HOSTS`/secure-cookie settings read from environment variables (falling back to local-dev values when unset — never hardcode a "production" value into the fallback itself), and `django/moviereviews/requirements-pythonanywhere.txt` is a deliberately separate, minimal dependency list scoped to just this app (not the repo-root `requirements.txt`, which locks every stage in the monorepo). Keep both intact when editing that settings file or app's dependencies.
+`django-impatient/moviereviews` is separately deployed to PythonAnywhere — **manually, not auto-deploying on push** (PythonAnywhere has no free-tier equivalent to Render's Blueprints/GitHub Pages' Actions). See [deploy/pythonanywhere.md](deploy/pythonanywhere.md) for the full setup and redeploy steps. `moviereviews/settings.py`'s `SECRET_KEY`/`DEBUG`/`ALLOWED_HOSTS`/secure-cookie settings read from environment variables (falling back to local-dev values when unset — never hardcode a "production" value into the fallback itself), and `django-impatient/moviereviews/requirements-pythonanywhere.txt` is a deliberately separate, minimal dependency list scoped to just this app (not the repo-root `requirements.txt`, which locks every stage in the monorepo). Keep both intact when editing that settings file or app's dependencies.
 
 ## Keeping docs in sync
 
@@ -59,8 +63,8 @@ There are two overview docs, the language implementation guides, plus one per st
 - `CLAUDE.md` (this file) — instructions for Claude Code instances.
 - `README.md` (repo root) — the human-facing overview, mirrors this file's structural/tooling content.
 - `docs/python-implementation.md` and `docs/javascript.md` — language-specific best practice guides, linked from both overview docs above.
-- `<stage>/README.md` — one per stage folder, covering that stage's idea and implementation.
+- `<book>/<stage>/README.md` — one per stage folder, covering that stage's idea and implementation.
 
 **Every code change that affects structure, setup, tooling, or conventions must update `CLAUDE.md`, the root `README.md`, and the relevant implementation guide together, plus the relevant stage `README.md` if a stage was added or changed.** Don't let these drift — a stale root doc defeats the point of this repo, which is to make prior work easy to recall.
 
-**Exception: `django/`.** That stage's `README.md` doubles as a running learning log (see [django/README.md](django/README.md)'s "Log" section), updated as the user progresses through the material. Routine additions to that log stay inside `django/README.md` only — they don't need matching edits to this file, the root `README.md`, or `docs/python-implementation.md`. Only touch the outer docs for `django/` if something genuinely structural changes (e.g. a new dependency, a new top-level tool, a change to how the stage is run).
+**Exception: `django-impatient/`.** That book's `README.md` doubles as a running learning log (see [django-impatient/README.md](django-impatient/README.md)'s "Log" section), updated as the user progresses through the material. Routine additions to that log stay inside `django-impatient/README.md` only — they don't need matching edits to this file, the root `README.md`, or `docs/python-implementation.md`. Only touch the outer docs for `django-impatient/` if something genuinely structural changes (e.g. a new dependency, a new top-level tool, a change to how the stage is run).
