@@ -85,3 +85,12 @@ marshmallow
 # serves it as an interactive Swagger UI - see rest-apis-flask/README.md's
 # "API documentation" section.
 flask-smorest
+
+# rest-apis-flask/library-crud: this book's chapter on unit testing with
+# nose - the original `nose` package is unmaintained and fails to even
+# import on Python 3.10+ (relies on `collections.Callable`, removed in
+# 3.10), so this stage uses nose2, its actively maintained successor,
+# instead. See library-crud/README.md's "Testing" section for why this
+# stage has two test files/runners instead of the repo's usual pytest
+# alone.
+nose2

@@ -42,7 +42,12 @@ section for what `flask-smorest` is doing.
   starting empty. Run it once before starting the server (see "Seeding
   data" below).
 - [`tests/test_app.py`](tests/test_app.py) — CRUD tests via Flask's
-  `test_client()`, each against its own temporary SQLite file.
+  `test_client()`, each against its own temporary SQLite file. Uses
+  `pytest`, this repo's usual test tool.
+- [`tests/test_app_unittest.py`](tests/test_app_unittest.py) — a slice
+  of that same coverage, rewritten as `unittest.TestCase` classes and
+  run with `nose2` — see "Testing" below for why this stage has two
+  test files/tools instead of just `pytest`.
 
 ## Endpoints
 
@@ -137,8 +142,36 @@ curl -X POST http://127.0.0.1:5000/api/books -H "Content-Type: application/json"
 curl http://127.0.0.1:5000/api/authors/1
 ```
 
-## Tests
+## Testing
+
+`pytest`, from the repo root (this repo's usual test tool — see
+[docs/python-implementation.md](../../docs/python-implementation.md#testing)):
 
 ```bash
 pytest rest-apis-flask/library-crud/tests
 ```
+
+This book also has a chapter on unit testing with **nose** — but classic
+`nose` is unmaintained (last released 2015) and no longer even imports on
+Python 3.10+ (it uses `collections.Callable`, removed that version), so
+this stage uses **[nose2](https://docs.nose2.io/)** instead, its
+maintained successor and the closest thing still runnable today.
+`tests/test_app_unittest.py` covers the same core routes rewritten in
+the classic `unittest.TestCase` style (`setUp`/`tearDown`,
+`self.assert*`) that both `nose` and `nose2` build on top of, run from
+*inside* this stage's directory rather than the repo root:
+
+```bash
+cd rest-apis-flask/library-crud
+python -m nose2 -v
+```
+
+That `cd` matters here in a way it doesn't for pytest: pytest finds
+`app.py`/`models.py` etc. via this stage's `conftest.py`, which adds the
+stage directory to `sys.path` no matter where pytest itself is invoked
+from. `nose2` has no such hook — it relies on its own test-discovery
+behavior adding its *current working directory* to `sys.path`, so it
+only resolves `from app import create_app` when run with this directory
+as `cwd`. `nose2` doesn't pick up `test_app.py` in the same run because
+it only collects `unittest.TestCase` subclasses, not the plain
+pytest-fixture-style functions that file uses.

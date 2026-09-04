@@ -127,6 +127,8 @@ marshmallow==4.3.1
     #   webargs
 matplotlib==3.11.0
     # via -r requirements.in
+nose2==0.16.0
+    # via -r requirements.in
 numpy==2.4.6
     # via
     #   contourpy
