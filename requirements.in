@@ -71,6 +71,6 @@ Flask-Cors
 # deploy/render.yaml, which runs `gunicorn app:app` instead.
 gunicorn
 
-# django: the framework itself, for the moviereviews project - see
-# django/README.md.
+# django: the framework itself, for django-impatient/moviereviews and
+# the django-for-beginners/ per-chapter projects.
 Django

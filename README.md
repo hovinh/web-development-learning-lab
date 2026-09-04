@@ -24,6 +24,8 @@ Books so far:
   - [`d3-interactive-web/`](dataviz-python-js/d3-interactive-web/README.md) — an interactive Pokedex page (D3, via CDN) that consumes `data-serve`'s REST API: filter by type/generation, click a Pokemon for its mini-biography, and four D3-drawn charts covering the same ground as `data-analysis`'s saved PNGs.
   - [`webdev101/`](dataviz-python-js/webdev101/README.md) — HTML/CSS/SVG/Canvas fundamentals via a Pokedex home page demo.
 - [`django-impatient/`](django-impatient/README.md) — *Django 4 for the Impatient*: Django fundamentals via a `moviereviews` project; that README doubles as a running learning log.
+- [`django-for-beginners/`](django-for-beginners/README.md) — *Django for Beginners* (William Vincent): Django fundamentals (URLs/Views/Models/Templates flow) via a separate small project per chapter.
+  - [`pages/`](django-for-beginners/pages/) — first project (`django_project` + `pages` app): URLs/views/templates without a database.
 
 Cross-cutting, not book folders:
 

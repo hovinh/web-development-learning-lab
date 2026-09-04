@@ -2,6 +2,10 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Git
+
+**Never run `git commit` in this repo, even if asked to "commit" as part of a larger task — the user always commits themselves.** Stage or leave changes as needed and, if a commit message is wanted, provide the message text for the user to use.
+
 ## Repository purpose
 
 This is a personal learning lab for web development, built by the user working through a book/curriculum topic by topic. The user directs Claude to implement each stage; Claude is not just writing production code, it is producing *teaching-quality* reference code the user can revisit later to recall how something works.
@@ -10,7 +14,7 @@ Structure, tooling, and conventions below reflect how the user wants the repo bu
 
 ## Intended structure
 
-- One top-level folder per **book**, not per stage — this repo works through multiple books over time, and each book gets its own folder so they don't pile up loose at the repo root. Currently: [`dataviz-python-js/`](dataviz-python-js/) for *Data Visualization with Python & JavaScript*, and [`django-impatient/`](django-impatient/) for *Django 4 for the Impatient*.
+- One top-level folder per **book**, not per stage — this repo works through multiple books over time, and each book gets its own folder so they don't pile up loose at the repo root. Currently: [`dataviz-python-js/`](dataviz-python-js/) for *Data Visualization with Python & JavaScript*, [`django-impatient/`](django-impatient/) for *Django 4 for the Impatient*, and [`django-for-beginners/`](django-for-beginners/) for *Django for Beginners* (William Vincent).
 - Inside a book folder, one subfolder per stage/topic of that book's curriculum (e.g. `dataviz-python-js/data-scrape/`, ...). Each stage is a self-contained unit — do not let later stages silently depend on earlier ones unless the book's material genuinely builds that way.
 - `deploy/`, `docs/`, and `sandpit/` are top-level but are **not** book folders — they're cross-cutting and serve every book:
   - `deploy/` hosts `dataviz-python-js/data-serve`+`d3-interactive-web` (Render + GitHub Pages) and `django-impatient/moviereviews` (PythonAnywhere) on free public infrastructure rather than teaching a new topic. See [deploy/README.md](deploy/README.md) and [deploy/pythonanywhere.md](deploy/pythonanywhere.md).
