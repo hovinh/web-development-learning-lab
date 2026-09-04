@@ -26,6 +26,7 @@ Books so far:
 - [`django-impatient/`](django-impatient/README.md) — *Django 4 for the Impatient*: Django fundamentals via a `moviereviews` project; that README doubles as a running learning log.
 - [`django-for-beginners/`](django-for-beginners/README.md) — *Django for Beginners* (William Vincent): Django fundamentals (URLs/Views/Models/Templates flow) via a separate small project per chapter.
   - [`pages/`](django-for-beginners/pages/) — first project (`django_project` + `pages` app): URLs/views/templates without a database.
+  - [`message-board/`](django-for-beginners/message-board/README.md) — second project (`django_project` + `message_board` app): a `Post` model (just `text`) listed on the homepage, seeded via a `seed_posts` management command, editable through Django's built-in admin site.
 
 Cross-cutting, not book folders:
 

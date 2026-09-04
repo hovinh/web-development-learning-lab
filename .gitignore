@@ -60,6 +60,13 @@ dataviz-python-js/data-serve/pokedex.db
 django-impatient/moviereviews/db.sqlite3
 django-impatient/moviereviews/media/
 
+# django-for-beginners: each chapter's own local dev database -
+# reproducible by running that chapter's `manage.py migrate` (and, if
+# it has one, `manage.py seed_*`) again. Matches every per-chapter
+# project folder under django-for-beginners/, not just the current
+# ones, since a new sibling project is added each chapter.
+django-for-beginners/*/db.sqlite3
+
 # django-impatient: collectstatic's output (see moviereviews/settings.py's
 # STATIC_ROOT) - only ever needed on a real deployment (DEBUG=False),
 # reproducible there with `manage.py collectstatic`. Never populated
