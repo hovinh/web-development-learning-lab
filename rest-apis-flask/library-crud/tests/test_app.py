@@ -35,16 +35,21 @@ def test_create_and_get_author(client) -> None:
     assert response.get_json()["name"] == "Ursula K. Le Guin"
 
 
-def test_create_author_missing_name_is_400(client) -> None:
+def test_create_author_missing_name_is_422(client) -> None:
+    # flask-smorest's @blp.arguments(AuthorSchema) validates the body
+    # before create_author() ever runs - a schema mismatch returns 422
+    # (Unprocessable Entity) with Marshmallow's own field errors nested
+    # under "errors"/"json", not the raw {"name": [...]} shape a plain
+    # marshmallow ValidationError.messages would give.
     response = client.post("/api/authors", json={})
-    assert response.status_code == 400
-    assert "name" in response.get_json()
+    assert response.status_code == 422
+    assert "name" in response.get_json()["errors"]["json"]
 
 
-def test_create_author_blank_name_is_400(client) -> None:
+def test_create_author_blank_name_is_422(client) -> None:
     response = client.post("/api/authors", json={"name": ""})
-    assert response.status_code == 400
-    assert "name" in response.get_json()
+    assert response.status_code == 422
+    assert "name" in response.get_json()["errors"]["json"]
 
 
 def test_list_authors(client) -> None:
@@ -106,6 +111,10 @@ def test_create_and_get_book(client) -> None:
 
 
 def test_create_book_with_unknown_author_is_400(client) -> None:
+    # Unlike a schema-shape failure (422 above), this one passes schema
+    # validation - author_id is a well-formed int - and is instead
+    # rejected by resources/books.py's own _check_author_exists() check,
+    # which uses flask_smorest.abort(400, ...) directly.
     response = client.post(
         "/api/books",
         json={"title": "Orphan Book", "published_year": 2000, "author_id": 999},
@@ -113,10 +122,10 @@ def test_create_book_with_unknown_author_is_400(client) -> None:
     assert response.status_code == 400
 
 
-def test_create_book_missing_fields_is_400(client) -> None:
+def test_create_book_missing_fields_is_422(client) -> None:
     response = client.post("/api/books", json={"title": "No Year Or Author"})
-    assert response.status_code == 400
-    errors = response.get_json()
+    assert response.status_code == 422
+    errors = response.get_json()["errors"]["json"]
     assert "published_year" in errors
     assert "author_id" in errors
 

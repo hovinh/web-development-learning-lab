@@ -6,6 +6,8 @@
 #
 alembic==1.18.5
     # via dataset
+apispec[marshmallow]==6.10.0
+    # via flask-smorest
 asgiref==3.12.1
     # via django
 attrs==26.1.0
@@ -63,8 +65,11 @@ flask==3.1.3
     # via
     #   -r requirements.in
     #   flask-cors
+    #   flask-smorest
     #   flask-sqlalchemy
 flask-cors==6.0.5
+    # via -r requirements.in
+flask-smorest==0.47.0
     # via -r requirements.in
 flask-sqlalchemy==3.1.1
     # via -r requirements.in
@@ -115,7 +120,11 @@ markupsafe==3.0.3
     #   mako
     #   werkzeug
 marshmallow==4.3.1
-    # via -r requirements.in
+    # via
+    #   -r requirements.in
+    #   apispec
+    #   flask-smorest
+    #   webargs
 matplotlib==3.11.0
     # via -r requirements.in
 numpy==2.4.6
@@ -124,12 +133,14 @@ numpy==2.4.6
     #   matplotlib
 packaging==26.2
     # via
+    #   apispec
     #   gunicorn
     #   incremental
     #   matplotlib
     #   parsel
     #   pytest
     #   scrapy
+    #   webargs
 parsel==1.11.0
     # via
     #   itemloaders
@@ -215,10 +226,13 @@ w3lib==2.4.1
     # via
     #   parsel
     #   scrapy
+webargs==8.7.1
+    # via flask-smorest
 werkzeug==3.1.8
     # via
     #   flask
     #   flask-cors
+    #   flask-smorest
 zope-interface==8.5
     # via
     #   scrapy

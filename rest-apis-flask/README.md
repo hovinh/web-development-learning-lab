@@ -71,3 +71,41 @@ different half of the "database row in, JSON out" problem:
 Together, a typical request in a later stage flows: JSON in → Marshmallow
 `load()` validates it → Flask-SQLAlchemy `db.Model` persists it →
 Marshmallow `dump()` serializes the result → `jsonify()` sends it back.
+
+## API documentation: the OpenAPI spec and Swagger UI
+
+Hand-written docs (a markdown table of endpoints, like the one in
+[`library-crud/README.md`](library-crud/README.md#endpoints)) drift out
+of sync with the code the moment a route changes. The fix this book
+reaches for is generating the docs *from* the code instead:
+
+- **[OpenAPI Specification](https://swagger.io/specification/)**
+  (formerly called the "Swagger spec") — a standard, language-agnostic
+  YAML/JSON format for describing a REST API: every path and HTTP
+  method, request parameters/body, response shapes and status codes,
+  auth requirements. It's a description of the API, not a tool by
+  itself — other tools consume an OpenAPI document to render docs, run
+  tests, or generate client SDKs.
+- **[Swagger UI](https://swagger.io/tools/swagger-ui/)** — the most
+  common tool that *consumes* an OpenAPI document: it renders the spec
+  as an interactive webpage, one collapsible section per endpoint, with
+  a "Try it out" button that fills in a form for the request body/
+  params and fires a real HTTP request at the running API, showing the
+  actual response. That's what "publishing" and "testing" via Swagger
+  UI mean in practice — the same page serves as both the docs a
+  consumer reads and a manual API client, no `curl`/Postman needed.
+- **Generating the spec from Flask code** — writing an OpenAPI document
+  by hand has the same staleness problem as hand-written markdown docs,
+  so in practice it's generated from what already exists in the code.
+  This book uses **[flask-smorest](https://flask-smorest.readthedocs.io/)**
+  for that: it wraps routes in `Blueprint`s with typed decorators
+  (`@blp.arguments(Schema)`, `@blp.response(200, Schema)`) that reuse
+  the *same* Marshmallow schemas already used for request/response
+  validation (`schemas.py`) — so the OpenAPI spec, the request
+  validation, and the response serialization all derive from one
+  schema definition instead of three copies that could drift apart.
+  flask-smorest then serves the generated spec (`/api/openapi.json`)
+  and a bundled Swagger UI (`/api/docs` by default) automatically, with
+  no separate doc-writing step. (`flasgger` and `apispec` are older
+  alternatives that do a similar job but without flask-smorest's
+  Blueprint-based routing layer on top.)

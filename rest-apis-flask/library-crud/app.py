@@ -1,5 +1,14 @@
 """The Flask app: CRUD REST endpoints for Authors and Books.
 
+Routing lives in resources/authors.py and resources/books.py as
+flask-smorest Blueprints of MethodView resources, not directly in this
+file - see those modules' docstrings for what changed from the original
+plain-Flask routes. This file's job is just to build the app, wire up
+the database, and register those Blueprints with a flask-smorest `Api`,
+which is what turns them into a generated OpenAPI spec + Swagger UI (see
+rest-apis-flask/README.md's "API documentation" section) on top of the
+same request/response behavior as before.
+
 ## Endpoints
 
 Authors:
@@ -21,27 +30,25 @@ Books:
 - `DELETE /api/books/<id>`        - delete a book.
 
 Every write route (POST/PUT) runs the request body through a Marshmallow
-schema's `load()` first - a malformed or missing field never reaches the
-database, and comes back as a 400 with Marshmallow's own field-by-field
-error messages rather than a raw database exception.
+schema before it reaches the database - flask-smorest's `@blp.arguments`
+decorator does this now (see resources/), returning 422 with Marshmallow's
+own field-by-field error messages on a malformed or missing field.
+
+## API docs
+
+With the server running: interactive Swagger UI is at `/docs`, the raw
+generated OpenAPI document at `/openapi.json`.
 """
 
 from __future__ import annotations
 
-from flask import Flask, abort, jsonify, request
-from marshmallow import ValidationError
+from flask import Flask, jsonify
+from flask_smorest import Api
 
 from config import SQLITE_DATABASE_URI
-from models import Author, Book, db
-from schemas import AuthorSchema, BookSchema
-
-# One schema instance per shape is enough - Marshmallow schemas are
-# stateless and safe to reuse across requests, unlike a per-request model
-# instance.
-author_schema = AuthorSchema()
-authors_schema = AuthorSchema(many=True)
-book_schema = BookSchema()
-books_schema = BookSchema(many=True)
+from models import db
+from resources.authors import blp as AuthorBlueprint
+from resources.books import blp as BookBlueprint
 
 
 def create_app(sqlite_uri: str | None = None) -> Flask:
@@ -62,132 +69,36 @@ def create_app(sqlite_uri: str | None = None) -> Flask:
         # dropping data.
         db.create_all()
 
+    # flask-smorest config: what it needs to generate the OpenAPI
+    # document and serve Swagger UI on top of it. OPENAPI_SWAGGER_UI_URL
+    # points at a CDN build of the swagger-ui-dist JS/CSS assets - this
+    # app doesn't vendor or serve them itself.
+    app.config["API_TITLE"] = "Library CRUD API"
+    app.config["API_VERSION"] = "v1"
+    app.config["OPENAPI_VERSION"] = "3.0.3"
+    app.config["OPENAPI_URL_PREFIX"] = "/"
+    app.config["OPENAPI_SWAGGER_UI_PATH"] = "/docs"
+    app.config["OPENAPI_SWAGGER_UI_URL"] = "https://cdn.jsdelivr.net/npm/swagger-ui-dist/"
+
+    api = Api(app)
+    api.register_blueprint(AuthorBlueprint)
+    api.register_blueprint(BookBlueprint)
+
     @app.get("/")
     def index():
-        # There's no page at the bare root - this stage is JSON-only, no
-        # Jinja2 templates involved (see rest-apis-flask/README.md's
-        # "What Flask actually is"). This route just points a browser or
-        # curl hitting "/" at the actual API instead of a bare 404.
+        # There's no HTML page at the bare root - this stage is
+        # JSON-only, no Jinja2 templates involved (see
+        # rest-apis-flask/README.md's "What Flask actually is"). This
+        # route just points a browser or curl hitting "/" at the actual
+        # API and its docs instead of a bare 404.
         return jsonify(
             {
                 "authors": "/api/authors",
                 "books": "/api/books",
+                "docs": "/docs",
+                "openapi_spec": "/openapi.json",
             }
         )
-
-    # ---- Authors ----
-
-    @app.get("/api/authors")
-    def list_authors():
-        authors = Author.query.order_by(Author.id).all()
-        return jsonify(authors_schema.dump(authors))
-
-    @app.get("/api/authors/<int:author_id>")
-    def get_author(author_id: int):
-        author = db.session.get(Author, author_id)
-        if author is None:
-            abort(404, description=f"No author with id {author_id}")
-        return jsonify(author_schema.dump(author))
-
-    @app.post("/api/authors")
-    def create_author():
-        try:
-            data = author_schema.load(request.get_json(silent=True) or {})
-        except ValidationError as err:
-            return jsonify(err.messages), 400
-
-        author = Author(name=data["name"])
-        db.session.add(author)
-        db.session.commit()
-        return jsonify(author_schema.dump(author)), 201
-
-    @app.put("/api/authors/<int:author_id>")
-    def update_author(author_id: int):
-        author = db.session.get(Author, author_id)
-        if author is None:
-            abort(404, description=f"No author with id {author_id}")
-
-        try:
-            data = author_schema.load(request.get_json(silent=True) or {})
-        except ValidationError as err:
-            return jsonify(err.messages), 400
-
-        author.name = data["name"]
-        db.session.commit()
-        return jsonify(author_schema.dump(author))
-
-    @app.delete("/api/authors/<int:author_id>")
-    def delete_author(author_id: int):
-        author = db.session.get(Author, author_id)
-        if author is None:
-            abort(404, description=f"No author with id {author_id}")
-
-        db.session.delete(author)  # cascades to their books, see models.py
-        db.session.commit()
-        return "", 204
-
-    # ---- Books ----
-
-    @app.get("/api/books")
-    def list_books():
-        books = Book.query.order_by(Book.id).all()
-        return jsonify(books_schema.dump(books))
-
-    @app.get("/api/books/<int:book_id>")
-    def get_book(book_id: int):
-        book = db.session.get(Book, book_id)
-        if book is None:
-            abort(404, description=f"No book with id {book_id}")
-        return jsonify(book_schema.dump(book))
-
-    @app.post("/api/books")
-    def create_book():
-        try:
-            data = book_schema.load(request.get_json(silent=True) or {})
-        except ValidationError as err:
-            return jsonify(err.messages), 400
-
-        if db.session.get(Author, data["author_id"]) is None:
-            abort(400, description=f"No author with id {data['author_id']}")
-
-        book = Book(
-            title=data["title"],
-            published_year=data["published_year"],
-            author_id=data["author_id"],
-        )
-        db.session.add(book)
-        db.session.commit()
-        return jsonify(book_schema.dump(book)), 201
-
-    @app.put("/api/books/<int:book_id>")
-    def update_book(book_id: int):
-        book = db.session.get(Book, book_id)
-        if book is None:
-            abort(404, description=f"No book with id {book_id}")
-
-        try:
-            data = book_schema.load(request.get_json(silent=True) or {})
-        except ValidationError as err:
-            return jsonify(err.messages), 400
-
-        if db.session.get(Author, data["author_id"]) is None:
-            abort(400, description=f"No author with id {data['author_id']}")
-
-        book.title = data["title"]
-        book.published_year = data["published_year"]
-        book.author_id = data["author_id"]
-        db.session.commit()
-        return jsonify(book_schema.dump(book))
-
-    @app.delete("/api/books/<int:book_id>")
-    def delete_book(book_id: int):
-        book = db.session.get(Book, book_id)
-        if book is None:
-            abort(404, description=f"No book with id {book_id}")
-
-        db.session.delete(book)
-        db.session.commit()
-        return "", 204
 
     return app
 

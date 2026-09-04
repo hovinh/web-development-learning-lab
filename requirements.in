@@ -79,3 +79,9 @@ Django
 # serialization for the Author/Book CRUD API - see
 # rest-apis-flask/README.md's "Persistence and serialization" section.
 marshmallow
+
+# rest-apis-flask/library-crud: Blueprint/MethodView routing that
+# generates an OpenAPI spec from the same marshmallow schemas above, and
+# serves it as an interactive Swagger UI - see rest-apis-flask/README.md's
+# "API documentation" section.
+flask-smorest
