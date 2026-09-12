@@ -30,6 +30,8 @@ Books so far:
 - [`rest-apis-flask/`](rest-apis-flask/README.md) — *Building REST APIs with Flask* (Kunal Relan):
   - [`hello-world/`](rest-apis-flask/hello-world/README.md) — smallest possible Flask app: one route, one plain-text response.
   - [`library-crud/`](rest-apis-flask/library-crud/README.md) — full CRUD REST API for `Author`/`Book` (one-to-many), using Flask-SQLAlchemy and Marshmallow together.
+- [`angular-typescripts-beginner/`](angular-typescripts-beginner/README.md) — *Beginning Angular with TypeScript* (Greg Lim):
+  - [`my-app/`](angular-typescripts-beginner/my-app/README.md) — first Angular CLI project: confirms the toolchain works end-to-end, `ng new` through `ng serve --open`.
 
 Cross-cutting, not book folders:
 

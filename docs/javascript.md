@@ -31,6 +31,7 @@ Best practices for implementing JavaScript stages in this repo. This is a learni
       <topic>.test.js
   ```
 - Keep one concept per file, same as the Python guide — a file's name should hint at its contents.
+- **Exception: Angular CLI-scaffolded stages** (`angular-typescripts-beginner/`). A project created with `ng new` follows the Angular CLI's own generated layout (`angular.json`, `src/app/`, one component per `.ts`/`.html`/`.css`/`.spec.ts` file group, etc.) rather than this repo's flat default — don't restructure it to match. Document the exact `ng new`/`ng generate` command used (and why any non-default flag was chosen) in that stage's `README.md`, the same way `angular-typescripts-beginner/my-app/README.md` does, so the setup can be reproduced later without re-deriving the flag choices.
 
 ## Style & readability
 
