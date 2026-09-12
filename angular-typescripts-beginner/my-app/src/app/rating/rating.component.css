@@ -1,0 +1,7 @@
+.rating i {
+  transition: transform 0.1s ease-in-out;
+}
+
+.rating i:hover {
+  transform: scale(1.2);
+}

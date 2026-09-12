@@ -8,8 +8,10 @@ full list of stages across all books.
 
 Stages so far:
 
-- [`my-app/`](my-app/README.md) — first Angular CLI project: confirms
-  the toolchain works end-to-end, `ng new` through `ng serve --open`.
+- [`my-app/`](my-app/README.md) — first Angular CLI project: `ng new`
+  through `ng serve --open`, a `ProductComponent` mock landing page,
+  and a `RatingComponent` (Bootstrap) demoing property/class/style/
+  event/two-way binding.
 
 ## What Angular actually is
 

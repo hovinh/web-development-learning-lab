@@ -1,0 +1,23 @@
+<section class="product-list">
+  <!-- *ngFor repeats this <article> once per item in `products`, binding
+       each iteration's product to the local template variable `product`.
+       Angular tracks each rendered element by array position by default,
+       which is fine here since `products` is a fixed, hardcoded list. -->
+  <article class="product-card" *ngFor="let product of products">
+    <img [src]="product.imageUrl" [alt]="product.name" class="product-image" />
+    <h3>{{ product.name }}</h3>
+    <p class="product-description">{{ product.description }}</p>
+    <!-- The built-in `currency` pipe formats the raw number as currency
+         (defaults to USD, e.g. 89.99 -> "$89.99"). -->
+    <p class="product-price">{{ product.price | currency }}</p>
+
+    <!-- TWO-WAY BINDING: `[(rating)]="product.rating"` is Angular's
+         "banana in a box" syntax - shorthand for
+         `[rating]="product.rating" (ratingChange)="product.rating = $event"`.
+         RatingComponent reads its starting value from `product.rating` and,
+         whenever a star is clicked, writes the new value straight back onto
+         this same `product` object - each product card keeps its own
+         independent rating. -->
+    <app-rating [(rating)]="product.rating"></app-rating>
+  </article>
+</section>

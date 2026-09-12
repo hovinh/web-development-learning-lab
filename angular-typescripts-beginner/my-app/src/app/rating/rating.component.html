@@ -1,0 +1,26 @@
+<div class="rating d-flex align-items-center">
+  <!-- *ngFor loops over the fixed [1,2,3,4,5] array, once per star.
+
+       - PROPERTY BINDING: [title] sets the native DOM `title` property
+         (the tooltip shown on hover) from an expression.
+       - CLASS BINDING: [class.bi-star-fill]/[class.bi-star] toggle those
+         two Bootstrap Icons classes on/off based on whether this star's
+         position is <= the current rating - filled for stars at or below
+         the rating, outlined for the rest.
+       - STYLE BINDING: [style.color] sets the icon's color directly,
+         gold when filled, gray otherwise.
+       - EVENT BINDING: (click) calls onStarClick() whenever a star is
+         clicked, which is what actually changes `rating`. -->
+  <i
+    *ngFor="let star of stars"
+    class="bi fs-3 me-1"
+    [class.bi-star-fill]="star <= rating"
+    [class.bi-star]="star > rating"
+    [style.color]="star <= rating ? '#ffc107' : '#adb5bd'"
+    [style.cursor]="'pointer'"
+    [title]="star + (star === 1 ? ' star' : ' stars')"
+    (click)="onStarClick(star)"
+  ></i>
+
+  <span class="ms-2 text-muted">{{ rating }} / {{ stars.length }}</span>
+</div>
