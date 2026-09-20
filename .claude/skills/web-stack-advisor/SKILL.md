@@ -1,6 +1,7 @@
 ---
 name: web-stack-advisor
-description: Recommend the lightest web tooling for a data professional's use case (data scientist, analyst, data or ML engineer): share a chart, explore data, serve a model, labeling tool, dashboard, multi-user product prototype. Breaks the use case into 12 web functionalities (styling, interactivity, API, persistence, auth, background jobs and more) and maps each to a tool. Use when the user asks "what should I build this with", "Streamlit or Dash or Flask or FastAPI or Django or React", or describes an app idea for a demo, data exploration or product prototype.
+description: >-
+  Recommend the lightest web tooling for a data professional's use case (data scientist, analyst, data or ML engineer): share a chart, explore data, serve a model, labeling tool, dashboard, multi-user product prototype. Breaks the use case into 12 web functionalities (styling, interactivity, API, persistence, auth, background jobs and more) and maps each to a tool. Use when the user asks "what should I build this with", "Streamlit or Dash or Flask or FastAPI or Django or React", or describes an app idea for a demo, data exploration or product prototype.
 ---
 
 # Web stack advisor
