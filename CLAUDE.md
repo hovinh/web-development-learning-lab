@@ -60,6 +60,17 @@ Structure, tooling, and conventions below reflect how the user wants the repo bu
 
 `django-impatient/moviereviews` is separately deployed to PythonAnywhere — **manually, not auto-deploying on push** (PythonAnywhere has no free-tier equivalent to Render's Blueprints/GitHub Pages' Actions). See [deploy/pythonanywhere.md](deploy/pythonanywhere.md) for the full setup and redeploy steps. `moviereviews/settings.py`'s `SECRET_KEY`/`DEBUG`/`ALLOWED_HOSTS`/secure-cookie settings read from environment variables (falling back to local-dev values when unset — never hardcode a "production" value into the fallback itself), and `django-impatient/moviereviews/requirements-pythonanywhere.txt` is a deliberately separate, minimal dependency list scoped to just this app (not the repo-root `requirements.txt`, which locks every stage in the monorepo). Keep both intact when editing that settings file or app's dependencies.
 
+## Tooling scope (for tool recommendations and use-case discussions)
+
+When the user asks "which tool for X" or wants a web-dev use case broken down, the toolkit in scope is:
+
+- **Explored in this repo (code or notes):** HTML/CSS, JavaScript, jQuery, D3, React, Angular, Flask, Django, and the Python data stack.
+- **In scope but not explored here — no stages will be added:** FastAPI, Tailwind CSS, Streamlit, Dash. Recommend them from general knowledge, and say so when doing it (the repo has no code to point at). Do not create stage folders for them unless the user asks.
+- **Out of scope:** deployment/hosting choices (assume local deployment; that is the team's design decision). The existing `deploy/` material stays as-is but isn't part of recommendations.
+- **Audience:** the user's readers are data scientists and data engineers learning web dev, but the *end users* of what they build are often business people with no web-dev knowledge — prefer options that look clean and standard out of the box.
+
+The tool-choice guidance is also packaged as a reusable, portable skill at [`.claude/skills/web-stack-advisor/`](.claude/skills/web-stack-advisor/SKILL.md) (12 web functionalities, use-case mapping, UI kits, multi-user, background jobs, worked example, plus starter notes for FastAPI/Streamlit/Dash/Tailwind under `references/tools/`). Those tool notes were written from documentation and have not been run in this repo. Keep the skill and this section consistent, and re-verify its dated ("checked September 2026") facts before relying on them. Blog drafts live under `blog/` and follow [docs/blog-style.md](docs/blog-style.md); the user does not want em-dashes in blog posts.
+
 ## Keeping docs in sync
 
 There are two overview docs, the language implementation guides, plus one per stage:

@@ -102,6 +102,12 @@ has no equivalent to Render's Blueprints or GitHub Pages' Actions), so
 redeploying a change means following that guide's steps by hand each
 time.
 
+## Tooling scope
+
+When choosing a tool for a use case, the toolkit in scope is: HTML/CSS, JavaScript, jQuery, D3, React, Angular, Flask, Django and the Python data stack (all explored here, some as notes only), plus **FastAPI, Tailwind CSS, Streamlit and Dash**, which are in scope for recommendations but deliberately have no stages in this repo. Deployment is out of scope (local only). End users are often non-technical business people, so clean, standard-looking UI matters.
+
+The same guidance is packaged as a reusable skill, [`.claude/skills/web-stack-advisor/`](.claude/skills/web-stack-advisor/SKILL.md), that can be copied into other projects. Blog drafts live in [`blog/`](blog/README.md).
+
 ## Implementation guides
 
 For language-specific best practice (project layout, style, formatting/linting, testing), see:
