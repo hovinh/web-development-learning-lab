@@ -33,6 +33,7 @@ Books so far:
 - [`angular-typescripts-beginner/`](angular-typescripts-beginner/README.md) — *Beginning Angular with TypeScript* (Greg Lim):
   - [`my-app/`](angular-typescripts-beginner/my-app/README.md) — first Angular CLI project: `ng new` through `ng serve --open`, a `ProductComponent` mock landing page, and a `RatingComponent` (Bootstrap) demoing property/class/style/event/two-way binding.
 - [`react-hooks/`](react-hooks/README.md) — *Beginning React with Hooks* (Greg Lim): concept notes (components, props/state/events, conditional rendering, forms with hooks, persisting data through a REST API); no stage projects yet.
+- [`html-and-css/`](html-and-css/README.md) — *HTML & CSS: Design and Build Websites* (Jon Duckett): concept notes (HTML structure/text/lists/links/images/tables/forms, CSS selectors/box model/layout, site design); no stage projects yet.
 
 Cross-cutting, not book folders:
 
