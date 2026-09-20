@@ -5,10 +5,10 @@ folder as `YYYY-MM-DD-<topic-slug>.md`.
 
 ## Drafted
 
-- `web-dev-for-data-scientists/` : survey of web-dev tooling for data scientists, the 12
-  functionalities, and the `web-stack-advisor` skill. The skill link in the "Try It"
-  section is a `TODO-GITHUB-URL-OF-SKILL` placeholder, to fill once the skill is
-  committed and pushed.
+- `web-dev-for-data-people/` : survey of web-dev tooling for data people (DS, analysts, DE), the 12
+  functionalities, and the `web-stack-advisor` skill. The "Try It" section links to the
+  skill's GitHub folder (an intentional exception to the "don't link the repo" rule in
+  blog-style.md, since the skill is the reader's download).
 
 ## Candidate topics
 

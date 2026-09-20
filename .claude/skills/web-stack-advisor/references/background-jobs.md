@@ -21,7 +21,7 @@ not. The pattern is always the same:
 | Pipelines and DAGs | Airflow, Prefect, Dagster | The data-engineering answer; keep the web UI as a status page |
 | Long compute inside Streamlit/Dash | A thread or subprocess, then poll | Do not block the script run |
 
-## Recommendation for a Windows-based data scientist
+## Recommendation for someone working on a Windows laptop
 
 1. Start with **polling plus a job-status table** (a Django model, or a SQLite file).
 2. Use **Huey with SQLite storage** for the worker: nothing to install beyond Python.

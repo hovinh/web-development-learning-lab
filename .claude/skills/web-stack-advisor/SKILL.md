@@ -1,11 +1,12 @@
 ---
 name: web-stack-advisor
-description: Recommend the lightest web tooling for a data scientist's use case (share a chart, explore data, serve a model, labeling tool, dashboard, multi-user product prototype). Breaks the use case into 12 web functionalities (styling, interactivity, API, persistence, auth, background jobs and more) and maps each to a tool. Use when the user asks "what should I build this with", "Streamlit or Dash or Flask or FastAPI or Django or React", or describes an app idea for a demo, data exploration or product prototype.
+description: Recommend the lightest web tooling for a data professional's use case (data scientist, analyst, data or ML engineer): share a chart, explore data, serve a model, labeling tool, dashboard, multi-user product prototype. Breaks the use case into 12 web functionalities (styling, interactivity, API, persistence, auth, background jobs and more) and maps each to a tool. Use when the user asks "what should I build this with", "Streamlit or Dash or Flask or FastAPI or Django or React", or describes an app idea for a demo, data exploration or product prototype.
 ---
 
 # Web stack advisor
 
-Help a data scientist or data engineer pick web tooling without drowning in options.
+Help people who work with data (data scientists, analysts, data and ML engineers) pick web
+tooling without drowning in options.
 The method is: **decompose the use case into functionalities, pick the lightest tool
 that covers each, and flag what is missing.** Do not start from a favourite framework.
 
@@ -16,8 +17,8 @@ that covers each, and flag what is missing.** Do not start from a favourite fram
   laptop" is a limit, then stop there.
 - **Toolkit in scope:** HTML/CSS, JavaScript, jQuery, D3, React, Angular, Flask,
   FastAPI, Django, Streamlit, Dash, Tailwind CSS, and the Python data stack.
-- **Two audiences.** The *builder* is a DS/DE (comfortable with Python, values dev
-  speed). The *end user* is often a business person with no web knowledge (values a
+- **Two audiences.** The *builder* is a data professional (comfortable with Python,
+  values dev speed). The *end user* is often a business person with no web knowledge (values a
   clean, standard-looking, self-explanatory UI). Ask which one the tool is for.
 
 ## Procedure
@@ -47,7 +48,7 @@ that covers each, and flag what is missing.** Do not start from a favourite fram
    app-like (instant updates, keyboard-driven, complex client state).
 
 Tailwind is orthogonal: it only does styling and works with every rung.
-React and Angular are the same tier; for a solo DS, React is the better default
+React and Angular are the same tier; for a solo data professional, React is the better default
 (lighter start, bigger ecosystem). Angular's strength is opinionated structure for
 large teams.
 

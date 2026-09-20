@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 500" width="900" height="500" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+  <!-- Background -->
+  <rect x="0" y="0" width="900" height="500" rx="14" fill="#ffffff" stroke="#d1d5db"/>
+  <text x="24" y="36" font-size="18" font-weight="700" fill="#111827">Where each tool lives</text>
+  <text x="24" y="56" font-size="12" fill="#6b7280">Read top to bottom: what people see, down to where your data work already lives</text>
+
+  <!-- Row stripes -->
+  <rect x="12" y="70" width="876" height="84" rx="10" fill="#f0fdfa"/>
+  <rect x="12" y="162" width="876" height="132" rx="10" fill="#eff6ff"/>
+  <rect x="12" y="302" width="876" height="82" rx="10" fill="#faf5ff"/>
+  <rect x="12" y="392" width="876" height="74" rx="10" fill="#f3f4f6"/>
+
+  <!-- Row A: Python-native UI -->
+  <text x="28" y="104" font-size="15" font-weight="700" fill="#0f766e">Python-native UI</text>
+  <text x="28" y="124" font-size="12" fill="#4b5563">Python only, no JavaScript</text>
+  <rect x="220" y="90" width="130" height="42" rx="21" fill="#14b8a6"/>
+  <text x="285" y="116" font-size="15" font-weight="600" fill="#ffffff" text-anchor="middle">Streamlit</text>
+  <rect x="368" y="90" width="130" height="42" rx="21" fill="#14b8a6"/>
+  <text x="433" y="116" font-size="15" font-weight="600" fill="#ffffff" text-anchor="middle">Dash</text>
+  <text x="520" y="116" font-size="12" fill="#4b5563">Widgets and charts straight from a DataFrame</text>
+
+  <!-- Row B: In the browser -->
+  <text x="28" y="196" font-size="15" font-weight="700" fill="#1d4ed8">In the browser</text>
+  <text x="28" y="216" font-size="12" fill="#4b5563">What people see and click</text>
+  <text x="220" y="182" font-size="11" fill="#4b5563">STATIC PAGES</text>
+  <rect x="220" y="188" width="130" height="36" rx="18" fill="#3b82f6"/>
+  <text x="285" y="211" font-size="14" font-weight="600" fill="#ffffff" text-anchor="middle">HTML/CSS/JS</text>
+  <rect x="362" y="188" width="100" height="36" rx="18" fill="#3b82f6"/>
+  <text x="412" y="211" font-size="14" font-weight="600" fill="#ffffff" text-anchor="middle">jQuery</text>
+  <rect x="474" y="188" width="70" height="36" rx="18" fill="#3b82f6"/>
+  <text x="509" y="211" font-size="14" font-weight="600" fill="#ffffff" text-anchor="middle">D3</text>
+  <text x="220" y="246" font-size="11" fill="#4b5563">APP FRONT ENDS (still need a back end for data and login)</text>
+  <rect x="220" y="252" width="100" height="36" rx="18" fill="#1e40af"/>
+  <text x="270" y="275" font-size="14" font-weight="600" fill="#ffffff" text-anchor="middle">React</text>
+  <rect x="332" y="252" width="110" height="36" rx="18" fill="#1e40af"/>
+  <text x="387" y="275" font-size="14" font-weight="600" fill="#ffffff" text-anchor="middle">Angular</text>
+
+  <!-- Row C: On the server -->
+  <text x="28" y="326" font-size="15" font-weight="700" fill="#7e22ce">On the server</text>
+  <text x="28" y="346" font-size="12" fill="#4b5563">Serves data, runs your code</text>
+  <rect x="220" y="312" width="100" height="42" rx="21" fill="#a855f7"/>
+  <text x="270" y="338" font-size="15" font-weight="600" fill="#ffffff" text-anchor="middle">Flask</text>
+  <rect x="332" y="312" width="110" height="42" rx="21" fill="#a855f7"/>
+  <text x="387" y="338" font-size="15" font-weight="600" fill="#ffffff" text-anchor="middle">FastAPI</text>
+  <text x="220" y="372" font-size="11" fill="#4b5563">API only: send data in, get data back</text>
+  <rect x="470" y="312" width="150" height="42" rx="21" fill="#7e22ce"/>
+  <text x="545" y="338" font-size="15" font-weight="600" fill="#ffffff" text-anchor="middle">Django</text>
+  <text x="470" y="372" font-size="11" fill="#4b5563">API + pages + logins + admin, all in one</text>
+
+  <!-- Row D: Underneath -->
+  <text x="28" y="420" font-size="15" font-weight="700" fill="#374151">Underneath</text>
+  <text x="28" y="440" font-size="12" fill="#4b5563">Where your work already lives</text>
+  <rect x="220" y="408" width="440" height="40" rx="20" fill="#6b7280"/>
+  <text x="440" y="433" font-size="14" font-weight="600" fill="#ffffff" text-anchor="middle">pandas, your models, your data</text>
+
+  <!-- Tailwind band: crosses the browser and server rows -->
+  <rect x="700" y="170" width="176" height="204" rx="12" fill="#fff7ed" stroke="#f97316" stroke-width="2" stroke-dasharray="7 5"/>
+  <text x="788" y="212" font-size="17" font-weight="700" fill="#c2410c" text-anchor="middle">Tailwind CSS</text>
+  <text x="788" y="240" font-size="12" fill="#7c2d12" text-anchor="middle">Not a rival to anything</text>
+  <text x="788" y="258" font-size="12" fill="#7c2d12" text-anchor="middle">on the left. It only styles,</text>
+  <text x="788" y="276" font-size="12" fill="#7c2d12" text-anchor="middle">so it works with any page</text>
+  <text x="788" y="294" font-size="12" fill="#7c2d12" text-anchor="middle">you write in HTML:</text>
+  <text x="788" y="312" font-size="12" fill="#7c2d12" text-anchor="middle">static, React, Angular</text>
+  <text x="788" y="330" font-size="12" fill="#7c2d12" text-anchor="middle">or Django templates.</text>
+</svg>

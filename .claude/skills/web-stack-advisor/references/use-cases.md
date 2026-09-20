@@ -17,7 +17,7 @@ Numbers refer to `functionalities.md`.
 
 | Who uses it | Lean toward |
 |---|---|
-| Fellow DS/DE | Streamlit, Dash, FastAPI `/docs` |
+| Fellow data people (DS, analysts, DE) | Streamlit, Dash, FastAPI `/docs` |
 | Business users, read-only | Static D3 or Dash, polished with a Tailwind kit |
 | Business users, interactive with accounts | Django + Tailwind kit, or React + shadcn/ui |
 

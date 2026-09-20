@@ -39,6 +39,6 @@ This touches functionalities 2 to 12, so it is a fair test of both stacks.
   shortcuts, instant next item, drag and drop); other systems also need the API (for
   example a model pipeline pulling labels); or a front-end engineer will own the UI.
 
-For a data scientist working alone, **start with Django**. If the UI feels limiting
+For a data professional working alone, **start with Django**. If the UI feels limiting
 later, add a Django REST Framework API and put React in front without throwing away the
 data model.

@@ -1,15 +1,15 @@
 ---
 layout: post
-title: "Web Dev for Data Scientists: A Survey of Options and a Way to Choose"
+title: "Web Dev for Data People: A Survey of Options and a Way to Choose"
 description: >
   The web development world is huge, and an LLM can write the boilerplate for any of it. What it cannot do for you is choose. This post surveys the popular options, breaks any use case into twelve functionalities, and ends with a skill file you can hand to your own assistant.
 author: author1
 comments: true
 ---
 
-**Prerequisite**: Python and pandas, a rough idea of what an HTTP API is, no web development background needed
+**Prerequisite**: Python and pandas (or comfort working with data in code), a rough idea of what an HTTP API is, no web development background needed
 
-- [Why a Data Scientist Should Care](#why-a-data-scientist-should-care)
+- [Why Data Folks Should Care](#why-data-folks-should-care)
 - [A Field Too Wide to Browse](#a-field-too-wide-to-browse)
 - [Ask What the App Must Do, Not Which Framework](#ask-what-the-app-must-do-not-which-framework)
 - [From Functionalities to a Stack](#from-functionalities-to-a-stack)
@@ -19,30 +19,25 @@ comments: true
 - [Try It: A Skill File](#try-it-a-skill-file)
 - [Summary](#summary)
 
-## Why a Data Scientist Should Care
+## Why Data Folks Should Care
 
-Most of my analysis ends the same way: someone needs to *see* it. A chart in a notebook convinces me, but it rarely convinces a stakeholder who will not open a notebook. A small web app does. It lets a colleague move a slider, filter a region, or feed a value to a model and watch the answer change. That is a different quality of argument from a screenshot.
+Almost every analysis I have worked on ends in the same small moment: someone needs to *see* it. A chart in a notebook is often enough to convince me, but it rarely convinces a colleague or stakeholder who is never going to open that notebook. A small web app can. It lets them move a slider, filter to their own region, or type in a value and watch the model's answer change, which feels very different from looking at a screenshot.
 
-The same skill helps three other jobs I keep meeting: exploring a dataset interactively, demonstrating a model as a live service, and prototyping a product idea before anyone commits engineering time to it.
+The same skill has quietly helped me in a few other places. It makes exploring a dataset more interactive, it lets me demonstrate a model as a live service, and it helps me prototype a product idea before anyone spends engineering time on it.
 
-The reason this is easier now than it used to be is that an LLM can write most of the boilerplate. Ask for a form, a route, or a chart callback and you get working code. But that shifts the difficulty rather than removing it. The assistant will happily build whatever you name, so the expensive mistake moves upstream: choosing the wrong tool for the job, and only finding out three days in. Choosing well is now the part that is still yours.
+What makes this so much more approachable today is that an LLM can write most of the boilerplate for you. Ask for a form, a route, or a chart callback and you will usually get something that works. But the difficulty does not disappear, it just moves. The assistant will happily build whatever you name, so the costly mistake now happens earlier: picking the wrong tool for the job and only discovering it three days in. Choosing well is still your part of the work, and that is what the rest of this post is here to help with.
 
 ## A Field Too Wide to Browse
 
 Search for "how to build a web app" and you will meet dozens of tools with overlapping claims. It helps to sort them by the layer they occupy, because most of the confusion comes from comparing tools that are not competitors.
 
-| Layer | Popular options |
-|---|---|
-| Static front end | HTML/CSS/JavaScript, jQuery, D3 |
-| Styling | Plain CSS, **Tailwind CSS** |
-| Single-page app (SPA) front end | React, Angular |
-| Python HTTP API | Flask, **FastAPI** |
-| Full-stack Python framework | Django |
-| Python-native UI | **Streamlit**, **Dash** |
+![Fig01](images/field-map.svg){:data-width="900" data-height="500"}
+Fig. 1. The popular tools placed by the layer they occupy, from what people see (top) down to where your data work already lives. Tools in the same band are alternatives to each other; tools in different bands usually combine. Tailwind CSS is drawn across the browser and server bands because it only styles pages and pairs with any of them.
+{:.figure}
 
-Two things in this table are easy to miss. First, Tailwind is not a rival to Django or React. It only styles, so it combines with any row. Second, React and Angular sit on the same rung. Both are front ends that still need something else to supply data and handle login. They are not alternatives to Flask or Django.
+Two things in this map are easy to miss. First, Tailwind is not a rival to Django or React. It only styles, so it combines with any layer where you write HTML. Second, React and Angular sit on the same rung. Both are front ends that still need something else to supply data and handle login. They are not alternatives to Flask or Django.
 
-For a data scientist, the Python-native rows deserve special attention. Streamlit and Dash let you stay in Python, with no JavaScript at all, and for many tasks that is the whole answer.
+For anyone who lives in Python, the Python-native layer deserves special attention. Streamlit and Dash let you stay in Python, with no JavaScript at all, and for many tasks that is the whole answer.
 
 ## Ask What the App Must Do, Not Which Framework
 
@@ -88,7 +83,7 @@ Applied to concrete cases:
 | Labeling or review tool | 7 to 10 | Django |
 | Pipeline that ends in a page | 1, 3 | Python writes JSON, D3 renders it |
 
-Your audience shifts the pick too. A raw Streamlit page is fine for fellow data scientists and can look unfinished to a manager. If the people using the tool are not technical, they judge by polish, and that pushes you toward the next section.
+Your audience shifts the pick too. A raw Streamlit page is fine for fellow data people and can look unfinished to a manager. If the people using the tool are not technical, they judge by polish, and that pushes you toward the next section.
 
 There is an honest caveat about the top rung. React with Tailwind is a very common combination and a good one, but it is two projects (a front end and a back end), a build step, and authentication you write yourself. Django gives you the whole thing in one project. I would choose the SPA when the interface needs instant, keyboard-driven or drag-and-drop behaviour, or when other systems also need the API, and not before.
 
@@ -103,7 +98,7 @@ Raw Tailwind gives you utility classes, not a design. To get a look that people 
 | Dash with dash-bootstrap-components | Tidy dashboards out of the box |
 | Django admin | Back-office screens for free |
 
-Tailwind normally needs Node to compile, which is a barrier if you are a Python person. It has a standalone command-line build that needs no Node<sup><a href="https://tailwindcss.com/blog/standalone-cli">(1)</a></sup>, and you can even install it through `pip`. daisyUI 5 is designed for Tailwind 4<sup><a href="https://daisyui.com/docs/v5/">(2)</a></sup>. I have not verified running daisyUI with the standalone build and no npm at all, so treat that combination as something to test rather than a promise.
+Tailwind normally needs Node to compile, which is a barrier if Python is your home turf. It has a standalone command-line build that needs no Node<sup><a href="https://tailwindcss.com/blog/standalone-cli">(1)</a></sup>, and you can even install it through `pip`. daisyUI 5 is designed for Tailwind 4<sup><a href="https://daisyui.com/docs/v5/">(2)</a></sup>. I have not verified running daisyUI with the standalone build and no npm at all, so treat that combination as something to test rather than a promise.
 
 ## Two Gaps That Bite Later
 
@@ -139,7 +134,7 @@ The tooling has surprising traps, especially on Windows:
 | Full-featured queue | Celery | Windows is unsupported by the project<sup><a href="https://celery.school/celery-on-windows">(9)</a></sup> |
 | Django's own API | `django.tasks` in Django 6.0 | Defines how to enqueue, but ships no worker and no retries<sup><a href="https://docs.djangoproject.com/en/6.0/topics/tasks/">(10)</a></sup> |
 
-My default for a data scientist on a laptop: polling plus a job-status table, and Huey with SQLite for the worker. Reach for Celery, or for a pipeline tool such as Prefect or Dagster, when you actually need retries and scheduling.
+My default for anyone working on a laptop: polling plus a job-status table, and Huey with SQLite for the worker. Reach for Celery, or for a pipeline tool such as Prefect or Dagster, when you actually need retries and scheduling.
 
 ## Two Real Stacks, One Problem
 
@@ -167,11 +162,11 @@ The head of the file looks like this:
 ```yaml
 ---
 name: web-stack-advisor
-description: Recommend the lightest web tooling for a data scientist's use case (share a chart, explore data, serve a model, labeling tool, dashboard, multi-user product prototype). Breaks the use case into 12 web functionalities and maps each to a tool. Use when the user asks "what should I build this with" or describes an app idea for a demo, data exploration or product prototype.
+description: Recommend the lightest web tooling for a data professional's use case (data scientist, analyst, data or ML engineer): share a chart, explore data, serve a model, labeling tool, dashboard, multi-user product prototype. Breaks the use case into 12 web functionalities and maps each to a tool. Use when the user asks "what should I build this with" or describes an app idea for a demo, data exploration or product prototype.
 ---
 ```
 
-Download the skill from <a href="TODO-GITHUB-URL-OF-SKILL">TODO-GITHUB-URL-OF-SKILL</a> and drop the folder into the `.claude/skills/` directory of any project, then describe an app you have been meaning to build. The reference notes it ships with are written from documentation, and I have not run every starter snippet myself, so treat them as a first draft to check.
+Download the skill from <a href="https://github.com/hovinh/web-development-learning-lab/tree/main/.claude/skills/web-stack-advisor">its GitHub folder</a> and drop the folder into the `.claude/skills/` directory of any project, then describe an app you have been meaning to build. The reference notes it ships with are written from documentation, and I have not run every starter snippet myself, so treat them as a first draft to check.
 
 One limit to be upfront about: everything here assumes the app runs on your own machine. Deployment is a separate decision that depends on your team, but if your end users are business people, "it works on my laptop" will not survive contact with them.
 

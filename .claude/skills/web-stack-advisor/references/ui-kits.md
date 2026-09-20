@@ -6,7 +6,7 @@ Django templates, React or Angular.
 
 | Option | Good for | Cost |
 |---|---|---|
-| **Django templates + Tailwind + daisyUI** (or Flowbite) | A DS prototype with a clean look. Buttons, cards, tables and navbars are class names. No React, no JS component build | Small. Recommended default |
+| **Django templates + Tailwind + daisyUI** (or Flowbite) | A data-team prototype with a clean look. Buttons, cards, tables and navbars are class names. No React, no JS component build | Small. Recommended default |
 | **React + Tailwind + shadcn/ui** | Best-looking, most customisable, matches what product teams use | Highest setup |
 | **Dash + dash-bootstrap-components** | Tidy dashboards out of the box | Low |
 | **Streamlit defaults** | Acceptable look with zero work | Little theming control |
@@ -14,7 +14,7 @@ Django templates, React or Angular.
 
 ## Recommendation
 
-For a data scientist's product prototype: **Django templates + Tailwind + daisyUI**,
+For a data professional's product prototype: **Django templates + Tailwind + daisyUI**,
 plus the Django admin for internal screens. Move to React + shadcn/ui only when the
 UI needs app-like interaction.
 
