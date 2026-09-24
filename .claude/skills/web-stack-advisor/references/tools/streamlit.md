@@ -1,6 +1,6 @@
 # Streamlit
 
-**Status: written from documentation and general knowledge; not run in the user's repo.**
+**Status: written from documentation and general knowledge; not verified by running.**
 
 ## What it is for
 

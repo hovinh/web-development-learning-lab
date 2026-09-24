@@ -34,8 +34,8 @@ that covers each, and flag what is missing.** Do not start from a favourite fram
 3. **Pick the lightest tool per functionality**, then collapse to as few tools as
    possible (one framework covering many functions beats a stack of specialists).
 4. **Flag gaps and risks** (multi-user, background jobs, Windows limits, unverified
-   tools). Say plainly when a recommendation comes from general knowledge and was not
-   run in the user's repo.
+   tools). Say plainly when a recommendation comes from general knowledge rather than
+   from something that was actually built and run.
 5. **Offer the next step:** a minimal starter, or a comparison for their exact case.
    `references/worked-example-labeling-tool.md` is a model comparison.
 
@@ -87,10 +87,17 @@ large teams.
 
 - **Authorization must be enforced on the server.** Hiding a button in React is not
   security.
-- Per-tool notes with starter code live in `references/tools/` (FastAPI, Streamlit,
-  Dash, Tailwind). Those were written from documentation and general knowledge and
-  **have not been run in the user's repo**; say so, and check current docs for anything
-  time-sensitive.
+- Per-tool notes with starter code live in `references/tools/`. Their status differs, and
+  each file states its own at the top: **FastAPI and Tailwind were verified by building
+  and running them**, while **Streamlit and Dash were written from documentation and
+  general knowledge only**. Say which of the two you are relying on, and check current
+  docs for anything time-sensitive.
+- **This skill is self-contained and ships no code.** Where a note cites a `demos/...`
+  path, that is a demo in the skill's source repo, not a folder in the project you are
+  installed into:
+  <https://github.com/hovinh/web-development-learning-lab/tree/main/demos>.
+  Cite those as evidence that a claim was tested; do not tell the user to open the path
+  locally, and do not assume the files exist here.
 - Time-sensitive facts below were checked in **September 2026**. Re-check before
   repeating them later:
   - Streamlit has built-in OIDC login (`st.login`, `st.user`), but no roles.

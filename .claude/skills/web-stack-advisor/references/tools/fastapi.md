@@ -1,8 +1,9 @@
 # FastAPI
 
-**Status: run in the user's repo** - see `demos/labeling-fastapi-react/api/` (JWT auth, ownership
-dependency, SQLAlchemy 2.0) and `demos/long-jobs/` (the `BackgroundTasks`-vs-queue contrast
-below). Both actually tested and started, not just written from documentation.
+**Status: verified by running.** In the skill's source repo (link in `SKILL.md`; not folders in
+this project): `demos/labeling-fastapi-react/api/` (JWT auth, ownership dependency, SQLAlchemy
+2.0) and `demos/long-jobs/` (the `BackgroundTasks`-vs-queue contrast below). Both actually
+tested and started, not just written from documentation.
 
 ## What it is for
 
@@ -49,6 +50,7 @@ the endpoint from the browser.
 - `BackgroundTasks` is for tiny post-response work; it has no persistence or retries.
   See `../background-jobs.md`.
 - No auth is built in. The docs show an OAuth2 + JWT pattern; `fastapi-users` is in
-  maintenance mode (Sept 2026). See `../multi-user.md`, and `demos/labeling-fastapi-react/api/security.py`
-  + `api/deps.py` for that exact pattern implemented and tested end to end.
+  maintenance mode (Sept 2026). See `../multi-user.md`, and the source repo's
+  `demos/labeling-fastapi-react/api/security.py` + `api/deps.py` for that exact pattern
+  implemented and tested end to end.
 - To let a browser page on another origin call it, add `CORSMiddleware`.
