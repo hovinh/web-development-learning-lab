@@ -6,7 +6,7 @@ Django templates, React or Angular.
 
 | Option | Good for | Cost |
 |---|---|---|
-| **Django templates + Tailwind + daisyUI** (or Flowbite) | A data-team prototype with a clean look. Buttons, cards, tables and navbars are class names. No React, no JS component build | Small. Recommended default |
+| **Django templates + Tailwind + daisyUI** (or Flowbite) [^1] | A data-team prototype with a clean look. Buttons, cards, tables and navbars are class names. No React, no JS component build | Small. Recommended default |
 | **React + Tailwind + shadcn/ui** | Best-looking, most customisable, matches what product teams use | Highest setup |
 | **Dash + dash-bootstrap-components** | Tidy dashboards out of the box | Low |
 | **Streamlit defaults** | Acceptable look with zero work | Little theming control |
@@ -29,3 +29,8 @@ Tailwind normally needs Node to compile. Two ways around it:
 daisyUI 5 is designed for Tailwind 4 and is configured in CSS (`@plugin "daisyui";`).
 Getting it to work with the *standalone* CLI, without npm, was not verified; check the
 daisyUI docs, or use the CDN build for a prototype. See `tools/tailwind.md`.
+
+[^1]: Verified by running twice in the skill's source repo (link in `SKILL.md`; not a folder in
+    this project), on two different bases: `demos/labeling-django/` (Django templates) and
+    `demos/psa-terminal-map/` (a static, no-backend page, polished for exactly this table's
+    "business users, read-only" row).

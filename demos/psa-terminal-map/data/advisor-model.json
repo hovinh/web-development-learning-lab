@@ -1,0 +1,139 @@
+{
+  "_comment": "Encodes .claude/skills/web-stack-advisor/{SKILL.md,references/*.md} as data, so Act 2 (buildTrail.js) and Act 3 (advisorUi.js) render from this file rather than from hardcoded HTML. js/advisor.js's recommendStack() implements the scoring rules this file describes; tests/advisor.test.js checks that pairing against every useCase below.",
+  "sourceSkill": "web-stack-advisor",
+  "functionalities": [
+    { "number": 1, "name": "Presentation", "meaning": "Show static content", "lightestTool": "HTML/CSS", "heavierOption": "Any framework template" },
+    { "number": 2, "name": "Styling and layout", "meaning": "Make it look decent and consistent", "lightestTool": "Tailwind + component kit", "heavierOption": "Plain CSS, Bootstrap" },
+    { "number": 3, "name": "Client interactivity", "meaning": "Filters, tooltips, drill-down without a page reload", "lightestTool": "D3 or vanilla JS; Streamlit/Dash if you want no JS", "heavierOption": "React, Angular" },
+    { "number": 4, "name": "API: providing", "meaning": "Expose data or a model over HTTP", "lightestTool": "FastAPI or Flask", "heavierOption": "Django REST Framework" },
+    { "number": 5, "name": "API: consuming", "meaning": "A page or service calls an API", "lightestTool": "fetch in JS", "heavierOption": "React data hooks, Angular HttpClient" },
+    { "number": 6, "name": "Server-side compute", "meaning": "Run pandas or a model per request", "lightestTool": "Streamlit/Dash, or any Python web framework", "heavierOption": "Same, plus a job queue (#12)" },
+    { "number": 7, "name": "Persistence", "meaning": "Save records", "lightestTool": "SQLite via Django ORM or SQLAlchemy", "heavierOption": "Postgres" },
+    { "number": 8, "name": "Forms and CRUD", "meaning": "Validated create/edit/delete", "lightestTool": "Django forms + admin", "heavierOption": "Pydantic + React forms" },
+    { "number": 9, "name": "Authentication", "meaning": "Who is this user?", "lightestTool": "Django built-in; Streamlit st.login", "heavierOption": "FastAPI OAuth2/JWT, Flask-Login" },
+    { "number": 10, "name": "Authorization", "meaning": "What may they do or see?", "lightestTool": "Django groups/permissions", "heavierOption": "Hand-written checks per endpoint" },
+    { "number": 11, "name": "Session and state", "meaning": "Remember a user's choices", "lightestTool": "Django sessions, Streamlit session_state", "heavierOption": "React state, a database" },
+    { "number": 12, "name": "Background and long jobs", "meaning": "Work that outlives one HTTP request", "lightestTool": "See references/background-jobs.md", "heavierOption": "Task queue + worker" }
+  ],
+  "rungs": [
+    { "rung": 1, "stackIds": ["static-html-d3"], "name": "Static HTML + D3 (+ Tailwind)", "description": "Show a finished result. No server." },
+    { "rung": 2, "stackIds": ["streamlit", "dash"], "name": "Streamlit or Dash", "description": "Explore data, or a tool for peers. Python only, no JS." },
+    { "rung": 3, "stackIds": ["fastapi"], "name": "Flask or FastAPI", "description": "Serve a model or data over HTTP." },
+    { "rung": 4, "stackIds": ["django"], "name": "Django (+ Tailwind kit)", "description": "Users, database, forms, admin. A multi-user prototype." },
+    { "rung": 5, "stackIds": ["react-api"], "name": "React (or Angular) + Tailwind over an API", "description": "Only when the UI is genuinely app-like (instant updates, keyboard-driven, complex client state)." }
+  ],
+  "useCases": [
+    {
+      "key": "share-a-chart",
+      "label": "Share a chart with teammates",
+      "needs": [1, 2, 3],
+      "flags": {},
+      "displayStack": "Static HTML + D3 (+ Tailwind)",
+      "why": "No server to run; the data ships as JSON/CSV."
+    },
+    {
+      "key": "explore-a-dataset",
+      "label": "Explore a dataset",
+      "needs": [3, 6],
+      "flags": { "layoutControl": false },
+      "displayStack": "Streamlit first; D3 only for custom visuals",
+      "why": "Fastest path from a DataFrame to widgets."
+    },
+    {
+      "key": "peer-dashboard",
+      "label": "Metrics dashboard for peers",
+      "needs": [3, 6],
+      "flags": { "layoutControl": true },
+      "displayStack": "Dash",
+      "why": "More layout and callback control than Streamlit. (Functionality 9, authentication, is sometimes also needed here - marked \"maybe\" in the source table - but is not required to reach this pick, so it is left off this use case's needs.)"
+    },
+    {
+      "key": "demo-a-model",
+      "label": "Demo a model",
+      "needs": [4, 6],
+      "flags": {},
+      "displayStack": "FastAPI, plus a Streamlit page if a UI is wanted",
+      "why": "/docs gives a free interactive form."
+    },
+    {
+      "key": "labeling-tool",
+      "label": "Labeling or review tool",
+      "needs": [7, 8, 9, 10],
+      "flags": {},
+      "displayStack": "Django",
+      "why": "Forms, auth, admin and ownership filtering are solved."
+    },
+    {
+      "key": "multi-user-prototype-django",
+      "label": "Multi-user product prototype (default UI)",
+      "needs": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
+      "flags": { "appLikeUi": false },
+      "displayStack": "Django + Tailwind kit",
+      "why": "One project vs two - only pay for a second project when the UI is genuinely app-like."
+    },
+    {
+      "key": "multi-user-prototype-app-like",
+      "label": "Multi-user product prototype (app-like UI)",
+      "needs": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
+      "flags": { "appLikeUi": true },
+      "displayStack": "React + shadcn/ui over an API",
+      "why": "Same functionality set as the default-UI case above - only the app-like-UI flag differs, which is exactly what use-cases.md's \"When to escalate a rung\" describes for Django to React+API."
+    },
+    {
+      "key": "pipeline-ends-in-a-page",
+      "label": "Pipeline that ends in a page",
+      "needs": [1, 3],
+      "flags": {},
+      "displayStack": "Python writes JSON, static D3 renders it",
+      "why": "Nothing live to keep running. (The source use case also lists an upstream \"data stages\" need, which is a Python pipeline step outside the 12 web functionalities, so it does not appear in this needs list.)"
+    },
+    {
+      "key": "throwaway-experiment",
+      "label": "Throwaway experiment",
+      "needs": [1, 3],
+      "flags": {},
+      "displayStack": "Plain HTML/JS",
+      "why": "No build, no dependencies."
+    }
+  ],
+  "audienceTable": [
+    { "audience": "peers", "label": "Fellow data people (DS, analysts, DE)", "leanToward": "Streamlit, Dash, FastAPI /docs" },
+    { "audience": "business-readonly", "label": "Business users, read-only", "leanToward": "Static D3 or Dash, polished with a Tailwind kit" },
+    { "audience": "business-interactive", "label": "Business users, interactive with accounts", "leanToward": "Django + Tailwind kit, or React + shadcn/ui" }
+  ],
+  "escalations": [
+    {
+      "id": "escalation-d1-accounts-with-visibility",
+      "from": "Streamlit/Dash",
+      "to": "Django",
+      "trigger": "You need accounts with different data visibility, saved records, or a back-office screen."
+    },
+    {
+      "id": "escalation-d2-reimplementing-django-features",
+      "from": "Flask/FastAPI",
+      "to": "Django",
+      "trigger": "You are re-implementing auth, an ORM layer and an admin."
+    },
+    {
+      "id": "escalation-d3-app-like-or-external-consumer",
+      "from": "Django",
+      "to": "React (or Angular) + API",
+      "trigger": "The UI needs instant, app-like interaction, or other systems also need the API, or a front-end engineer will own the UI. Django can grow into this later by adding Django REST Framework; the data model survives."
+    }
+  ],
+  "cautions": [
+    "Authorization must be enforced on the server. Hiding a button in React is not security.",
+    "FastAPI and Tailwind were verified by building and running them (demos/labeling-fastapi-react/, demos/labeling-django/ - in the skill's source repo, not this project). Streamlit and Dash were written from documentation and general knowledge only.",
+    "This skill is self-contained and ships no code - a demos/... path it cites is evidence a claim was tested in the skill's source repo, not a folder present wherever the skill is installed.",
+    "RQ needs os.fork (no native Windows; WSL required). Celery has dropped Windows support (the solo pool is a dev-only workaround). Huey can use SQLite storage - the verified local default (demos/long-jobs/)."
+  ],
+  "toolStatus": [
+    { "tool": "FastAPI", "status": "run", "note": "demos/labeling-fastapi-react/ (skill's source repo)" },
+    { "tool": "Tailwind (CDN browser build + @tailwindcss/vite)", "status": "run", "note": "demos/labeling-django/ and demos/labeling-fastapi-react/web/ (skill's source repo)" },
+    { "tool": "Django", "status": "run", "note": "demos/labeling-django/ (skill's source repo)" },
+    { "tool": "Huey on SQLite", "status": "run", "note": "demos/long-jobs/ (skill's source repo)" },
+    { "tool": "D3 + static HTML", "status": "run", "note": "this demo (psa-terminal-map) and dataviz-python-js/d3-interactive-web/" },
+    { "tool": "Streamlit", "status": "documentation-only", "note": "written from documentation and general knowledge only, not run in the skill's source repo" },
+    { "tool": "Dash", "status": "documentation-only", "note": "written from documentation and general knowledge only, not run in the skill's source repo" }
+  ]
+}

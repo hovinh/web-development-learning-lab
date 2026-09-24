@@ -1,9 +1,12 @@
 # Tailwind CSS
 
 **Status: verified by running.** In the skill's source repo (link in `SKILL.md`; not folders in
-this project): `demos/labeling-django/` (the CDN browser build route below) and
-`demos/labeling-fastapi-react/web/` (the `@tailwindcss/vite` build-step route). Both actually
-started and viewed, not just written from documentation.
+this project): `demos/labeling-django/` (the CDN browser build route below, on Django templates),
+`demos/labeling-fastapi-react/web/` (the `@tailwindcss/vite` build-step route), and
+`demos/psa-terminal-map/` (the CDN browser build route again, this time on a static, no-backend
+page with no framework templates at all - the same daisyUI CDN pairing as `labeling-django/`,
+confirming the route doesn't depend on Django being present). All three actually started and
+viewed, not just written from documentation.
 
 ## What it is for
 

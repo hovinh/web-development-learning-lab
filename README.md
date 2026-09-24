@@ -40,7 +40,7 @@ Cross-cutting, not book folders:
 
 - [`sandpit/`](sandpit/README.md) — scratch area for quick, throwaway experiments (not a curriculum stage).
 - [`deploy/`](deploy/README.md) — puts `dataviz-python-js/data-serve`+`d3-interactive-web` (Render + GitHub Pages, auto-deploying on every push) and `django-impatient/moviereviews` ([PythonAnywhere](deploy/pythonanywhere.md), manual redeploy) on free public hosting.
-- [`demos/`](demos/README.md) — three runnable demos (Django labeling app, FastAPI+React labeling app, Huey/SQLite long-jobs app) that back specific claims in the `blog/` post `web-dev-for-data-people` and the `web-stack-advisor` skill's worked examples, rather than teaching a new curriculum topic.
+- [`demos/`](demos/README.md) — four runnable demos (Django labeling app, FastAPI+React labeling app, Huey/SQLite long-jobs app, and a static D3 PSA terminal map) that back specific claims in the `blog/` post `web-dev-for-data-people` and the `web-stack-advisor` skill's worked examples and ladder, rather than teaching a new curriculum topic.
 
 ## Python setup
 
@@ -105,7 +105,7 @@ time.
 
 ## Tooling scope
 
-When choosing a tool for a use case, the toolkit in scope is: HTML/CSS, JavaScript, jQuery, D3, React, Angular, Flask, Django, FastAPI, Tailwind CSS and the Python data stack (all explored here — FastAPI and Tailwind specifically via [`demos/`](demos/README.md), a runnable comparison rather than a curriculum stage), plus **Streamlit and Dash**, which are in scope for recommendations but have no code in this repo. Deployment is out of scope (local only). End users are often non-technical business people, so clean, standard-looking UI matters.
+When choosing a tool for a use case, the toolkit in scope is: HTML/CSS, JavaScript, jQuery, D3, React, Angular, Flask, Django, FastAPI, Tailwind CSS and the Python data stack (all explored here — FastAPI, Django, and Tailwind (CDN browser build + daisyUI, and `@tailwindcss/vite`) specifically via [`demos/`](demos/README.md), a runnable comparison rather than a curriculum stage; D3 + static-HTML at rung 1 of the `web-stack-advisor` skill's own ladder via `demos/psa-terminal-map/`), plus **Streamlit and Dash**, which are in scope for recommendations but have no code in this repo. Deployment is out of scope (local only). End users are often non-technical business people, so clean, standard-looking UI matters.
 
 The same guidance is packaged as a reusable skill, [`.claude/skills/web-stack-advisor/`](.claude/skills/web-stack-advisor/SKILL.md), that can be copied into other projects. Blog drafts live in [`blog/`](blog/README.md).
 

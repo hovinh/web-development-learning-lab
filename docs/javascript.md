@@ -54,6 +54,29 @@ Best practices for implementing JavaScript stages in this repo. This is a learni
 
 - Use [Jest](https://jestjs.io/) (or `node --test` for very small stages that don't want an extra dependency). Put tests in a `tests/` folder inside the stage, named `<topic>.test.js`.
 - Not every stage needs exhaustive tests — this is a learning lab, so tests are most valuable where they help verify understanding of the stage's core mechanic, not as blanket coverage.
+- **`node --test`** is Node's own built-in test runner (stable since Node 18), and the default choice for a zero-dependency stage on Node 18+: no `package.json` dependency to add, `import { test } from "node:test"` plus `node:assert/strict`, and `"scripts": { "test": "node --test tests/" }` runs every `tests/*.test.js` file. `dataviz-python-js/d3-interactive-web/` hand-rolled its own tiny test runner instead only because the machine's Node at the time (v14) predated `node --test` — that workaround is no longer needed on a current Node install (verified on Node v20.18.1 in `demos/psa-terminal-map/`); don't copy the hand-rolled-runner pattern into a new stage without first checking whether `node --test` is simply available now.
+
+## Vendoring a third-party data file
+
+Occasionally a stage needs a static data file from an external package that has no CDN-importable
+JS API of its own — e.g. a TopoJSON/GeoJSON basemap. Rather than fetching it from a CDN at page
+load (adding a runtime dependency on that CDN staying up, and breaking offline use), download it
+once and commit it into the stage's own `data/` folder ("vendoring"). Rules for this:
+
+- Only for a file that is genuinely third-party and public domain or permissively licensed (e.g.
+  Natural Earth-derived world topology, public domain) — never vendor something under a license
+  that forbids redistribution.
+- Attribute it in the stage's `README.md`: where it came from (the exact package/URL), its
+  license, and the date it was fetched, so it can be re-fetched or updated later without
+  re-deriving where it originally came from.
+- Keep it as small as practical for the stage's purpose (e.g. a 110m-resolution world topology
+  rather than a 10m one, when only a small illustrative map is needed) — see
+  `demos/psa-terminal-map/data/world-110m.json` (vendored from `world-atlas`'s 110m land
+  topology) for a worked example.
+- The file is committed, not gitignored — unlike this repo's usual "generated output is
+  gitignored and reproducible by re-running a script" convention, a vendored file isn't
+  reproducible from anything else already in the repo, so it has to be committed to make the
+  stage self-contained.
 
 ## Running stage code
 

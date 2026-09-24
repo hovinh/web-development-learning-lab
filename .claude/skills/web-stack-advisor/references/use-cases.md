@@ -4,7 +4,7 @@ Numbers refer to `functionalities.md`.
 
 | Use case | Functions needed | Recommended stack | Why |
 |---|---|---|---|
-| Share a chart with teammates | 1, 2, 3 | Static HTML + D3 (+ Tailwind) | No server to run; the data ships as JSON/CSV |
+| Share a chart with teammates [^1] | 1, 2, 3 | Static HTML + D3 (+ Tailwind) | No server to run; the data ships as JSON/CSV |
 | Explore a dataset | 3, 6 | Streamlit first; D3 only for custom visuals | Fastest path from a DataFrame to widgets |
 | Metrics dashboard for peers | 3, 6, maybe 9 | Dash | More layout and callback control than Streamlit |
 | Demo a model | 4, 6 | FastAPI, plus a Streamlit page if a UI is wanted | `/docs` gives a free interactive form |
@@ -32,3 +32,10 @@ be fine for a peer and look unfinished to a manager.
 - Django to React + API: the UI needs instant, app-like interaction, or other systems
   also need the API, or a front-end engineer will own the UI. Django can grow into this
   later by adding Django REST Framework; the data model survives.
+
+[^1]: **Status: verified by running**, and by a test suite. In the skill's source repo (link in
+    `SKILL.md`; not a folder in this project): `demos/psa-terminal-map/` is a static HTML + D3 +
+    Tailwind page built specifically at this row's recommended rung, and it renders this skill's
+    own functionality table and ladder as its build trail. Its `tests/advisor.test.js` asserts
+    that all eight use cases in this file, including this one, produce the stack documented here
+    - not just this row, but every row above.

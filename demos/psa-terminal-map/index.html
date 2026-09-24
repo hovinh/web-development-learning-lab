@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>PSA global terminal map — web-stack-advisor demo</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%232a78d6'/%3E%3Ccircle cx='30' cy='40' r='8' fill='%23fff'/%3E%3Ccircle cx='55' cy='55' r='10' fill='%23fff'/%3E%3Ccircle cx='72' cy='38' r='6' fill='%23fff'/%3E%3C/svg%3E" />
+
+    <!--
+      Tailwind 4 + daisyUI 5, both loaded as browser builds straight from a
+      CDN - the exact route demos/labeling-django/ verified (see
+      .claude/skills/web-stack-advisor/references/tools/tailwind.md and
+      this repo's docs/javascript.md). Prototype-only: recompiles on every
+      load and needs internet access. css/style.css layers the dataviz
+      skill's palette and this page's D3-specific marks (bars, circles,
+      chips) on top - Tailwind/daisyUI cover layout and off-the-shelf
+      components (navbar, buttons, cards), css/style.css covers everything
+      the chart code itself draws.
+    -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body class="viz-root min-h-screen">
+    <!-- Sticky nav across the three acts (PLAN.md: "three acts on one
+         scrolling page, sticky nav") -->
+    <div class="navbar bg-base-100 shadow-sm px-4 sticky top-0 z-10 site-navbar">
+      <div class="flex-1">
+        <span class="btn btn-ghost text-lg pointer-events-none">PSA global terminal map</span>
+      </div>
+      <div class="flex-none gap-1">
+        <a href="#the-map" class="btn btn-ghost btn-sm">1. The map</a>
+        <a href="#build-trail" class="btn btn-ghost btn-sm">2. Why this stack</a>
+        <a href="#advisor" class="btn btn-ghost btn-sm">3. Try the advisor</a>
+      </div>
+    </div>
+
+    <header class="page-header">
+      <h1>PSA International's global terminal network</h1>
+      <p class="tagline">
+        A showcase for the
+        <code>web-stack-advisor</code>
+        skill: this page is deliberately built at <strong>rung 1</strong> of the skill's own
+        ladder - static HTML + D3 + Tailwind - because that is exactly what the skill
+        recommends for "share a finished chart". Scroll down to see the skill's own reasoning
+        for that choice (Act 2), or drive the same reasoning yourself on a different use case
+        (Act 3).
+      </p>
+      <dl class="kpi-row" aria-label="Dataset summary">
+        <div class="kpi-tile">
+          <dt>Countries</dt>
+          <dd id="kpi-countries">—</dd>
+        </div>
+        <div class="kpi-tile">
+          <dt>Terminals in this dataset</dt>
+          <dd id="kpi-terminals">—</dd>
+        </div>
+        <div class="kpi-tile">
+          <dt>PSA group throughput</dt>
+          <dd id="kpi-group-teu">—</dd>
+        </div>
+      </dl>
+    </header>
+
+    <main>
+      <!-- ============================= Act 1 ============================= -->
+      <section id="the-map" class="act-section" aria-label="Act 1: the map">
+        <h2>1. The map</h2>
+
+        <section class="filters-row" aria-label="Filter terminals">
+          <div id="region-chips" class="region-chips" aria-label="Filter and legend, by PSA region"></div>
+          <label class="filter-control">
+            <span class="sr-only">Search terminals</span>
+            <input id="terminal-search" type="search" placeholder="Search terminal or country…" class="input input-sm" />
+          </label>
+          <button id="reset-filters" type="button" class="btn btn-sm btn-ghost">Reset filters</button>
+          <button id="reset-view" type="button" class="btn btn-sm btn-ghost">Reset view</button>
+          <span id="result-count" class="result-count" aria-live="polite"></span>
+        </section>
+
+        <div class="map-detail-grid">
+          <div id="map" class="map-container" aria-label="World map of PSA terminals"></div>
+          <aside id="detail-panel" class="detail-panel" aria-label="Selected terminal detail card">
+            <p class="detail-placeholder">Select a terminal on the map, or a bar on the top-15 chart, to see its detail card.</p>
+          </aside>
+        </div>
+
+        <p class="charts-note">
+          Both charts below are cross-filtered with the map: clicking a region chip or a region
+          bar sets the same region filter the map uses; the search box narrows all three at once.
+          The region-capacity chart itself always shows all five regions (so there is always
+          something to click back to) — only the search box changes its totals.
+        </p>
+        <div class="charts-grid">
+          <figure class="chart-card">
+            <figcaption>Designed capacity by region</figcaption>
+            <div id="chart-region" class="chart"></div>
+          </figure>
+          <figure class="chart-card">
+            <figcaption>Top 15 terminals by designed capacity</figcaption>
+            <div id="chart-top-terminals" class="chart"></div>
+          </figure>
+        </div>
+      </section>
+
+      <!-- ============================= Act 2 ============================= -->
+      <section id="build-trail" class="act-section" aria-label="Act 2: why this stack">
+        <h2>2. Why this stack</h2>
+        <p class="section-intro">
+          Rendered from <code>data/advisor-model.json</code> and <code>data/this-app-verdict.json</code>
+          — this app's own answer to every question the <code>web-stack-advisor</code> skill asks,
+          not a paragraph written once and left to go stale.
+        </p>
+
+        <h3>This app's 12-functionality verdict</h3>
+        <div class="table-scroll">
+          <table class="functionality-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Functionality</th>
+                <th>Needed?</th>
+                <th>Tool chosen</th>
+                <th>Why</th>
+              </tr>
+            </thead>
+            <tbody id="functionality-table-body"></tbody>
+          </table>
+        </div>
+
+        <h3>The five-rung ladder</h3>
+        <ol id="ladder" class="ladder"></ol>
+
+        <h3>When to escalate a rung</h3>
+        <ul id="escalations-list" class="escalations-list"></ul>
+
+        <h3>Gaps and cautions for this app</h3>
+        <ul id="build-trail-gaps" class="gaps-list"></ul>
+      </section>
+
+      <!-- ============================= Act 3 ============================= -->
+      <section id="advisor" class="act-section" aria-label="Act 3: try the advisor">
+        <h2>3. Try the advisor</h2>
+        <p class="section-intro">
+          Pick one of the skill's eight documented use cases, or answer its five intake
+          questions yourself — both paths run through the exact same
+          <code>js/advisor.js</code> logic that <code>tests/advisor.test.js</code> checks
+          against all eight documented cases.
+        </p>
+
+        <h3>Shortcut: a documented use case</h3>
+        <div id="use-case-shortcuts" class="use-case-shortcuts"></div>
+
+        <h3>Or answer the skill's five intake questions</h3>
+        <form id="intake-form" class="intake-form">
+          <label class="intake-field">
+            Who uses it?
+            <select name="audience" class="select select-sm">
+              <option value="peers">Fellow data people (DS, analysts, DE)</option>
+              <option value="business-readonly">Business users, read-only</option>
+              <option value="business-interactive">Business users, interactive with accounts</option>
+            </select>
+          </label>
+          <label class="intake-field">
+            One user or many?
+            <select name="users" class="select select-sm">
+              <option value="one">One user</option>
+              <option value="many-same-data">Many users, same data</option>
+              <option value="many-different-data">Many users, log in, see different data</option>
+            </select>
+          </label>
+          <label class="intake-checkbox">
+            <input type="checkbox" name="savesAnything" class="checkbox checkbox-sm" />
+            Does it save anything?
+          </label>
+          <label class="intake-checkbox">
+            <input type="checkbox" name="slowerThanFewSeconds" class="checkbox checkbox-sm" />
+            Does any step take longer than a few seconds?
+          </label>
+          <label class="intake-checkbox">
+            <input type="checkbox" name="anotherSystemCallsIt" class="checkbox checkbox-sm" />
+            Does another system need to call it (API)?
+          </label>
+          <label class="intake-checkbox">
+            <input type="checkbox" name="appLikeUi" class="checkbox checkbox-sm" disabled />
+            …and does the UI itself need to be app-like (instant updates, complex client state)?
+          </label>
+          <button type="submit" class="btn btn-primary btn-sm">Get a recommendation</button>
+        </form>
+
+        <h3>The 12 functionalities</h3>
+        <div id="functionality-lights" class="functionality-lights" aria-label="Which of the 12 functionalities this case needs"></div>
+
+        <div id="advisor-result" class="advisor-result is-empty" aria-live="polite">
+          <p class="advisor-result-source" id="advisor-result-source"></p>
+          <p class="advisor-result-headline">
+            <span id="advisor-result-rung"></span> — <span id="advisor-result-stack"></span>
+          </p>
+          <p id="advisor-result-reason"></p>
+          <p id="advisor-result-tool-status" class="advisor-result-tool-status"></p>
+          <h4 id="advisor-result-gaps-heading">Flagged gaps</h4>
+          <ul id="advisor-result-gaps"></ul>
+        </div>
+      </section>
+    </main>
+
+    <div id="tooltip" class="viz-tooltip" role="status" hidden></div>
+
+    <script type="module" src="js/app.js"></script>
+  </body>
+</html>

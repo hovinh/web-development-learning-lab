@@ -1,0 +1,25 @@
+{
+  "_comment": "This app's own 12-row verdict against advisor-model.json's functionality table - rendered by buildTrail.js as Act 2, 'Why this stack'. Written by hand rather than derived by running js/advisor.js on this app's own intake answers, so the build trail can explain each row in this app's own words (a generic auto-derivation would only restate the functionality table, not argue for a rung).",
+  "appliedTo": "demos/psa-terminal-map (this app)",
+  "rung": 1,
+  "stackId": "static-html-d3",
+  "rows": [
+    { "number": 1, "needed": true, "tool": "HTML", "why": "The whole page - map, charts, build trail, advisor - is one static index.html." },
+    { "number": 2, "needed": true, "tool": "Tailwind + daisyUI (CDN browser build)", "why": "A polished look for a business-readable page, no build step - the exact route use-cases.md's audience table recommends for a read-only business audience." },
+    { "number": 3, "needed": true, "tool": "D3 v7", "why": "Zoom/pan, hover tooltips, click-through detail cards, and cross-filtering the map with both companion charts - all without a page reload." },
+    { "number": 4, "needed": false, "tool": "—", "why": "Nothing outside this page needs to call this app for data." },
+    { "number": 5, "needed": false, "tool": "—", "why": "The page fetches its own static JSON/TopoJSON files, not a live API - that is functionality 1 (presentation) serving pre-built data, not functionality 5." },
+    { "number": 6, "needed": false, "tool": "—", "why": "No per-request server compute - every aggregate (region totals, the top-15 ranking) is computed once in the browser from the static data, in js/data.js." },
+    { "number": 7, "needed": false, "tool": "—", "why": "Nothing is saved. The terminal dataset is a build-time research artifact (data/terminals.json), not a database." },
+    { "number": 8, "needed": false, "tool": "—", "why": "No create/edit/delete of any record - the page is read-only." },
+    { "number": 9, "needed": false, "tool": "—", "why": "No accounts. Every visitor sees the same public data." },
+    { "number": 10, "needed": false, "tool": "—", "why": "No per-user visibility to enforce - see 9." },
+    { "number": 11, "needed": false, "tool": "—", "why": "The current filter/selection lives in js/app.js's in-memory state for the length of one page view; nothing is remembered across visits, so there is no session to manage." },
+    { "number": 12, "needed": false, "tool": "—", "why": "Every computation here finishes well under a second - see references/background-jobs.md for when this would flip." }
+  ],
+  "escalationTriggers": [
+    "Reviewers needing accounts to comment on or curate terminals → escalation D-1 (Streamlit/Dash to Django) - except this app has no server-side compute to begin with, so it would first need to grow into rung 2 or 3.",
+    "Live PSA throughput figures replacing this dataset's static, dated snapshot → rung 3, a small API (functionality 4) serving fresher data to the same D3 front end - see this README's 'Out of scope' section.",
+    "The build trail or advisor wanting to save a visitor's own scenario → functionality 7 (persistence), which nothing here currently needs."
+  ]
+}

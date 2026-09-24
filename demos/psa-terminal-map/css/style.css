@@ -1,0 +1,689 @@
+/* Palette: identical to dataviz-python-js/d3-interactive-web/css/style.css
+   - the repo's dataviz skill's validated default palette, defined as CSS
+   custom properties on .viz-root per the skill's convention, so every
+   chart/component below references a role (--series-1, --text-primary,
+   ...) instead of a raw hex, and so this app's map/charts read as the
+   same system as that stage's charts if seen side by side. Region colors
+   (js/map.js's regionColor()) draw from --series-1..5, five of this
+   palette's validated eight categorical slots. */
+.viz-root {
+  color-scheme: light;
+  --page-plane: #f9f9f7;
+  --surface-1: #fcfcfb;
+  --text-primary: #0b0b0b;
+  --text-secondary: #52514e;
+  --text-muted: #898781;
+  --gridline: #e1e0d9;
+  --baseline: #c3c2b7;
+  --border: rgba(11, 11, 11, 0.1);
+  --series-1: #2a78d6; /* blue */
+  --series-2: #008300; /* green */
+  --series-3: #e87ba4; /* magenta */
+  --series-4: #eda100; /* yellow */
+  --series-5: #1baf7a; /* aqua */
+  --series-6: #eb6834; /* orange */
+}
+
+@media (prefers-color-scheme: dark) {
+  .viz-root {
+    color-scheme: dark;
+    --page-plane: #0d0d0d;
+    --surface-1: #1a1a19;
+    --text-primary: #ffffff;
+    --text-secondary: #c3c2b7;
+    --text-muted: #898781;
+    --gridline: #2c2c2a;
+    --baseline: #383835;
+    --border: rgba(255, 255, 255, 0.1);
+    --series-1: #3987e5;
+    --series-2: #008300;
+    --series-3: #d55181;
+    --series-4: #c98500;
+    --series-5: #199e70;
+    --series-6: #d95926;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family:
+    system-ui,
+    -apple-system,
+    "Segoe UI",
+    sans-serif;
+  background: var(--page-plane);
+  color: var(--text-primary);
+  /* Belt-and-braces alongside .site-navbar's flex-wrap fix below: no
+     element in this page is meant to force horizontal scroll (the one
+     intentionally wide element, the functionality table, scrolls inside
+     its own .table-scroll wrapper instead). */
+  overflow-x: hidden;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
+
+/* ---------- Nav + header ---------- */
+
+.site-navbar {
+  background: var(--surface-1) !important;
+  border-bottom: 1px solid var(--border);
+  /* daisyUI's .navbar is a plain flex row with no wrap - at phone width
+     the title plus three nav links (see index.html) are wider than the
+     viewport, which pushed the whole page into horizontal scroll (caught
+     by a Playwright phone-width check, not visible at desktop width).
+     Letting the row wrap keeps every link on-screen instead. */
+  flex-wrap: wrap;
+  row-gap: 4px;
+}
+
+/* daisyUI's own .btn-ghost text color is tuned for its own theme's
+   base-100 surface, not this page's --surface-1 override just above - in
+   dark mode the two disagreed badly enough to read as barely-visible
+   gray-on-near-black (caught by a Playwright dark-mode screenshot, not
+   visible without one). Target the classes directly rather than relying
+   on inheritance, since daisyUI's component classes set color themselves. */
+.site-navbar .btn-ghost {
+  color: var(--text-primary) !important;
+}
+
+.page-header {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px 20px 8px;
+}
+
+.page-header h1 {
+  margin: 0 0 8px;
+  font-size: 26px;
+}
+
+.tagline {
+  margin: 0 0 20px;
+  color: var(--text-secondary);
+  max-width: 80ch;
+  line-height: 1.6;
+}
+
+.tagline code {
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1px 5px;
+  font-size: 0.92em;
+}
+
+.kpi-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin: 0 0 12px;
+}
+
+.kpi-tile {
+  flex: 1 1 180px;
+  padding: 12px 16px;
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.kpi-tile dt {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+
+.kpi-tile dd {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 600;
+}
+
+/* ---------- Section shell ---------- */
+
+.act-section {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 32px 20px;
+  border-top: 1px solid var(--border);
+}
+
+.act-section h2 {
+  margin: 0 0 8px;
+  font-size: 22px;
+}
+
+.act-section h3 {
+  margin: 28px 0 10px;
+  font-size: 16px;
+}
+
+.section-intro,
+.charts-note {
+  margin: 0 0 16px;
+  color: var(--text-secondary);
+  font-size: 13px;
+  max-width: 80ch;
+  line-height: 1.6;
+}
+
+/* ---------- Act 1: filters ---------- */
+
+.filters-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.region-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.region-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font: inherit;
+  font-size: 12px;
+  color: var(--text-secondary);
+  background: var(--page-plane);
+  border: 1px solid var(--baseline);
+  border-radius: 999px;
+  padding: 4px 10px 4px 8px;
+  cursor: pointer;
+}
+
+.region-chip.is-selected {
+  color: var(--text-primary);
+  border-color: var(--chip-color, var(--text-primary));
+  background: color-mix(in srgb, var(--chip-color, var(--text-primary)) 14%, var(--page-plane));
+}
+
+.region-chip-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.result-count {
+  margin-left: auto;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+/* Same daisyUI-vs-page-palette mismatch as .site-navbar above: the
+   .input class's default background is daisyUI's own light-theme white,
+   which never adapted to this page's dark-mode override and rendered as
+   a jarring solid-white box on a near-black page. */
+#terminal-search {
+  background: var(--page-plane) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--baseline) !important;
+}
+
+/* ---------- Act 1: map + detail ---------- */
+
+.map-detail-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+@media (max-width: 760px) {
+  .map-detail-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.map-container {
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.map-container svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  cursor: grab;
+}
+
+.map-land {
+  fill: var(--baseline);
+  stroke: var(--surface-1);
+  stroke-width: 0.5;
+}
+
+.mark-circle,
+.mark-circle-unknown-capacity {
+  stroke: var(--surface-1);
+  stroke-width: 1;
+}
+
+.mark-circle-unknown-capacity {
+  fill-opacity: 0.55;
+  stroke-dasharray: 2 1.5;
+}
+
+.mark-circle.is-selected,
+.mark-circle-unknown-capacity.is-selected {
+  stroke: var(--text-primary);
+  stroke-width: 2px;
+}
+
+.detail-panel {
+  padding: 16px;
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow-y: auto;
+  max-height: 480px;
+}
+
+.detail-placeholder {
+  color: var(--text-muted);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.detail-region-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+}
+
+.region-badge-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.detail-name {
+  margin: 0 0 2px;
+  font-size: 18px;
+}
+
+.detail-country {
+  margin: 0 0 12px;
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.detail-facts {
+  margin: 0 0 10px;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 6px 12px;
+  font-size: 13px;
+}
+
+.detail-facts dt {
+  color: var(--text-muted);
+}
+
+.detail-facts dd {
+  margin: 0;
+  color: var(--text-primary);
+}
+
+.detail-approx-note {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-style: italic;
+  margin: 0 0 10px;
+}
+
+.detail-sources {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.detail-sources a {
+  color: var(--series-1);
+}
+
+.detail-retrieved {
+  color: var(--text-muted);
+}
+
+/* ---------- Charts (shared: Act 1's two companion charts) ---------- */
+
+.charts-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+@media (max-width: 760px) {
+  .charts-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.chart-card {
+  margin: 0;
+  padding: 12px;
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.chart-card figcaption {
+  font-size: 14px;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.chart {
+  width: 100%;
+}
+
+.chart svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  overflow: visible;
+}
+
+.chart-empty-note {
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.mark-bar {
+  fill: var(--series-1);
+}
+
+.mark-bar.is-selected {
+  stroke: var(--text-primary);
+  stroke-width: 2px;
+  stroke-linejoin: round;
+}
+
+.bar-value-label {
+  font-size: 11px;
+  fill: var(--text-secondary);
+}
+
+.gridlines line {
+  stroke: var(--gridline);
+  stroke-width: 1;
+  shape-rendering: crispEdges;
+}
+
+.axis .domain {
+  stroke: var(--baseline);
+}
+
+.axis .tick line {
+  stroke: var(--baseline);
+}
+
+.axis text {
+  fill: var(--text-muted);
+  font-size: 11px;
+}
+
+/* ---------- Act 2: build trail ---------- */
+
+.table-scroll {
+  overflow-x: auto;
+}
+
+.functionality-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.functionality-table th,
+.functionality-table td {
+  text-align: left;
+  padding: 6px 10px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+
+.functionality-needed {
+  text-align: center;
+  font-weight: 600;
+}
+
+.functionality-needed.is-needed {
+  color: var(--series-2);
+}
+
+.functionality-needed.is-not-needed {
+  color: var(--text-muted);
+}
+
+.ladder {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ladder-rung {
+  display: grid;
+  grid-template-columns: 90px 1fr;
+  gap: 4px 12px;
+  padding: 10px 14px;
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 13px;
+}
+
+.ladder-rung.is-lit {
+  border-color: var(--series-1);
+  background: color-mix(in srgb, var(--series-1) 10%, var(--surface-1));
+}
+
+.ladder-rung-number {
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.ladder-rung-name {
+  font-weight: 600;
+}
+
+.ladder-rung-description,
+.ladder-rung-hint,
+.ladder-rung-demo-link {
+  grid-column: 2;
+  margin: 0;
+  color: var(--text-secondary);
+}
+
+.ladder-rung-hint:empty {
+  display: none;
+}
+
+.ladder-rung-demo-link a {
+  color: var(--series-1);
+}
+
+.escalations-list,
+.gaps-list,
+#advisor-result-gaps {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+/* ---------- Act 3: advisor ---------- */
+
+.use-case-shortcuts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.use-case-shortcut {
+  font: inherit;
+  font-size: 13px;
+  color: var(--text-primary);
+  background: var(--surface-1);
+  border: 1px solid var(--baseline);
+  border-radius: 6px;
+  padding: 6px 12px;
+  cursor: pointer;
+}
+
+.use-case-shortcut.is-selected {
+  border-color: var(--series-1);
+  background: color-mix(in srgb, var(--series-1) 12%, var(--surface-1));
+}
+
+.intake-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 20px;
+  align-items: center;
+  padding: 14px 16px;
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin-bottom: 8px;
+}
+
+.intake-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.intake-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+/* Same daisyUI-vs-page-palette mismatch as .site-navbar/#terminal-search
+   above - the .select class's light-theme background never adapted to
+   dark mode. */
+.intake-field .select {
+  background: var(--page-plane) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--baseline) !important;
+}
+
+.functionality-lights {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.functionality-light {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--page-plane);
+  border: 1px solid var(--baseline);
+  color: var(--text-muted);
+}
+
+.functionality-light.is-lit {
+  color: var(--text-primary);
+  border-color: var(--series-2);
+  background: color-mix(in srgb, var(--series-2) 14%, var(--page-plane));
+}
+
+.functionality-light-number {
+  font-weight: 600;
+}
+
+.advisor-result {
+  padding: 14px 16px;
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.advisor-result.is-empty {
+  color: var(--text-muted);
+}
+
+.advisor-result-source {
+  margin: 0 0 4px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.advisor-result-headline {
+  margin: 0 0 6px;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+#advisor-result-reason {
+  margin: 0 0 6px;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.advisor-result-tool-status {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin: 0 0 10px;
+}
+
+#advisor-result-gaps-heading {
+  margin: 10px 0 4px;
+  font-size: 13px;
+}
+
+/* ---------- Tooltip ---------- */
+
+.viz-tooltip {
+  position: fixed;
+  z-index: 20;
+  pointer-events: none;
+  background: var(--text-primary);
+  color: var(--surface-1);
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  white-space: nowrap;
+}

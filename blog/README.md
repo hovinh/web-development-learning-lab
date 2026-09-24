@@ -10,8 +10,10 @@ folder as `YYYY-MM-DD-<topic-slug>.md`.
   skill's GitHub folder (an intentional exception to the "don't link the repo" rule in
   blog-style.md, since the skill is the reader's download). Its two hardest claims (the
   Django-vs-FastAPI+React labeling-tool comparison, and the long-running-jobs shape) are now
-  backed by three runnable demos under `../demos/`, checkable rather than argued in prose alone -
-  see `../demos/README.md`. Whether to add demo links into the post body is the author's call, not
+  backed by two of four runnable demos under `../demos/`, checkable rather than argued in prose
+  alone - see `../demos/README.md`. A fourth demo, `../demos/psa-terminal-map/`, backs the post's
+  broader claim that the skill's own ladder/functionality method is checkable rather than just
+  written guidance. Whether to add demo links into the post body is the author's call, not
   done automatically (see blog-style.md's rule against linking this repo from a post).
 
 ## Candidate topics

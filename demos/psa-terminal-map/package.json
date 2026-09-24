@@ -1,0 +1,10 @@
+{
+  "name": "psa-terminal-map",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Static D3 map of PSA International's global container terminal network, and a build-trail + live advisor showcasing the web-stack-advisor skill.",
+  "scripts": {
+    "test": "node --test tests/"
+  }
+}

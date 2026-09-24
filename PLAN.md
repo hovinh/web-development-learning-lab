@@ -1,6 +1,6 @@
 # Plan — Demo 4: PSA Global Terminal Map (a showcase for the `web-stack-advisor` skill)
 
-Status: **planned, not implemented.** This file is the brief to hand to a future session (or to work through by hand).
+Status: **implemented**, at [`demos/psa-terminal-map/`](demos/psa-terminal-map/README.md) — see that folder's `README.md` for what was actually built (27 real, sourced PSA terminals rather than the ~30-45 estimated below) and `PROMPT.md` for the condensed build prompt. This file is kept as the original planning brief.
 
 ## Context
 

@@ -96,3 +96,9 @@ demos/long-jobs/huey.sqlite3
 # covered by that project's own scaffolded .gitignore (same precedent
 # as angular-typescripts-beginner/my-app/.gitignore) - nothing extra
 # needed here.
+
+# demos/psa-terminal-map: no entry needed. It's a static page with no
+# build step and no local database - every file it reads (data/*.json,
+# including the vendored data/world-110m.json - see docs/javascript.md's
+# "Vendoring a third-party data file") is committed on purpose, and
+# node_modules/ is already covered by the blanket rule above.
