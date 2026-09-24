@@ -21,7 +21,8 @@ Best practices for implementing Python stages in this repo. This is a learning l
       test_<topic>.py
   ```
 - Keep one concept per file. Beginners (future-you) should be able to guess a file's contents from its name.
-- Exception: a framework that mandates its own project layout (e.g. Scrapy's `scrapy startproject` scaffold - see `dataviz-python-js/data-scrape/pokemon_scrapy/`; Django's `django-admin startproject` scaffold - see `django-impatient/moviereviews/`) keeps that layout as-is rather than being forced into the shape above. Following the framework's own convention is more legible to anyone who already knows it than inventing a repo-specific variant.
+- Exception: a framework that mandates its own project layout (e.g. Scrapy's `scrapy startproject` scaffold - see `dataviz-python-js/data-scrape/pokemon_scrapy/`; Django's `django-admin startproject` scaffold - see `django-impatient/moviereviews/`, `django-for-beginners/`, and `demos/labeling-django/`) keeps that layout as-is rather than being forced into the shape above. Following the framework's own convention is more legible to anyone who already knows it than inventing a repo-specific variant.
+- FastAPI doesn't mandate a project layout the way Django/Scrapy do, so it follows this guide's flat default: `demos/labeling-fastapi-react/api/` and `demos/long-jobs/` are each a handful of top-level `.py` files (`main.py`/`app.py`, `database.py`, `models.py`, ...) with a `tests/` folder, no `src/` package. `demos/labeling-fastapi-react/api/main.py` additionally follows the house app-factory idiom (`create_app()` plus a module-level `app = create_app()`) already used by `rest-apis-flask/library-crud/app.py` and `dataviz-python-js/data-serve/app.py` - see that file's docstring.
 
 ## Style & readability
 

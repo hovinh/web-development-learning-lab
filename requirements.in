@@ -94,3 +94,43 @@ flask-smorest
 # stage has two test files/runners instead of the repo's usual pytest
 # alone.
 nose2
+
+# demos/labeling-fastapi-react and demos/long-jobs: the API framework
+# for both FastAPI demos.
+fastapi
+
+# demos/labeling-fastapi-react and demos/long-jobs: ASGI server both
+# FastAPI demos run under (plain, not the [standard] extra - neither
+# demo needs its optional watchfiles/httptools/uvloop extras beyond
+# what --reload already provides).
+uvicorn
+
+# demos/labeling-fastapi-react: mints and verifies the JWTs issued by
+# api/security.py - see that module's docstring for the OAuth2-password
+# + JWT pattern it follows from FastAPI's own docs.
+pyjwt
+
+# demos/labeling-fastapi-react: password hashing for api/security.py.
+# FastAPI's current docs recommend pwdlib over passlib (stale, last
+# released 2020) or fastapi-users (in maintenance mode) - see
+# .claude/skills/web-stack-advisor/references/multi-user.md. The
+# [argon2] extra pulls in the argon2-cffi backend, argon2's own current
+# recommendation over bcrypt for new projects.
+pwdlib[argon2]
+
+# demos/long-jobs: the background task queue backing the
+# "queued job, not a blocking request" demo - see
+# demos/long-jobs/README.md's "Why Huey on SQLite" section.
+huey
+
+# demos/labeling-fastapi-react and demos/long-jobs: FastAPI's
+# TestClient (used by both demos' pytest suites) is built on httpx, not
+# requests - it's a required test-time dependency, not bundled with
+# fastapi/starlette themselves.
+httpx
+
+# demos/labeling-fastapi-react: OAuth2PasswordRequestForm (api/main.py's
+# POST /auth/login) parses a multipart/form-encoded body, which FastAPI
+# only supports with python-multipart installed - not bundled with
+# fastapi itself.
+python-multipart

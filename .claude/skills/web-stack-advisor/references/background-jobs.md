@@ -3,6 +3,11 @@
 A web request must answer in seconds. Training a model, a big query or a scrape does
 not. The pattern is always the same:
 
+**This pattern is backed by a runnable demo**: `demos/long-jobs/` implements the blocking
+counter-example side by side with the queued version below, using Huey with SQLite storage on a
+real Windows machine - including confirming the `-k thread` consumer flag (see the
+recommendation below) is actually required, not just documented. See `demos/long-jobs/README.md`.
+
 1. The request **starts the job** and returns immediately with a job id.
 2. The job runs **elsewhere** (another thread, process or machine).
 3. Status and result are **stored** (a table, a file, a cache).

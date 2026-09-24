@@ -80,3 +80,19 @@ django-impatient/moviereviews/staticfiles/
 # library-crud: the SQLite database - reproducible by running app.py
 # again (create_app() calls db.create_all() on startup).
 rest-apis-flask/library-crud/library.db
+
+# demos: every demo's local dev database - reproducible by running that
+# demo's migrate/seed steps again (see each demo's README.md).
+demos/labeling-django/db.sqlite3
+demos/labeling-fastapi-react/api/labeling.db
+demos/long-jobs/jobs.sqlite3
+
+# demos/long-jobs: Huey's own SQLite-backed task queue storage -
+# reproducible; nothing in it is meant to persist across runs. See
+# demos/long-jobs/README.md's "Why Huey on SQLite" section.
+demos/long-jobs/huey.sqlite3
+
+# demos/labeling-fastapi-react/web: node_modules/dist are already
+# covered by that project's own scaffolded .gitignore (same precedent
+# as angular-typescripts-beginner/my-app/.gitignore) - nothing extra
+# needed here.

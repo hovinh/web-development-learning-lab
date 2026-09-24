@@ -1,0 +1,37 @@
+{% extends "labeling/base.html" %}
+
+{% block title %}Log in{% endblock %}
+
+{% block content %}
+  <div class="card bg-base-100 shadow-sm max-w-sm mx-auto">
+    <div class="card-body">
+      <h1 class="text-xl font-bold mb-4">Log in</h1>
+
+      {% if form.errors %}
+        <div class="alert alert-error text-sm mb-4">Wrong username or password.</div>
+      {% endif %}
+
+      <!--
+        This whole page - the view behind it, the form, the "wrong
+        password" error handling - is django.contrib.auth.urls'
+        LoginView, wired up with zero hand-written lines in
+        django_project/urls.py. Compare
+        demos/labeling-fastapi-react/api/security.py, which mints and
+        verifies its own JWTs by hand.
+      -->
+      <form method="post">
+        {% csrf_token %}
+        <fieldset class="fieldset">
+          <legend class="fieldset-legend">Username</legend>
+          {{ form.username }}
+        </fieldset>
+        <fieldset class="fieldset">
+          <legend class="fieldset-legend">Password</legend>
+          {{ form.password }}
+        </fieldset>
+        <input type="hidden" name="next" value="{{ next }}">
+        <button type="submit" class="btn btn-primary w-full mt-4">Log in</button>
+      </form>
+    </div>
+  </div>
+{% endblock %}

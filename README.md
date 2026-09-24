@@ -10,7 +10,7 @@ A personal, hands-on lab for working through a web development curriculum/book, 
 - Inside a book folder, one subfolder per stage/topic of that book's curriculum. Stages are self-contained; a later stage only depends on an earlier one if the book's material genuinely builds that way.
 - Each stage folder has its own `README.md` explaining the idea and implementation for that stage — that's the place to look for details on any specific topic.
 - Languages are primarily Python and JavaScript, chosen per stage based on what the curriculum covers at that point.
-- `deploy/`, `docs/`, and `sandpit/` are top-level too, but aren't book folders — they're cross-cutting and serve every book (deployment config, language guides, and scratch space respectively).
+- `deploy/`, `docs/`, `demos/`, and `sandpit/` are top-level too, but aren't book folders — they're cross-cutting and serve every book (deployment config, language guides, runnable comparison demos, and scratch space respectively).
 
 Books so far:
 
@@ -40,6 +40,7 @@ Cross-cutting, not book folders:
 
 - [`sandpit/`](sandpit/README.md) — scratch area for quick, throwaway experiments (not a curriculum stage).
 - [`deploy/`](deploy/README.md) — puts `dataviz-python-js/data-serve`+`d3-interactive-web` (Render + GitHub Pages, auto-deploying on every push) and `django-impatient/moviereviews` ([PythonAnywhere](deploy/pythonanywhere.md), manual redeploy) on free public hosting.
+- [`demos/`](demos/README.md) — three runnable demos (Django labeling app, FastAPI+React labeling app, Huey/SQLite long-jobs app) that back specific claims in the `blog/` post `web-dev-for-data-people` and the `web-stack-advisor` skill's worked examples, rather than teaching a new curriculum topic.
 
 ## Python setup
 
@@ -104,7 +105,7 @@ time.
 
 ## Tooling scope
 
-When choosing a tool for a use case, the toolkit in scope is: HTML/CSS, JavaScript, jQuery, D3, React, Angular, Flask, Django and the Python data stack (all explored here, some as notes only), plus **FastAPI, Tailwind CSS, Streamlit and Dash**, which are in scope for recommendations but deliberately have no stages in this repo. Deployment is out of scope (local only). End users are often non-technical business people, so clean, standard-looking UI matters.
+When choosing a tool for a use case, the toolkit in scope is: HTML/CSS, JavaScript, jQuery, D3, React, Angular, Flask, Django, FastAPI, Tailwind CSS and the Python data stack (all explored here — FastAPI and Tailwind specifically via [`demos/`](demos/README.md), a runnable comparison rather than a curriculum stage), plus **Streamlit and Dash**, which are in scope for recommendations but have no code in this repo. Deployment is out of scope (local only). End users are often non-technical business people, so clean, standard-looking UI matters.
 
 The same guidance is packaged as a reusable skill, [`.claude/skills/web-stack-advisor/`](.claude/skills/web-stack-advisor/SKILL.md), that can be copied into other projects. Blog drafts live in [`blog/`](blog/README.md).
 

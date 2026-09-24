@@ -1,0 +1,5 @@
+/* Tailwind 4's single import replaces the old @tailwind base/components/
+   utilities trio - see @tailwindcss/vite in vite.config.js, which scans
+   this project's .jsx files for class names and generates only the CSS
+   those classes need. */
+@import "tailwindcss";

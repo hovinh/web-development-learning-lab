@@ -6,8 +6,20 @@
 #
 alembic==1.18.5
     # via dataset
+annotated-doc==0.0.5
+    # via fastapi
+annotated-types==0.8.0
+    # via pydantic
+anyio==4.15.1
+    # via
+    #   httpx
+    #   starlette
 apispec[marshmallow]==6.10.0
     # via flask-smorest
+argon2-cffi==25.1.0
+    # via pwdlib
+argon2-cffi-bindings==26.1.0
+    # via argon2-cffi
 asgiref==3.12.1
     # via django
 attrs==26.1.0
@@ -25,13 +37,20 @@ blinker==1.9.0
 cattrs==26.1.0
     # via requests-cache
 certifi==2026.6.17
-    # via requests
+    # via
+    #   httpcore
+    #   httpx
+    #   requests
 cffi==2.1.0
-    # via cryptography
+    # via
+    #   argon2-cffi-bindings
+    #   cryptography
 charset-normalizer==3.4.9
     # via requests
 click==8.4.2
-    # via flask
+    # via
+    #   flask
+    #   uvicorn
 colorama==0.4.6
     # via
     #   click
@@ -59,6 +78,8 @@ django==5.2.17
     # via -r requirements.in
 dnspython==2.8.0
     # via pymongo
+fastapi==0.141.1
+    # via -r requirements.in
 filelock==3.30.2
     # via tldextract
 flask==3.1.3
@@ -79,10 +100,22 @@ greenlet==3.5.3
     # via sqlalchemy
 gunicorn==26.0.0
     # via -r requirements.in
+h11==0.16.0
+    # via
+    #   httpcore
+    #   uvicorn
+httpcore==1.0.9
+    # via httpx
+httpx==0.28.1
+    # via -r requirements.in
+huey==3.4.0
+    # via -r requirements.in
 hyperlink==21.0.0
     # via twisted
 idna==3.18
     # via
+    #   anyio
+    #   httpx
     #   hyperlink
     #   requests
     #   tldextract
@@ -159,12 +192,20 @@ pokebase==1.4.1
     # via -r requirements.in
 protego==0.6.2
     # via scrapy
+pwdlib[argon2]==0.3.1
+    # via -r requirements.in
 pycparser==3.0
     # via cffi
+pydantic==2.13.5
+    # via fastapi
+pydantic-core==2.46.5
+    # via pydantic
 pydispatcher==2.0.7
     # via scrapy
 pygments==2.20.0
     # via pytest
+pyjwt==2.15.0
+    # via -r requirements.in
 pymongo==4.17.0
     # via -r requirements.in
 pyopenssl==26.3.0
@@ -175,6 +216,8 @@ pytest==9.1.1
     # via -r requirements.in
 python-dateutil==2.9.0.post0
     # via matplotlib
+python-multipart==0.0.32
+    # via -r requirements.in
 queuelib==1.9.0
     # via scrapy
 requests==2.34.2
@@ -204,6 +247,8 @@ sqlalchemy==2.0.51
     #   flask-sqlalchemy
 sqlparse==0.6.0
     # via django
+starlette==1.7.0
+    # via fastapi
 tldextract==5.3.1
     # via scrapy
 twisted==26.4.0
@@ -211,11 +256,21 @@ twisted==26.4.0
 typing-extensions==4.16.0
     # via
     #   alembic
+    #   anyio
     #   beautifulsoup4
     #   cattrs
+    #   fastapi
+    #   pydantic
+    #   pydantic-core
     #   pyopenssl
     #   sqlalchemy
+    #   starlette
     #   twisted
+    #   typing-inspection
+typing-inspection==0.4.4
+    # via
+    #   fastapi
+    #   pydantic
 tzdata==2026.3
     # via django
 url-normalize==3.0.0
@@ -224,6 +279,8 @@ urllib3==2.7.0
     # via
     #   requests
     #   requests-cache
+uvicorn==0.53.0
+    # via -r requirements.in
 w3lib==2.4.1
     # via
     #   parsel

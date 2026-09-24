@@ -1,0 +1,45 @@
+{% extends "labeling/base.html" %}
+
+{% block title %}Label item #{{ item.id }}{% endblock %}
+
+{% block content %}
+  <a href="{% url 'queue' %}" class="link link-hover text-sm">&larr; Back to queue</a>
+
+  <div class="card bg-base-100 shadow-sm mt-4">
+    <div class="card-body">
+      <h1 class="text-xl font-bold">Ticket #{{ item.id }}</h1>
+      <p class="my-4">{{ item.text }}</p>
+      <div class="text-sm opacity-70 mb-4">
+        Model predicted <span class="font-mono">{{ item.model_label }}</span>
+        with {{ item.model_score|floatformat:2 }} confidence.
+      </div>
+
+      <form method="post">
+        {% csrf_token %}
+
+        <fieldset class="fieldset">
+          <legend class="fieldset-legend">Is the prediction correct?</legend>
+          {% for radio in form.decision %}
+            <label class="label cursor-pointer justify-start gap-2">
+              {{ radio.tag }}
+              <span>{{ radio.choice_label }}</span>
+            </label>
+          {% endfor %}
+          {{ form.decision.errors }}
+        </fieldset>
+
+        <fieldset class="fieldset mt-2">
+          <legend class="fieldset-legend">Corrected label (only if Incorrect)</legend>
+          {{ form.corrected_label }}
+        </fieldset>
+
+        <fieldset class="fieldset mt-2">
+          <legend class="fieldset-legend">Note (optional)</legend>
+          {{ form.note }}
+        </fieldset>
+
+        <button type="submit" class="btn btn-primary mt-4">Save label</button>
+      </form>
+    </div>
+  </div>
+{% endblock %}

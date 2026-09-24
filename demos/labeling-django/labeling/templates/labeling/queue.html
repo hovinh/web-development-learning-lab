@@ -1,0 +1,42 @@
+{% extends "labeling/base.html" %}
+
+{% block title %}Queue{% endblock %}
+
+{% block content %}
+  <h1 class="text-2xl font-bold mb-1">Your queue</h1>
+  <!--
+    Nothing on this page can leak another reviewer's rows - "items" here
+    is exactly labeling/views.py's queue(), which is already filtered to
+    assigned_to=request.user. There's no separate "hide other people's
+    rows" step to get right in the template.
+  -->
+  <p class="text-sm opacity-70 mb-6">
+    {{ items|length }} item{{ items|length|pluralize }} assigned to you.
+  </p>
+
+  {% if not items %}
+    <div class="alert">Nothing assigned to you yet.</div>
+  {% endif %}
+
+  <div class="flex flex-col gap-3">
+    {% for item in items %}
+      <a href="{% url 'label-item' item.id %}"
+         class="card bg-base-100 shadow-sm hover:shadow-md transition-shadow">
+        <div class="card-body p-4">
+          <div class="flex items-start justify-between gap-4">
+            <p class="text-sm">{{ item.text }}</p>
+            {% if item.id in labeled_item_ids %}
+              <span class="badge badge-success shrink-0">Labeled</span>
+            {% else %}
+              <span class="badge badge-warning shrink-0">Pending</span>
+            {% endif %}
+          </div>
+          <div class="text-xs opacity-70 mt-2">
+            Model predicted <span class="font-mono">{{ item.model_label }}</span>
+            ({{ item.model_score|floatformat:2 }} confidence)
+          </div>
+        </div>
+      </a>
+    {% endfor %}
+  </div>
+{% endblock %}

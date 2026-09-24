@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Long-running jobs demo</title>
+  <style>
+    /* Plain CSS, no framework - this page is about the request/queue/
+       poll mechanics, not styling, so it doesn't earn Tailwind the way
+       demos/labeling-django and demos/labeling-fastapi-react do. */
+    body { font-family: system-ui, sans-serif; max-width: 640px; margin: 3rem auto; padding: 0 1rem; }
+    section { border: 1px solid #ddd; border-radius: 8px; padding: 1.25rem; margin-bottom: 1.5rem; }
+    h2 { margin-top: 0; }
+    button { padding: 0.5rem 1rem; font-size: 1rem; cursor: pointer; }
+    button:disabled { cursor: not-allowed; opacity: 0.6; }
+    progress { width: 100%; height: 1.5rem; margin-top: 0.75rem; }
+    .status { margin-top: 0.5rem; font-size: 0.9rem; color: #444; }
+  </style>
+</head>
+<body>
+  <h1>Re-score the dataset with a new model</h1>
+
+  <section>
+    <h2>1. Blocking (the problem)</h2>
+    <p>Does the whole job inline, in the request. Click it and watch the button - and the
+      whole tab - stay stuck until the request finally returns.</p>
+    <button id="blocking-btn">Start blocking rescore</button>
+    <div id="blocking-status" class="status"></div>
+  </section>
+
+  <section>
+    <h2>2. Queued (the fix)</h2>
+    <p>Starts the job, gets a job id back at once, and polls its status - the page stays
+      responsive the whole time.</p>
+    <button id="queued-btn">Start queued rescore</button>
+    <progress id="queued-progress" value="0" max="1" hidden></progress>
+    <div id="queued-status" class="status"></div>
+  </section>
+
+  <script>
+    'use strict';
+
+    // Plain fetch, not jQuery, even though docs/javascript.md prefers
+    // jQuery for browser AJAX in this repo. Why the deviation: this page
+    // has exactly two fetch calls and no DOM traversal/manipulation
+    // beyond setting a handful of text/attribute values - jQuery's
+    // actual value (its selector/traversal API) isn't exercised by
+    // anything here, and pulling in a whole library for two fetch calls
+    // would obscure the thing this demo is actually about, which is the
+    // start/poll request shape itself, not jQuery usage. See
+    // README.md's "Why plain fetch, not jQuery" section.
+
+    const blockingBtn = document.getElementById('blocking-btn');
+    const blockingStatus = document.getElementById('blocking-status');
+
+    blockingBtn.addEventListener('click', async () => {
+      blockingBtn.disabled = true;
+      blockingStatus.textContent = 'Waiting for the server to finish the whole job inline...';
+
+      const startedAt = Date.now();
+      const response = await fetch('/rescore-blocking', { method: 'POST' });
+      const result = await response.json();
+      const seconds = ((Date.now() - startedAt) / 1000).toFixed(1);
+
+      blockingStatus.textContent =
+        `Done after ${seconds}s - rescored ${result.rows_rescored} rows. ` +
+        'The tab was unresponsive to this button the whole time.';
+      blockingBtn.disabled = false;
+    });
+
+    const queuedBtn = document.getElementById('queued-btn');
+    const queuedProgress = document.getElementById('queued-progress');
+    const queuedStatus = document.getElementById('queued-status');
+
+    // Polls every 2s, per demos/long-jobs/README.md's design - simple,
+    // and plenty frequent for a job that takes tens of seconds. A
+    // faster-moving job would want server-sent events or websockets
+    // instead; see background-jobs.md for when to reach for those.
+    const POLL_INTERVAL_MS = 2000;
+
+    async function pollJob(jobId) {
+      const response = await fetch(`/jobs/${jobId}`);
+      const job = await response.json();
+
+      queuedProgress.hidden = false;
+      queuedProgress.max = job.total;
+      queuedProgress.value = job.progress;
+      queuedStatus.textContent = `Status: ${job.status} (${job.progress}/${job.total} rows)`;
+
+      if (job.status === 'done') {
+        queuedBtn.disabled = false;
+        return;
+      }
+      setTimeout(() => pollJob(jobId), POLL_INTERVAL_MS);
+    }
+
+    queuedBtn.addEventListener('click', async () => {
+      queuedBtn.disabled = true;
+      queuedStatus.textContent = 'Starting job...';
+
+      const response = await fetch('/jobs/rescore', { method: 'POST' });
+      const { job_id: jobId } = await response.json();
+
+      queuedStatus.textContent = `Job ${jobId} queued. The page stays responsive while it runs.`;
+      pollJob(jobId);
+    });
+  </script>
+</body>
+</html>

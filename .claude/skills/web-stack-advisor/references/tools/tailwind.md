@@ -1,6 +1,8 @@
 # Tailwind CSS
 
-**Status: written from documentation and general knowledge; not run in the user's repo.**
+**Status: run in the user's repo** - see `demos/labeling-django/` (the CDN browser build route
+below) and `demos/labeling-fastapi-react/web/` (the `@tailwindcss/vite` build-step route). Both
+actually started and viewed, not just written from documentation.
 
 ## What it is for
 
@@ -34,10 +36,18 @@ tailwindcss -i input.css -o static/output.css --watch
 
 Then link `static/output.css` from your HTML or Django base template.
 
+`demos/labeling-django/labeling/templates/labeling/base.html` uses exactly the CDN browser-build
+route above, paired with daisyUI's own CDN stylesheet (`<link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet">`)
+rather than the `@plugin "daisyui";` CSS directive below, since that directive needs an actual
+Tailwind build step (CLI or bundler) to process - the browser build has no such step. Server-side
+this was confirmed to serve correctly (routes return the expected status codes, pages load); it
+was not additionally checked pixel-by-pixel in a browser.
+
 ## Gotchas
 
 - Do not build class names dynamically (`"bg-" + color`); the scanner only sees whole
   literal strings, so those styles would never be generated.
 - daisyUI 5 targets Tailwind 4 and is enabled in CSS with `@plugin "daisyui";`. Using it
-  with the standalone CLI (no npm) was not verified; check its docs or use its CDN build.
+  with the standalone CLI (no npm) was not verified; check its docs or use its CDN build
+  (see `demos/labeling-django/` above for the CDN-build pairing that was verified).
 - Version mismatch is the usual failure: v3 tutorials do not work on v4 and vice versa.

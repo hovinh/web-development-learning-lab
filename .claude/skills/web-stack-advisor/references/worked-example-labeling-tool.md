@@ -2,6 +2,12 @@
 
 Use this as a model when comparing a full-stack framework against an API + SPA.
 
+**This comparison is backed by two runnable demos**, not just the table below:
+`demos/labeling-django/` and `demos/labeling-fastapi-react/` implement the exact same task
+(triage-label a shared 30-row dataset, three users, one reviewer only sees their own rows) in
+each stack, with matching automated tests proving the ownership rule holds in both. See
+`demos/README.md` for what each one proves and how to run it.
+
 ## Requirements
 
 - Reviewers label rows (for example "is this prediction correct?") and results are saved.
