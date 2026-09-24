@@ -99,3 +99,8 @@ Tests (no consumer needed — see `tests/test_jobs.py`'s use of Huey's `immediat
 ```bash
 pytest demos/long-jobs/tests
 ```
+
+## Reproducing this demo
+
+[`PROMPT.md`](PROMPT.md) is the build prompt this demo was implemented from, kept for future
+reference (e.g. to rebuild the same demo, with the same gotchas already worked out, elsewhere).

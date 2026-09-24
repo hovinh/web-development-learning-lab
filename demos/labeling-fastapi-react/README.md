@@ -142,3 +142,8 @@ pytest demos/labeling-fastapi-react/api/tests
    matching the same check in `../labeling-django/`.
 3. In the React app, label a few items with the `1`/`2`/`3` keys and watch it auto-advance with
    no page reload — the interactivity payoff this stack is here to demonstrate.
+
+## Reproducing this demo
+
+[`PROMPT.md`](PROMPT.md) is the build prompt this demo was implemented from, kept for future
+reference (e.g. to rebuild the same demo, with the same gotchas already worked out, elsewhere).

@@ -133,3 +133,8 @@ Then open http://127.0.0.1:8000/, log in as `alice` or `bob`, and label a few ti
    [`../labeling-fastapi-react/`](../labeling-fastapi-react/README.md).
 2. Log in as `admin` and open http://127.0.0.1:8000/admin/ — every reviewer's labels and the
    full user list are there, with no view or template written for them.
+
+## Reproducing this demo
+
+[`PROMPT.md`](PROMPT.md) is the build prompt this demo was implemented from, kept for future
+reference (e.g. to rebuild the same demo, with the same gotchas already worked out, elsewhere).
