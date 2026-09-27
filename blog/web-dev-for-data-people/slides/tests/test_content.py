@@ -3,11 +3,16 @@
 Not a check on the generated .pptx itself (python-pptx's own object model is
 trustworthy); these guard the two things that are easy to break while
 fine-tuning content.py: a typo'd image path, and a timing budget that's
-drifted far from the talk's 90-minute slot.
+drifted far from the talk's 90-minute slot. Also guards against the .pptx
+and the HTML deck's *chrome* drifting apart again (they drifted once,
+silently, until asked about it directly) - see
+`test_html_tab_labels_match_pptx_tab_labels` below.
 """
 
+import re
 from pathlib import Path
 
+import theme
 from content import SECTIONS, total_minutes
 
 ASSETS_DIR = Path(__file__).resolve().parent.parent / "assets" / "screenshots"
@@ -64,3 +69,31 @@ def test_html_deck_generates_one_section_per_slide():
     html = generate_html_deck.OUTPUT_PATH.read_text(encoding="utf-8")
     assert html.count("<section") == generate_html_deck.total_slides()
     assert "screenshot pending" not in html
+
+
+def test_html_tab_labels_match_pptx_tab_labels():
+    # Both decks' tab bars must show the exact same "filename" per slide.
+    # theme_html.py is supposed to call theme.tab_label_for() rather than
+    # deriving its own label - this test is what actually enforces that,
+    # not just the comment saying so. "quote" slides render no tab bar in
+    # either deck, so they're skipped rather than expected to match "".
+    import generate_html_deck
+
+    generate_html_deck.build()
+    html = generate_html_deck.OUTPUT_PATH.read_text(encoding="utf-8")
+    rendered_labels = re.findall(r'<span class="tab-label">([^<]*)</span>', html)
+
+    expected_labels = []
+    for section in SECTIONS:
+        for slide in section.slides:
+            if slide.kind == "quote":
+                continue
+            if slide.kind == "title":
+                expected_labels.append("talk.md")
+            else:
+                expected_labels.append(theme.tab_label_for(slide))
+
+    assert rendered_labels == expected_labels, (
+        "the HTML deck's tab-bar labels no longer match theme.tab_label_for() - "
+        "the two decks' chrome has drifted apart again"
+    )

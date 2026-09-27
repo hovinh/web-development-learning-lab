@@ -40,8 +40,24 @@ class Slide:
     comp_left_header: str = ""
     comp_right_header: str = ""
     comp_rows: list[tuple[str, str, str]] = field(default_factory=list)
+    footer: str = ""  # optional one-line conclusion drawn under a table/comparison
     ladder_rungs: list[tuple[int, str, str, str]] = field(default_factory=list)
     quote_text: str = ""
+    # "concept_pair" kind: a small illustrated two-box contrast (e.g. static vs
+    # interactive), plus a closing one-line insight underneath both boxes.
+    concept_left_label: str = ""
+    concept_left_note: str = ""
+    concept_right_label: str = ""
+    concept_right_note: str = ""
+    insight: str = ""
+    # "cards" kind: a row of labeled cards, plus an optional closing "hook"
+    # line underneath that reads as connected prose, not another card.
+    cards: list[tuple[str, str]] = field(default_factory=list)
+    hook: str = ""
+    # "bullets_meter" kind: each item gets a 12-dot tick meter (out of the 12
+    # functionalities) instead of asking the audience to recall a number;
+    # `bullets` (inherited above) still works for a plain closing line.
+    meter_items: list[tuple[str, int]] = field(default_factory=list)
     notes: str = ""
     minutes: float = 1.0
 
@@ -73,7 +89,7 @@ SECTIONS: list[Section] = [
                 title="What we'll cover",
                 icon="🗺️",
                 bullets=[
-                    "Why this matters for data people, not just engineers",
+                    "Why this matters for data people",
                     "A ladder for picking the lightest tool that works",
                     "Two gaps that quietly turn a demo into a product",
                     "How to use an LLM without losing control of your own codebase",
@@ -90,30 +106,31 @@ SECTIONS: list[Section] = [
         icon="🙋",
         slides=[
             Slide(
-                kind="bullets",
+                kind="concept_pair",
                 title="The moment every analysis hits",
                 icon="👀",
-                bullets=[
-                    "A chart in a notebook convinces you.",
-                    "It rarely convinces a colleague who is never going to open that notebook.",
-                    "A small web app can: move a slider, filter to their own region, "
-                    "type a value and watch the model's answer change.",
-                    "That feels very different from a screenshot.",
-                ],
+                concept_left_label="A chart in a notebook",
+                concept_left_note="Convinces you. It rarely convinces a colleague who's "
+                "never going to open that notebook.",
+                concept_right_label="A small web app",
+                concept_right_note="Move a slider, filter to their own region, type a "
+                "value - watch the answer change.",
+                insight="That feels very different from a screenshot.",
                 notes="Open with the everyday moment - this is the 'why' before any tooling talk.",
                 minutes=2,
             ),
             Slide(
-                kind="bullets",
+                kind="cards",
                 title="Where this quietly pays off",
                 icon="🎯",
-                bullets=[
-                    "Makes exploring a dataset more interactive",
-                    "Demonstrates a model as a live service",
-                    "Prototypes a product idea before anyone spends engineering time on it",
-                    "An LLM can write most of the boilerplate for you now",
-                    "…but the difficulty didn't disappear. It moved: to picking the right tool.",
+                cards=[
+                    ("Explore", "Makes exploring a dataset more interactive"),
+                    ("Demonstrate", "Demonstrates a model as a live service"),
+                    ("Prototype", "Prototypes a product idea before anyone spends "
+                     "engineering time on it"),
                 ],
+                hook="An LLM can write most of the boilerplate for you now… but the "
+                "difficulty didn't disappear. It moved: to picking the right tool.",
                 notes="Land the hook: the assistant will build whatever you name - the costly "
                 "mistake now happens earlier, picking wrong and finding out three days in.",
                 minutes=2,
@@ -136,18 +153,20 @@ SECTIONS: list[Section] = [
                 minutes=2.5,
             ),
             Slide(
-                kind="bullets",
+                kind="image_bullets",
                 title="Two easy things to miss",
                 icon="👓",
+                image="field-map/field-map.png",
                 bullets=[
-                    "Tailwind isn't a rival to Django or React - it only styles, "
-                    "so it works with any of them.",
-                    "React and Angular sit on the same rung: both still need something else "
-                    "to supply data and handle login.",
+                    "Tailwind (styling only) isn't a rival to Django or React - "
+                    "it works with either.",
+                    "React and Angular (both JS UI libraries) sit on the same rung: "
+                    "both still need something else to supply data and handle login.",
                     "If you live in Python: Streamlit and Dash need zero JavaScript, "
                     "and for many tasks that's the whole answer.",
                 ],
-                notes="These two misconceptions cause most of the 'framework wars' confusion.",
+                notes="These two misconceptions cause most of the 'framework wars' confusion. "
+                "Keeping the map on screen means nobody has to hold these names in their head.",
                 minutes=2.5,
             ),
         ],
@@ -193,17 +212,22 @@ SECTIONS: list[Section] = [
                 minutes=3,
             ),
             Slide(
-                kind="bullets",
+                kind="bullets_meter",
                 title="Worked examples",
                 icon="✅",
+                meter_items=[
+                    ("Share a chart you're proud of  →  Presentation, Styling & layout, "
+                     "Client interactivity", 3),
+                    ("Explore a dataset  →  Client interactivity, Server-side compute", 2),
+                    ("A labeling tool  →  Persistence through Authorization, plus "
+                     "everything before it", 10),
+                ],
                 bullets=[
-                    "Share a chart you're proud of  →  functions 1, 2, 3",
-                    "Explore a dataset  →  functions 3, 6",
-                    "A labeling tool  →  7 through 10 on top of the rest",
-                    "The number of ticks is the signal: each tick from persistence onward "
+                    "The number of ticks is the signal: each tick from Persistence onward "
                     "is a reason to reach for a heavier tool.",
                 ],
-                notes="Bridge straight into the ladder section.",
+                notes="Bridge straight into the ladder section. The dots are the same 12 "
+                "rows from the functionalities table - nobody has to remember a number.",
                 minutes=3,
             ),
         ],
@@ -225,7 +249,9 @@ SECTIONS: list[Section] = [
                     (3, "Flask or FastAPI", "— serve a model or data over HTTP",
                      "pip install fastapi uvicorn   /   pip install flask"),
                     (4, "Django + a Tailwind kit", "— users, a database, forms, and an admin",
-                     "pip install django  →  django-admin startproject"),
+                     "pip install django  →  django-admin startproject   |   Tailwind: "
+                     "standalone CLI, or a CDN link (one hosted script tag, zero install) "
+                     "- no Node required"),
                     (5, "React or Angular over an API", "— only when the UI is genuinely app-like",
                      "npm create vite@latest -- --template react"),
                 ],
@@ -287,11 +313,13 @@ SECTIONS: list[Section] = [
                     "Authentication — who is this user?",
                     "Authorization — what may they do?",
                     "Data isolation — user A never sees user B's rows",
-                    "Per-user state, concurrent writes, and an audit trail",
-                    "None of this shows up in a 'build a dashboard in 10 minutes' tutorial.",
+                    "Per-user state — remembering each user's own choices",
+                    "Concurrent writes — two people editing at the same time",
+                    "Audit trail — who changed what, and when",
                 ],
                 notes="This and background jobs are the two gaps that bite the moment a demo "
-                "becomes a product.",
+                "becomes a product. None of this shows up in a 'build a dashboard in 10 "
+                "minutes' tutorial.",
                 minutes=2.5,
             ),
             Slide(
@@ -300,12 +328,18 @@ SECTIONS: list[Section] = [
                 icon="⚖️",
                 table_headers=["Tool", "What you get"],
                 table_rows=[
-                    ["Django", "Auth, sessions, groups & permissions - all built in"],
-                    ["FastAPI", "Nothing built in - docs show an OAuth2/JWT pattern to write yourself"],
-                    ["Streamlit", "Built-in OIDC login (Google, Microsoft) - but no roles"],
-                    ["Dash", "dash-auth: HTTP Basic only, no logout"],
+                    ["Django", "Auth, sessions, groups & permissions (role-based access) "
+                     "- all built in"],
+                    ["FastAPI", "Nothing built in - docs show an OAuth2/JWT pattern "
+                     "(a token you send with every request) to write yourself"],
+                    ["Streamlit", "Built-in OIDC login (“log in with Google/Microsoft”) "
+                     "- but no roles"],
+                    ["Dash", "dash-auth: HTTP Basic only (a plain browser login popup, "
+                     "no real session) - no logout"],
                     ["React, Angular", "Login screens only - real security lives on the server"],
                 ],
+                footer="→ Django is the only one with real roles out of the box - with "
+                "everything else, you build authorization yourself.",
                 notes="The rule to repeat: authorization is enforced on the server. Hiding a "
                 "button in React protects nothing. Streamlit's cache is shared across all users.",
                 minutes=2.5,
@@ -333,18 +367,27 @@ SECTIONS: list[Section] = [
             ),
             Slide(
                 kind="table",
-                title="Surprising traps, especially on Windows",
+                title="Surprising traps in background-job tooling",
                 icon="🪟",
-                table_headers=["Need", "Tool", "Catch"],
+                table_headers=["Tool", "What it is", "Example", "Catch"],
                 table_rows=[
-                    ["Tiny work after a response", "FastAPI BackgroundTasks", "In-process, no persistence/retries"],
-                    ["Simple queue, no Redis", "Huey + SQLite", "Smaller ecosystem"],
-                    ["Simple queue + Redis", "RQ", "Uses os.fork - no native Windows support"],
-                    ["Full-featured queue", "Celery", "Windows is unsupported by the project"],
-                    ["Django's own API", "django.tasks (6.0)", "Defines enqueue, ships no worker"],
+                    ["FastAPI BackgroundTasks", "Runs a function after the response is sent, "
+                     "same process", "background_tasks.add_task(fn)", "In-process - no "
+                     "persistence or retries"],
+                    ["Huey + SQLite", "A small task queue; SQLite instead of Redis (an "
+                     "in-memory store other queues use as a shared hand-off point) as "
+                     "its broker", "huey_consumer.py tasks.huey", "Smaller ecosystem "
+                     "than Celery/RQ"],
+                    ["RQ", "A Redis-backed job queue", "rq worker  (a separate process)",
+                     "Uses os.fork - no native Windows support"],
+                    ["Celery", "The most full-featured distributed task queue",
+                     "celery -A proj worker", "Windows is unsupported by the project"],
+                    ["Django's django.tasks (6.0)", "Django's own built-in task API",
+                     "tasks.enqueue(my_task)", "Defines enqueue, ships no worker - you "
+                     "still supply one"],
                 ],
                 notes="My default for a laptop: polling + a job-status table, Huey with SQLite "
-                "for the worker. We'll prove that live in a few minutes.",
+                "for the worker - verified on Windows. We'll prove that live in a few minutes.",
                 minutes=2.5,
             ),
         ],
@@ -408,12 +451,10 @@ SECTIONS: list[Section] = [
                 kind="comparison",
                 title="Django vs. FastAPI + React + Tailwind",
                 icon="⚔️",
-                comp_left_header="Django (one project)",
-                comp_right_header="FastAPI + React (two projects)",
+                comp_left_header="Django",
+                comp_right_header="FastAPI + React",
                 comp_rows=[
                     ("Login & users", "Built in", "You build it"),
-                    ("Ownership filtering", "A queryset filter, one line", "A check in every endpoint"),
-                    ("Forms & validation", "Automatic", "Pydantic + client-side form state"),
                     ("Back-office screens", "Admin gives users & labels for free", "You build them"),
                     ("API for other systems", "Add Django REST Framework", "Built in, with automatic docs"),
                     ("Interface feel", "Page loads, a little JS", "Instant, app-like"),
@@ -430,6 +471,25 @@ SECTIONS: list[Section] = [
         name="Demo: Django",
         icon="🐍",
         slides=[
+            Slide(
+                kind="ladder",
+                title="Run it: Django demo",
+                icon="⌨️",
+                ladder_rungs=[
+                    (1, "Activate the venv", "— so python resolves to the repo's shared packages",
+                     ".venv\\Scripts\\Activate.ps1  (bash: source .venv/Scripts/activate)"),
+                    (2, "Migrate", "— creates the database tables from Django's models",
+                     "python demos/labeling-django/manage.py migrate"),
+                    (3, "Seed demo data", "— creates alice/bob/admin and their sample tickets",
+                     "python demos/labeling-django/manage.py seed_demo"),
+                    (4, "Start the server", "— serves the app locally",
+                     "python demos/labeling-django/manage.py runserver"),
+                    (5, "Open it", "— alice/bob/admin, password demo-<name>-pw",
+                     "http://127.0.0.1:8000/"),
+                ],
+                notes="All from the repo root. Nothing to configure by hand beyond these steps.",
+                minutes=1,
+            ),
             Slide(
                 kind="bullets",
                 title="Live demo: Django labeling tool",
@@ -463,6 +523,24 @@ SECTIONS: list[Section] = [
         name="Demo: FastAPI + React",
         icon="⚛️",
         slides=[
+            Slide(
+                kind="ladder",
+                title="Run it: FastAPI + React demo",
+                icon="⌨️",
+                ladder_rungs=[
+                    (1, "Seed demo data", "— terminal 1, .venv active - creates alice/bob/admin",
+                     "python demos/labeling-fastapi-react/api/seed.py"),
+                    (2, "Start the API", "— terminal 1 - serves FastAPI, docs included",
+                     "uvicorn main:app --reload --app-dir demos/labeling-fastapi-react/api"),
+                    (3, "Install + start the front end", "— terminal 2 - npm install once, "
+                     "then the dev server",
+                     "cd demos/labeling-fastapi-react/web  →  npm install  →  npm run dev"),
+                    (4, "Open it", "— same alice/bob/admin credentials as the Django demo",
+                     "App: http://localhost:5173/   API docs: http://127.0.0.1:8000/docs"),
+                ],
+                notes="Two terminals, both from the repo root.",
+                minutes=1,
+            ),
             Slide(
                 kind="bullets",
                 title="Live demo: FastAPI + React labeling tool",
@@ -507,6 +585,9 @@ SECTIONS: list[Section] = [
                     "separate API other systems can call",
                     "Start with Django, outgrow it, add an API and put React in front later — "
                     "you don't have to throw away the data model",
+                    "Common question: can't I get the best of both? → yes - Django REST "
+                    "Framework as the API layer, React only on the screens that must feel "
+                    "instant (see the backup slide at the end)",
                 ],
                 notes="Close the loop on the comparison before moving to the next demo.",
                 minutes=3,
@@ -518,6 +599,23 @@ SECTIONS: list[Section] = [
         name="Demo: long jobs",
         icon="⏱️",
         slides=[
+            Slide(
+                kind="ladder",
+                title="Run it: long-jobs demo",
+                icon="⌨️",
+                ladder_rungs=[
+                    (1, "Start the API", "— terminal 1, .venv active - serves FastAPI",
+                     "uvicorn app:app --reload --app-dir demos/long-jobs"),
+                    (2, "Start the worker", "— terminal 2 - runs the actual queued jobs; "
+                     "-k thread is required on Windows",
+                     "cd demos/long-jobs  →  huey_consumer tasks.huey -k thread"),
+                    (3, "Open it", "— no migrate/seed step needed; the jobs table is "
+                     "created automatically on startup",
+                     "http://127.0.0.1:8000/"),
+                ],
+                notes="Two terminals, both from the repo root.",
+                minutes=1,
+            ),
             Slide(
                 kind="bullets",
                 title="Live demo: blocking vs. queued",
@@ -533,6 +631,27 @@ SECTIONS: list[Section] = [
                 notes="http://127.0.0.1:8000/. The blocking button is the whole point: there's "
                 "nothing to screenshot while it hangs, and that's exactly the problem.",
                 minutes=3,
+            ),
+            Slide(
+                kind="comparison",
+                title="What's happening underneath",
+                icon="🔧",
+                comp_left_header="Blocking",
+                comp_right_header="Queued (Huey + SQLite)",
+                comp_rows=[
+                    ("Where the work runs", "In the request/response cycle, same process",
+                     "A separate Huey consumer process"),
+                    ("What comes back immediately", "Nothing - the connection just waits",
+                     "A job id, instantly"),
+                    ("How progress is tracked", "It isn't - no signal until it finishes "
+                     "or times out", "A status row in SQLite, updated as it runs"),
+                    ("What the page does", "Sits there, disabled, hoping",
+                     "Polls the status endpoint every few seconds"),
+                ],
+                notes="This is the same 4-step shape from the earlier ladder slide "
+                "(request starts job / job runs elsewhere / status stored / page checks "
+                "back), now with the real names filled in.",
+                minutes=1.5,
             ),
             Slide(
                 kind="image_pair",
@@ -553,6 +672,21 @@ SECTIONS: list[Section] = [
         name="Demo: PSA map",
         icon="🌍",
         slides=[
+            Slide(
+                kind="ladder",
+                title="Run it: PSA map demo",
+                icon="⌨️",
+                ladder_rungs=[
+                    (1, "Install once", "— only if node_modules/ is absent; no .venv needed",
+                     "npm install"),
+                    (2, "Serve it", "— D3 needs a real server, not file://",
+                     "npm run serve -- demos/psa-terminal-map"),
+                    (3, "Open it", "— the URL http-server prints, in your browser",
+                     "e.g. http://localhost:8080"),
+                ],
+                notes="Pure Node/static demo, run from the repo root.",
+                minutes=0.5,
+            ),
             Slide(
                 kind="bullets",
                 title="Live demo: the skill, as a runnable page",
@@ -613,6 +747,26 @@ SECTIONS: list[Section] = [
             ),
             Slide(
                 kind="table",
+                title="Trigger it from VS Code Chat",
+                icon="💬",
+                table_headers=["Where", "How"],
+                table_rows=[
+                    ["Claude Code (CLI or VS Code extension)", "Type / to see it listed, "
+                     "or just describe your use case - it auto-loads from its description"],
+                    ["GitHub Copilot Chat (VS Code)", "Same / menu - Agent Skills is an "
+                     "open standard both read"],
+                    ["Either one", "Drop the folder in .claude/skills/ (or .github/skills/) "
+                     "- no conversion needed"],
+                ],
+                footer="→ One skill folder, not one per assistant.",
+                notes="Worth saying explicitly: people assume Claude-authored tooling is "
+                "Claude-only. Since VS Code's Agent Skills became an open standard "
+                "(agentskills.io), it isn't - Copilot Chat reads the same .claude/skills/ "
+                "folder.",
+                minutes=1,
+            ),
+            Slide(
+                kind="table",
                 title="Setup cheat-sheet",
                 icon="📋",
                 table_headers=["Rung", "Install"],
@@ -624,8 +778,8 @@ SECTIONS: list[Section] = [
                     ["FastAPI", "pip install fastapi uvicorn"],
                     ["Django", "pip install django  →  django-admin startproject"],
                     ["React (Vite)", "npm create vite@latest"],
-                    ["Tailwind, no Node", "standalone CLI, or the CDN browser build — even pip-installable"],
-                    ["daisyUI", "npm package, or paired with Tailwind's CDN build"],
+                    ["Tailwind, no Node", "standalone CLI, or a CDN link (hosted script tag) — even pip-installable"],
+                    ["daisyUI", "npm package, or paired with Tailwind's CDN link"],
                 ],
                 notes="Honest caveat: everything here assumes it runs on your own machine. "
                 "Deployment is a separate decision.",
@@ -640,7 +794,7 @@ SECTIONS: list[Section] = [
         slides=[
             Slide(
                 kind="bullets",
-                title="Three lessons",
+                title="Takeaways",
                 icon="🎬",
                 bullets=[
                     "Audience matters as much as architecture — a peer forgives a plain "
@@ -649,9 +803,29 @@ SECTIONS: list[Section] = [
                     "product",
                     "An LLM makes writing code cheap — which makes the choice of what to "
                     "write the one part worth your care",
+                    "Decompose before you choose: start at the lowest rung that covers "
+                    "every tick you actually need",
+                    "None of it is permanent — add exactly the piece you're missing later "
+                    "(a database, an API, a JS frontend) without a rewrite",
                 ],
-                notes="Close on the throughline: decompose before you choose.",
+                notes="Close on the throughline: decompose before you choose. (Title is "
+                "deliberately count-agnostic - it's been 'three lessons' before and grown; "
+                "don't re-name it back to a number.)",
                 minutes=2,
+            ),
+            Slide(
+                kind="bullets",
+                title="Everything from this talk lives here",
+                icon="📦",
+                bullets=[
+                    "github.com/hovinh/web-development-learning-lab",
+                    "demos/ — the four demos, runnable with the exact commands from this talk",
+                    ".claude/skills/web-stack-advisor/ — the skill file, drop it into any project",
+                    "blog/ — the post this talk is based on, and this slide deck's own source "
+                    "(content.py says what it says, theme.py says how it looks)",
+                ],
+                notes="Give people a moment to note the URL down before moving to questions.",
+                minutes=1,
             ),
             Slide(
                 kind="title",
@@ -660,6 +834,35 @@ SECTIONS: list[Section] = [
                 icon="🙌",
                 notes="Thank you. Open the floor.",
                 minutes=2,
+            ),
+        ],
+    ),
+    # ------------------------------------------------------------------
+    # Backup slides: not part of the planned run of show (minutes=0, so they
+    # don't count toward the 90-minute budget) - only shown if the Q&A asks
+    # for them.
+    Section(
+        name="Backup",
+        icon="🎒",
+        slides=[
+            Slide(
+                kind="bullets",
+                title="Backup: can I get the best of both worlds?",
+                icon="🎒",
+                bullets=[
+                    "Yes - and it's the normal path, not a special trick.",
+                    "Start Django. Add Django REST Framework once another system (or a "
+                    "future React frontend) needs an API - the data model doesn't change.",
+                    "Put React (or just htmx/Alpine.js, no build step) in front of only "
+                    "the screens that must feel instant - label review, not the admin.",
+                    "django-ninja is a lighter, FastAPI-flavored alternative to DRF if "
+                    "you want typed, automatic-docs endpoints without leaving Django.",
+                    "What you don't get: two frameworks' auth merged into one - you "
+                    "still pick a single system of record for who's logged in.",
+                ],
+                notes="Only show this if asked - it's the natural 'can't I have both' "
+                "follow-up. The honest limit: authentication still has to live in one place.",
+                minutes=0,
             ),
         ],
     ),

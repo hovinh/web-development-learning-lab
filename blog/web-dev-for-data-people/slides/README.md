@@ -17,11 +17,9 @@ slide and the "Stay in the driver's seat" section in [`content.py`](content.py) 
 second thesis: web is *secondary* here, the point is choosing a stack and working with an LLM
 without losing your grip on the backend/business logic.
 
-The **.pptx**'s visual design is "editor tabs" - every slide is framed like a code editor, with a
+Both decks' visual design is "editor tabs" - every slide is framed like a code editor, with a
 dark tab bar (traffic-light window-control dots + a monospace fake filename) across the top. See
-"Design language" below - and note the **HTML deck currently still uses the previous, plainer
-"white canvas" look**, since only the .pptx has been restyled so far (see that section for the
-drift this leaves between the two).
+"Design language" below for how the two decks stay in sync on purpose, not just by convention.
 
 ## Files
 
@@ -30,12 +28,13 @@ drift this leaves between the two).
   either deck** - swap a bullet, add a slide, change a screenshot, adjust the timing - then rerun
   both generators below.
 - **`theme.py`** - how a slide of a given `kind` (`title`, `bullets`, `table`, `ladder`,
-  `comparison`, `image`, `image_pair`, `image_bullets`, `quote`) is drawn in the **.pptx**: colors,
-  fonts, spacing, shapes. Owns the palette both themes share (see "Design language").
+  `comparison`, `image`, `image_pair`, `image_bullets`, `quote`, `concept_pair`, `cards`,
+  `bullets_meter`) is drawn in the **.pptx**: colors, fonts, spacing, shapes. Owns the palette
+  both themes share (see "Design language").
 - **`theme_html.py`** - the same `kind` -> layout mapping, drawn as **HTML/CSS** instead of pptx
-  shapes; imports its color palette straight from `theme.py` so the two decks share the same
-  accents, but it has its own chrome and hasn't been updated to match the .pptx's editor-tab
-  redesign - see "Design language".
+  shapes; calls `theme.tab_label_for()` for its tab-bar labels and reads `theme.MAC_RED` /
+  `theme.DARK_BG` / etc. for colors, rather than re-deriving or re-typing any of it, so the two
+  decks' chrome can't quietly drift apart again - see "Design language".
 - **`generate_deck.py`** - builds the `.pptx` from `content.py` + `theme.py`; prints a
   total-minutes-vs-90 sanity check plus any screenshot paths still missing.
 - **`generate_html_deck.py`** - builds `html/index.html` from the same `content.py` +
@@ -88,7 +87,7 @@ top of it:
 - A dark tab bar runs across the top of every slide: the classic red/yellow/green macOS
   window-control dots, plus a monospace "filename" naming what the slide holds (`agenda.md`,
   `compare.py`, `functions.json`, …), auto-derived from the slide's title and `kind` by
-  `theme._tab_label_for()` - content.py never names it.
+  `theme.tab_label_for()` - content.py never names it.
 - A thin accent gutter runs down the left edge below the bar, like an editor's line-number rail.
 - The title slide and the closing "Stay in the driver's seat" quote slide go full-terminal: a
   typed `# talk.md` / `/* ... */` comment, white text on a dark surface, a static cursor block -
@@ -105,12 +104,30 @@ top of it:
   visual system.
 - Bullet text has no per-line emoji; the two places emoji *do* appear (✅/🚫 in "Stay in the
   driver's seat") are load-bearing, not decoration.
+- Three content-editing additions, added for specific slides rather than as a redesign:
+  `concept_pair` (a small illustrated two-box contrast, e.g. a static notebook chart vs. a live
+  web app, each drawn from primitive shapes rather than a screenshot), `cards` (a row of labeled
+  cards plus an optional closing "hook" line that reads as prose, not another card), and
+  `bullets_meter` (each line gets a 12-dot tick meter against the 12-functionality list instead
+  of asking the audience to recall a number). A `footer` field on `table`/`comparison` slides
+  draws a one-line bold conclusion under the table, for a table that needs to land a point rather
+  than just present data.
 
-**The HTML deck (`theme_html.py`)** has not been restyled to match - it still uses the earlier,
-plainer "white canvas, thin accent rule" look (no tab bar, no terminal chrome). It shares
-`theme.py`'s color palette, so accents match, but the layout/chrome is currently a visual
-mismatch between the two outputs. Restyle `theme_html.py` to close that gap if/when the HTML deck
-needs to match.
+**The HTML deck (`theme_html.py`)** implements the same editor-tabs chrome in CSS: the same tab
+bar with the same three dot colors, the same accent gutter (a `border-left` on `.slide-body`),
+the same full-terminal title/quote slides (a typed `# talk.md` comment, a `/* ... */` block
+comment, a static cursor block). This is a redesign of an earlier plainer "white canvas" HTML
+look that drifted out of sync with the .pptx once already - closing that gap wasn't a one-time
+fix, it's structural: `theme_html.py` calls `theme.tab_label_for(s)` for every tab label and
+reads `theme.MAC_RED`/`theme.DARK_BG`/`theme.MUTED_BAR`/etc. for every shared color, instead of
+re-deriving or re-typing any of it. Two things make a future drift loud instead of silent:
+`tests/test_content.py`'s `test_every_slide_kind_is_a_known_html_renderer` fails the build if a
+new `kind` gets a pptx builder but no HTML renderer, and its
+`test_html_tab_labels_match_pptx_tab_labels` fails if the HTML deck's tab-bar text ever stops
+matching `theme.tab_label_for()`'s output. Neither test checks pixel-for-pixel CSS parity (that
+still needs a human glance after any layout change to either theme file) - they catch the two
+failure modes that actually happened: a missing renderer, and a hand-typed value silently
+diverging from its source of truth.
 
 ## Re-capturing screenshots
 
@@ -139,12 +156,24 @@ fields for the authoritative list of what's expected):
 
 ## Deck structure
 
-17 sections, 34 slides, budgeted to ~89 minutes including four live demos (with the screenshots
-above as a fallback if a live demo hiccups). See the section list in `content.py` for the full
-run of show; roughly: why this matters → the field of tools → the 12-functionality framework →
-the ladder → the two gaps (multi-user, background jobs) → the driver's-seat thesis → the
-Django-vs-FastAPI+React comparison and its two live demos → the long-jobs demo → the PSA map demo
-→ the skill file and a setup cheat-sheet → close.
+17 sections, 41 slides in the planned run of show, budgeted to ~96 minutes including four live
+demos (with the screenshots above as a fallback if a live demo hiccups). See the section list in
+`content.py` for the full run of show; roughly: why this matters → the field of tools → the
+12-functionality framework → the ladder → the two gaps (multi-user, background jobs) → the
+driver's-seat thesis → the Django-vs-FastAPI+React comparison and its two live demos → the
+long-jobs demo (including a slide on what's actually happening underneath blocking vs. queued)
+→ the PSA map demo → the skill file, how to trigger it from VS Code Chat, and a setup
+cheat-sheet → close (takeaways, then the repo URL, then Q&A). Each of the four demos gets its
+own "Run it: `<demo>` demo" `ladder` slide right before its "Live demo" slide - the exact
+terminal commands from that demo's own README, each with a plain-language "what it does" line
+and a final "Open it" rung for the URL, so nobody has to context-switch to a README mid-talk (or
+afterward, to try a demo themselves). The closing bullets slide is titled "Takeaways", not "Three
+lessons" - it grew past three once already, so the title is deliberately count-agnostic now.
+
+There's an 18th section, **Backup** (1 slide, `minutes=0` so it doesn't count toward the budget
+above): "can I get the best of both worlds" (Django + React combined), kept for Q&A rather than
+the planned run of show. Give any future backup slide `minutes=0` too, so `total_minutes()` keeps
+reporting the actual talk length, not the talk-plus-everything-that-might-get-asked length.
 
 ## Dependencies
 

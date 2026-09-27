@@ -10,7 +10,7 @@ Design language: "editor tabs" - every slide is framed like a code editor.
 A dark tab bar runs across the top with the classic red/yellow/green
 window-control dots and a monospace "filename" naming what the slide holds
 (e.g. `compare.py`, `functions.json`), auto-derived from the slide's title
-and kind by `_tab_label_for()` - content.py never has to name it. Below the
+and kind by `tab_label_for()` - content.py never has to name it. Below the
 bar, a thin accent gutter (like an editor's line-number rail) runs down the
 left edge. The title slide and the closing "quote" slide go further and use
 the tab-bar/terminal motif full-slide (a typed `$ command`, a block comment)
@@ -29,7 +29,7 @@ charts (itself checked against the `dataviz` skill's accessibility rules).
 Reusing it here means the deck and the demo it screenshots look like one
 visual system, not two. `_shade()` darkens it slightly for on-slide use
 (titles, rules, table headers), which reads calmer than the raw, brighter
-chart colors. The macOS-style traffic-light dot colors (`_MAC_RED` etc.) are
+chart colors. The macOS-style traffic-light dot colors (`MAC_RED` etc.) are
 a separate, deliberate exception - they're decorative chrome referencing a
 real OS window, not part of the chart palette, so they stay the universally
 recognized hex values rather than being run through `_shade()`.
@@ -71,10 +71,18 @@ DARK_GRIDLINE = "#33374a"
 
 # macOS-style traffic-light window-control dots - see module docstring for
 # why these stay their real-world hex values instead of going through
-# _shade() with the rest of the palette.
-_MAC_RED = "#ff5f56"
-_MAC_YELLOW = "#febc2e"
-_MAC_GREEN = "#28c840"
+# _shade() with the rest of the palette. Public (no leading underscore):
+# theme_html.py reuses these exact values for its own tab-bar dots, so the
+# two decks' chrome can't drift apart the way the rest of the look once did.
+MAC_RED = "#ff5f56"
+MAC_YELLOW = "#febc2e"
+MAC_GREEN = "#28c840"
+
+# A flat neutral used only for the "static/notebook" side of the
+# concept_pair illustration - deliberately duller than any chart color, to
+# read as "not live" next to the accent-colored bars on the "web app" side.
+# Public for the same reason as the MAC_* colors above.
+MUTED_BAR = "#c9c7bb"
 
 # The six-color categorical series, straight from the demo's own CSS.
 SERIES = [
@@ -213,7 +221,7 @@ def _slugify(text: str, max_words: int = 3) -> str:
     return "-".join(words) or "slide"
 
 
-def _tab_label_for(s) -> str:
+def tab_label_for(s) -> str:
     """Auto-derive the tab bar's "filename" from a slide's kind and title.
 
     Keeps content.py free of a presentation-only field - the same reason
@@ -227,7 +235,7 @@ def _tab_bar(slide, tab_label: str, bar_h=TAB_BAR_H):
     _add_rect(slide, 0, 0, SLIDE_W, bar_h, DARK_PANEL)
     dot_size = Inches(0.14)
     dot_top = (bar_h - dot_size) / 2
-    for i, color in enumerate((_MAC_RED, _MAC_YELLOW, _MAC_GREEN)):
+    for i, color in enumerate((MAC_RED, MAC_YELLOW, MAC_GREEN)):
         _add_dot(slide, MARGIN + i * Inches(0.24), dot_top, dot_size, color)
     label_left = MARGIN + Inches(0.95)
     label_box = slide.shapes.add_textbox(label_left, 0, SLIDE_W - label_left - MARGIN, bar_h)
@@ -291,6 +299,17 @@ def _bulleted_paragraph(tf, text, *, accent_hex, size, first):
     return p
 
 
+def _add_footer(slide, text, accent_hex, top):
+    """A one-line conclusion under a table/comparison - a bold accent-colored
+    callout, not another table row, so it reads as the takeaway.
+    """
+    box = slide.shapes.add_textbox(CONTENT_LEFT, top, SLIDE_W - CONTENT_LEFT - MARGIN, Inches(0.45))
+    tf = box.text_frame
+    tf.word_wrap = True
+    p = tf.paragraphs[0]
+    _set_run(p.add_run(), text, size=14.5, bold=True, color=accent_hex)
+
+
 # ---------------------------------------------------------------------------
 # Slide-kind builders. Each takes (prs, slide_data, accent_hex, assets_dir)
 # and returns the created slide. slide_data is a content.Slide instance.
@@ -335,7 +354,7 @@ def build_title(prs, s, accent_hex, assets_dir):
 
 def build_bullets(prs, s, accent_hex, assets_dir):
     slide = _blank_slide(prs)
-    content_top = _chrome(slide, accent_hex, s.title, _tab_label_for(s))
+    content_top = _chrome(slide, accent_hex, s.title, tab_label_for(s))
 
     box = slide.shapes.add_textbox(CONTENT_LEFT, content_top, SLIDE_W - CONTENT_LEFT - MARGIN,
                                      SLIDE_H - content_top - Inches(0.3))
@@ -348,7 +367,7 @@ def build_bullets(prs, s, accent_hex, assets_dir):
 
 def build_image(prs, s, accent_hex, assets_dir):
     slide = _blank_slide(prs)
-    content_top = _chrome(slide, accent_hex, s.title, _tab_label_for(s))
+    content_top = _chrome(slide, accent_hex, s.title, tab_label_for(s))
 
     box_top = content_top
     box_h = SLIDE_H - box_top - Inches(0.9 if s.caption else 0.3)
@@ -373,7 +392,7 @@ def build_image(prs, s, accent_hex, assets_dir):
 
 def build_image_pair(prs, s, accent_hex, assets_dir):
     slide = _blank_slide(prs)
-    content_top = _chrome(slide, accent_hex, s.title, _tab_label_for(s))
+    content_top = _chrome(slide, accent_hex, s.title, tab_label_for(s))
 
     gap = Inches(0.3)
     col_w = (SLIDE_W - CONTENT_LEFT - MARGIN - gap) / 2
@@ -401,7 +420,7 @@ def build_image_pair(prs, s, accent_hex, assets_dir):
 
 def build_image_bullets(prs, s, accent_hex, assets_dir):
     slide = _blank_slide(prs)
-    content_top = _chrome(slide, accent_hex, s.title, _tab_label_for(s))
+    content_top = _chrome(slide, accent_hex, s.title, tab_label_for(s))
 
     img_w = Inches(5.3)
     text_left = CONTENT_LEFT + img_w + Inches(0.4)
@@ -448,27 +467,31 @@ def _style_table(table, accent_hex, headers, rows):
 
 def build_table(prs, s, accent_hex, assets_dir):
     slide = _blank_slide(prs)
-    content_top = _chrome(slide, accent_hex, s.title, _tab_label_for(s))
+    content_top = _chrome(slide, accent_hex, s.title, tab_label_for(s))
 
+    footer_h = Inches(0.5) if s.footer else Inches(0)
     n_rows = len(s.table_rows) + 1
     n_cols = len(s.table_headers)
     width = SLIDE_W - CONTENT_LEFT - MARGIN
-    height = SLIDE_H - content_top - Inches(0.3)
+    height = SLIDE_H - content_top - Inches(0.3) - footer_h
 
     gshape = slide.shapes.add_table(n_rows, n_cols, CONTENT_LEFT, content_top, width, height)
     table = gshape.table
     _style_table(table, accent_hex, s.table_headers, s.table_rows)
+    if s.footer:
+        _add_footer(slide, s.footer, accent_hex, content_top + height + Inches(0.1))
     return slide
 
 
 def build_comparison(prs, s, accent_hex, assets_dir):
     slide = _blank_slide(prs)
-    content_top = _chrome(slide, accent_hex, s.title, _tab_label_for(s))
+    content_top = _chrome(slide, accent_hex, s.title, tab_label_for(s))
 
+    footer_h = Inches(0.5) if s.footer else Inches(0)
     headers = ["", s.comp_left_header, s.comp_right_header]
     n_rows = len(s.comp_rows) + 1
     width = SLIDE_W - CONTENT_LEFT - MARGIN
-    height = SLIDE_H - content_top - Inches(0.3)
+    height = SLIDE_H - content_top - Inches(0.3) - footer_h
 
     gshape = slide.shapes.add_table(n_rows, 3, CONTENT_LEFT, content_top, width, height)
     table = gshape.table
@@ -477,12 +500,14 @@ def build_comparison(prs, s, accent_hex, assets_dir):
     table.columns[2].width = Emu(int((width - Inches(2.3)) / 2))
     rows = [[label, left_val, right_val] for label, left_val, right_val in s.comp_rows]
     _style_table(table, accent_hex, headers, rows)
+    if s.footer:
+        _add_footer(slide, s.footer, accent_hex, content_top + height + Inches(0.1))
     return slide
 
 
 def build_ladder(prs, s, accent_hex, assets_dir):
     slide = _blank_slide(prs)
-    content_top = _chrome(slide, accent_hex, s.title, _tab_label_for(s))
+    content_top = _chrome(slide, accent_hex, s.title, tab_label_for(s))
 
     n = len(s.ladder_rungs)
     total_h = SLIDE_H - content_top - Inches(0.3)
@@ -511,6 +536,181 @@ def build_ladder(prs, s, accent_hex, assets_dir):
 
         if i < n - 1:
             _add_rect(slide, CONTENT_LEFT, row_top + row_h - Pt(0.5), SLIDE_W - CONTENT_LEFT - MARGIN, Pt(0.5), GRIDLINE)
+    return slide
+
+
+def _draw_notebook_mock(slide, left, top, w, h, accent_hex):
+    """A static chart in a notebook cell - a muted, unmoving mockup."""
+    _add_rect(slide, left, top, w, h, PANEL, rounded=True, line_hex=GRIDLINE)
+    tag = slide.shapes.add_textbox(left + Inches(0.15), top + Inches(0.1), Inches(1.2), Inches(0.3))
+    p = tag.text_frame.paragraphs[0]
+    _set_run(p.add_run(), "In [1]:", size=10.5, color=TEXT_MUTED, font=FONT_MONO)
+
+    bar_heights = [0.35, 0.6, 0.45, 0.75, 0.5]
+    n = len(bar_heights)
+    chart_left = left + Inches(0.5)
+    chart_w = w - Inches(1.0)
+    chart_bottom = top + h - Inches(0.45)
+    bar_w = chart_w / (n * 1.6)
+    gap = bar_w * 0.6
+    for i, frac in enumerate(bar_heights):
+        bar_h = int(Inches(1.6) * frac)
+        bx = int(chart_left + i * (bar_w + gap))
+        by = int(chart_bottom - bar_h)
+        _add_rect(slide, bx, by, int(bar_w), bar_h, MUTED_BAR)
+
+
+def _draw_browser_mock(slide, left, top, w, h, accent_hex):
+    """A small web app - a mini editor/browser strip, a slider, live bars."""
+    _add_rect(slide, left, top, w, h, SURFACE, rounded=True, line_hex=GRIDLINE)
+    bar_h = Inches(0.32)
+    _add_rect(slide, left, top, w, bar_h, DARK_PANEL)
+    dot_size = Inches(0.09)
+    dot_top = top + (bar_h - dot_size) / 2
+    for i, color in enumerate((MAC_RED, MAC_YELLOW, MAC_GREEN)):
+        _add_dot(slide, left + Inches(0.15) + i * Inches(0.16), dot_top, dot_size, color)
+
+    slider_top = top + bar_h + Inches(0.35)
+    slider_left = left + Inches(0.4)
+    slider_w = w - Inches(0.8)
+    _add_rect(slide, slider_left, slider_top + Inches(0.06), slider_w, Pt(2.5), GRIDLINE)
+    thumb_size = Inches(0.16)
+    thumb_x = int(slider_left + slider_w * 0.62 - thumb_size / 2)
+    _add_dot(slide, thumb_x, slider_top, thumb_size, accent_hex)
+
+    bar_heights = [0.3, 0.75, 0.5, 0.85, 0.4]
+    n = len(bar_heights)
+    chart_left = left + Inches(0.5)
+    chart_w = w - Inches(1.0)
+    chart_bottom = top + h - Inches(0.35)
+    bar_w = chart_w / (n * 1.6)
+    gap = bar_w * 0.6
+    for i, frac in enumerate(bar_heights):
+        bh = int(Inches(1.4) * frac)
+        bx = int(chart_left + i * (bar_w + gap))
+        by = int(chart_bottom - bh)
+        _add_rect(slide, bx, by, int(bar_w), bh, accent_hex)
+
+
+def build_concept_pair(prs, s, accent_hex, assets_dir):
+    """A small illustrated two-box contrast (e.g. a static notebook chart vs.
+    a live web app), plus a one-line insight underneath both boxes.
+    """
+    slide = _blank_slide(prs)
+    content_top = _chrome(slide, accent_hex, s.title, tab_label_for(s))
+
+    gap = Inches(0.4)
+    total_w = SLIDE_W - CONTENT_LEFT - MARGIN
+    box_w = (total_w - gap) / 2
+    box_h = Inches(3.0)
+    box_top = content_top + Inches(0.1)
+    right_left = CONTENT_LEFT + box_w + gap
+
+    _draw_notebook_mock(slide, CONTENT_LEFT, box_top, box_w, box_h, accent_hex)
+    _draw_browser_mock(slide, right_left, box_top, box_w, box_h, accent_hex)
+
+    label_top = box_top + box_h + Inches(0.15)
+    for left, label, note in (
+        (CONTENT_LEFT, s.concept_left_label, s.concept_left_note),
+        (right_left, s.concept_right_label, s.concept_right_note),
+    ):
+        box = slide.shapes.add_textbox(left, label_top, box_w, Inches(1.1))
+        tf = box.text_frame
+        tf.word_wrap = True
+        p = tf.paragraphs[0]
+        _set_run(p.add_run(), label, size=17, bold=True, color=TEXT_PRIMARY, font=FONT_TITLE)
+        p2 = tf.add_paragraph()
+        p2.space_before = Pt(4)
+        _set_run(p2.add_run(), note, size=13, color=TEXT_SECONDARY)
+
+    if s.insight:
+        insight_box = slide.shapes.add_textbox(CONTENT_LEFT, SLIDE_H - Inches(0.65), total_w, Inches(0.5))
+        tf = insight_box.text_frame
+        tf.word_wrap = True
+        p = tf.paragraphs[0]
+        _set_run(p.add_run(), "›  ", size=16, bold=True, color=accent_hex, font=FONT_MONO)
+        _set_run(p.add_run(), s.insight, size=16, bold=True, italic=True, color=TEXT_PRIMARY)
+    return slide
+
+
+def build_cards(prs, s, accent_hex, assets_dir):
+    """A row of labeled cards, plus an optional closing "hook" line that
+    reads as connected prose underneath, not another card.
+    """
+    slide = _blank_slide(prs)
+    content_top = _chrome(slide, accent_hex, s.title, tab_label_for(s))
+
+    n = max(len(s.cards), 1)
+    gap = Inches(0.35)
+    total_w = SLIDE_W - CONTENT_LEFT - MARGIN
+    card_w = (total_w - gap * (n - 1)) / n
+    card_h = Inches(2.7)
+    card_top = content_top + Inches(0.15)
+
+    for i, (card_title, card_desc) in enumerate(s.cards):
+        left = CONTENT_LEFT + i * (card_w + gap)
+        _add_rect(slide, left, card_top, card_w, card_h, SURFACE, rounded=True, line_hex=GRIDLINE)
+        _add_rect(slide, left + Inches(0.06), card_top, card_w - Inches(0.12), Pt(4), accent_hex)
+        box = slide.shapes.add_textbox(left + Inches(0.25), card_top + Inches(0.3), card_w - Inches(0.5), card_h - Inches(0.6))
+        tf = box.text_frame
+        tf.word_wrap = True
+        p = tf.paragraphs[0]
+        _set_run(p.add_run(), card_title, size=17, bold=True, color=accent_hex, font=FONT_TITLE)
+        p2 = tf.add_paragraph()
+        p2.space_before = Pt(8)
+        _set_run(p2.add_run(), card_desc, size=13.5, color=TEXT_PRIMARY)
+
+    if s.hook:
+        hook_top = card_top + card_h + Inches(0.35)
+        hook_box = slide.shapes.add_textbox(CONTENT_LEFT, hook_top, total_w, SLIDE_H - hook_top - Inches(0.3))
+        tf = hook_box.text_frame
+        tf.word_wrap = True
+        p = tf.paragraphs[0]
+        _set_run(p.add_run(), s.hook, size=15, italic=True, color=TEXT_SECONDARY)
+    return slide
+
+
+def build_bullets_meter(prs, s, accent_hex, assets_dir):
+    """Each item gets a 12-dot tick meter (out of the 12 functionalities)
+    instead of asking the audience to recall a number by heart; a plain
+    `bullets` line still renders below as an ordinary closing sentence.
+    """
+    slide = _blank_slide(prs)
+    content_top = _chrome(slide, accent_hex, s.title, tab_label_for(s))
+
+    row_h = Inches(1.05)
+    text_w = SLIDE_W - CONTENT_LEFT - MARGIN - Inches(2.3)
+    meter_left = SLIDE_W - MARGIN - Inches(2.0)
+    dot_size = Inches(0.12)
+    dot_gap = Inches(0.045)
+
+    top = content_top
+    for text, n in s.meter_items:
+        box = slide.shapes.add_textbox(CONTENT_LEFT, top, text_w, row_h)
+        tf = box.text_frame
+        tf.word_wrap = True
+        tf.vertical_anchor = MSO_ANCHOR.MIDDLE
+        p = tf.paragraphs[0]
+        _set_run(p.add_run(), text, size=15.5, color=TEXT_PRIMARY)
+
+        dots_top = top + row_h / 2 - dot_size / 2
+        for d in range(12):
+            dx = int(meter_left + d * (dot_size + dot_gap))
+            color = accent_hex if d < n else GRIDLINE
+            _add_dot(slide, dx, int(dots_top), dot_size, color)
+        count_box = slide.shapes.add_textbox(meter_left, dots_top + dot_size + Inches(0.04), Inches(2.0), Inches(0.25))
+        p2 = count_box.text_frame.paragraphs[0]
+        _set_run(p2.add_run(), f"{n} of 12", size=10.5, color=TEXT_MUTED, font=FONT_MONO)
+
+        top += row_h
+
+    if s.bullets:
+        box = slide.shapes.add_textbox(CONTENT_LEFT, top + Inches(0.15), SLIDE_W - CONTENT_LEFT - MARGIN,
+                                         SLIDE_H - top - Inches(0.5))
+        tf = box.text_frame
+        tf.word_wrap = True
+        for i, bullet in enumerate(s.bullets):
+            _bulleted_paragraph(tf, bullet, accent_hex=accent_hex, size=15, first=(i == 0))
     return slide
 
 
@@ -558,4 +758,7 @@ BUILDERS = {
     "comparison": build_comparison,
     "ladder": build_ladder,
     "quote": build_quote,
+    "concept_pair": build_concept_pair,
+    "cards": build_cards,
+    "bullets_meter": build_bullets_meter,
 }
