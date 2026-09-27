@@ -33,11 +33,16 @@ ASSETS_DIR = SLIDES_DIR / "assets" / "screenshots"
 BLOG_DIR = SLIDES_DIR.parent
 
 VIEWPORT = {"width": 1600, "height": 1000}
+# A narrower viewport for demos whose screenshots sit side by side on an
+# image_pair slide (half the slide width each): at 1600px the app's text
+# ends up too small to read from the back of a room once scaled down.
+# 1280px keeps the same layout but makes everything ~25% larger on the slide.
+SLIDE_PAIR_VIEWPORT = {"width": 1280, "height": 800}
 DEVICE_SCALE_FACTOR = 2  # crisp screenshots on a projector, not just a laptop screen
 
 
-def _new_page(browser):
-    return browser.new_page(viewport=VIEWPORT, device_scale_factor=DEVICE_SCALE_FACTOR)
+def _new_page(browser, viewport=VIEWPORT):
+    return browser.new_page(viewport=viewport, device_scale_factor=DEVICE_SCALE_FACTOR)
 
 
 def _login(page: Page, username_selector: str, password_selector: str, submit_selector: str,
@@ -48,17 +53,60 @@ def _login(page: Page, username_selector: str, password_selector: str, submit_se
     page.wait_for_load_state("networkidle")
 
 
+def _django_label_some_items(browser, base_url: str, username: str, password: str,
+                             decisions: list[str]) -> None:
+    """Log in as one reviewer (in a fresh browser context, so no cookies
+    carry over between users) and label the first few items in their queue.
+
+    Why this exists: the admin "Labels" screenshot is the deck's evidence
+    for "admins see every reviewer's labels, for free" - captured against a
+    freshly seeded database it showed "0 labels", the opposite of its own
+    caption. Labeling as two different reviewers first makes the admin list
+    show exactly the claim: rows from alice AND bob, in one place.
+    """
+    context = browser.new_context(viewport=SLIDE_PAIR_VIEWPORT, device_scale_factor=DEVICE_SCALE_FACTOR)
+    page = context.new_page()
+    page.goto(f"{base_url}/accounts/login/")
+    _login(page, "#id_username", "#id_password", "button[type=submit], input[type=submit]",
+           username, password)
+    # Item links in the queue look like "/7/" - read them off the page
+    # rather than assuming which ids the seed's round-robin gave this user.
+    hrefs = page.eval_on_selector_all(
+        "a[href]", "els => els.map(e => e.getAttribute('href')).filter(h => /^\\/\\d+\\/$/.test(h))"
+    )
+    for href, decision in zip(hrefs, decisions):
+        page.goto(f"{base_url}{href}")
+        page.check(f"input[name='decision'][value='{decision}']")
+        # Not a bare "button[type=submit]": the navbar's "Log out" is also a
+        # submit button (a POST form), and it comes first in the page.
+        page.click("button:has-text('Save label')")
+        page.wait_for_load_state("networkidle")
+    context.close()
+
+
 def capture_django(base_url: str = "http://127.0.0.1:8000") -> None:
-    """Assumes `manage.py migrate` + `seed_demo` + `runserver` are already running."""
+    """Assumes `manage.py migrate` + `seed_demo` + `runserver` are already running.
+
+    Writes labels into the demo's (gitignored) db.sqlite3 as a side effect -
+    see _django_label_some_items. Safe to re-run: relabeling updates in place.
+    """
     out = ASSETS_DIR / "django"
     with sync_playwright() as p:
         browser = p.chromium.launch()
-        page = _new_page(browser)
+        _django_label_some_items(browser, base_url, "alice", "demo-alice-pw",
+                                 ["correct", "incorrect", "correct"])
+        _django_label_some_items(browser, base_url, "bob", "demo-bob-pw",
+                                 ["correct", "unsure"])
+
+        page = _new_page(browser, SLIDE_PAIR_VIEWPORT)
 
         page.goto(f"{base_url}/accounts/login/")
         _login(page, "#id_username", "#id_password", "button[type=submit], input[type=submit]",
                "alice", "demo-alice-pw")
-        page.screenshot(path=str(out / "alice-queue.png"), full_page=True)
+        # Viewport only, not full_page: the full 15-row queue is a tall strip
+        # that shrinks to unreadable on a half-width slide slot. The first
+        # screenful already makes the point (her tickets, some labeled).
+        page.screenshot(path=str(out / "alice-queue.png"))
 
         page.click("a[href='/1/']")  # first item in alice's queue
         page.wait_for_load_state("networkidle")
@@ -150,7 +198,7 @@ def capture_psa_map(base_url: str = "http://localhost:8080") -> None:
     out = ASSETS_DIR / "psa-map"
     with sync_playwright() as p:
         browser = p.chromium.launch()
-        page = _new_page(browser)
+        page = _new_page(browser, SLIDE_PAIR_VIEWPORT)
 
         page.goto(base_url)
         page.wait_for_selector("#map svg circle.mark-circle")
@@ -158,16 +206,30 @@ def capture_psa_map(base_url: str = "http://localhost:8080") -> None:
 
         page.click("#map svg circle.mark-circle >> nth=0")
         page.wait_for_selector("#detail-panel")
-        page.screenshot(path=str(out / "detail-card.png"))
+        # The click leaves the mouse over the map, so the terminal's hover
+        # tooltip stays open and lands on top of the detail card - move the
+        # pointer to a blank corner and let the tooltip hide first.
+        page.mouse.move(2, 2)
+        page.wait_for_timeout(300)
+        page.locator("#detail-panel").screenshot(path=str(out / "detail-card.png"))
 
+        # Element screenshots, not the viewport: the caption is about the
+        # 12-functionality verdict table and the advisor, so crop to exactly
+        # those instead of a full screen of small surrounding text. The
+        # page's sticky navbar (.site-navbar) would otherwise be painted over
+        # the top of each crop, hiding the table's header row - hide it
+        # first (screenshot-only; the demo itself is untouched).
+        page.add_style_tag(content=".site-navbar { display: none !important; }")
         page.locator("#build-trail").scroll_into_view_if_needed()
         page.wait_for_selector("#functionality-table-body")
-        page.screenshot(path=str(out / "build-trail.png"))
+        page.locator("#functionality-table-body").locator("xpath=ancestor::table[1]").screenshot(
+            path=str(out / "build-trail.png")
+        )
 
         page.locator("#use-case-shortcuts button").first.scroll_into_view_if_needed()
         page.locator("#use-case-shortcuts button").first.click()
         page.wait_for_selector("#advisor-result:not(.is-empty)")
-        page.screenshot(path=str(out / "live-advisor.png"))
+        page.locator("#advisor").screenshot(path=str(out / "live-advisor.png"))
 
         browser.close()
 

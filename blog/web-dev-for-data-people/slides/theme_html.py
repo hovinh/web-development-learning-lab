@@ -29,6 +29,7 @@ step - the same "CDN browser build" pattern `demos/labeling-django/` and
 
 from __future__ import annotations
 
+import re
 from html import escape
 from pathlib import Path
 
@@ -158,13 +159,20 @@ def render_image_bullets(s, accent, assets_dir) -> str:
     )
 
 
-def _table_html(headers, rows) -> str:
+def _table_html(headers, rows, col_weights=None) -> str:
+    # Same optional relative column widths as theme.build_table, as a
+    # <colgroup> of percentages.
+    colgroup = ""
+    if col_weights:
+        total = sum(col_weights)
+        cols = "".join(f'<col style="width:{100 * w / total:.1f}%">' for w in col_weights)
+        colgroup = f"<colgroup>{cols}</colgroup>"
     thead = "".join(f"<th>{ESC(h)}</th>" for h in headers)
     body_rows = []
     for row in rows:
         cells = "".join(f"<td>{ESC(v)}</td>" for v in row)
         body_rows.append(f"<tr>{cells}</tr>")
-    return f'<table><thead><tr>{thead}</tr></thead><tbody>{"".join(body_rows)}</tbody></table>'
+    return f'<table>{colgroup}<thead><tr>{thead}</tr></thead><tbody>{"".join(body_rows)}</tbody></table>'
 
 
 def _footer_html(footer: str) -> str:
@@ -175,7 +183,7 @@ def render_table(s, accent, assets_dir) -> str:
     return (
         f'<section style="--accent: {accent}">'
         f"{_header(s.title, theme.tab_label_for(s))}"
-        f'<div class="table-wrap">{_table_html(s.table_headers, s.table_rows)}</div>'
+        f'<div class="table-wrap">{_table_html(s.table_headers, s.table_rows, s.col_weights)}</div>'
         f"{_footer_html(s.footer)}"
         f"</div>"
         f"{_notes(s.notes, s.minutes)}"
@@ -210,6 +218,7 @@ def render_ladder(s, accent, assets_dir) -> str:
         f'<section style="--accent: {accent}">'
         f"{_header(s.title, theme.tab_label_for(s))}"
         f'<div class="ladder">{"".join(rows)}</div>'
+        f"{_footer_html(s.footer)}"
         f"</div>"
         f"{_notes(s.notes, s.minutes)}"
         f"</section>"
@@ -281,15 +290,17 @@ def render_cards(s, accent, assets_dir) -> str:
 
 
 def render_bullets_meter(s, accent, assets_dir) -> str:
+    # Dots are positions (dot N lit = functionality N ticked), not a count -
+    # see theme.build_bullets_meter for why.
     rows = []
-    for text, n in s.meter_items:
+    for text, ticks in s.meter_items:
         dots = "".join(
-            f'<span class="meter-dot{" meter-dot--on" if d < n else ""}"></span>' for d in range(12)
+            f'<span class="meter-dot{" meter-dot--on" if (d + 1) in ticks else ""}"></span>' for d in range(12)
         )
         rows.append(
             f'<div class="meter-row">'
             f'<span class="meter-text">{ESC(text)}</span>'
-            f'<span class="meter-dots">{dots}<span class="meter-count">{n}/12</span></span>'
+            f'<span class="meter-dots">{dots}<span class="meter-count">{ESC(theme.meter_label(ticks))}</span></span>'
             f"</div>"
         )
     items = "".join(f"<li>{ESC(b)}</li>" for b in s.bullets)
@@ -305,8 +316,37 @@ def render_bullets_meter(s, accent, assets_dir) -> str:
     )
 
 
+def render_code(s, accent, assets_dir) -> str:
+    """One or two dark editor-like panels - mirrors theme.build_code, using
+    theme.split_code_line so `#` comments get the same highlight here.
+    """
+    panels = []
+    for header, code in s.code_panels:
+        lines = []
+        for line in code.split("\n"):
+            code_part, comment_part = theme.split_code_line(line)
+            comment_html = f'<span class="code-comment">{ESC(comment_part)}</span>' if comment_part else ""
+            lines.append(f"{ESC(code_part)}{comment_html}")
+        panels.append(
+            f'<div class="code-panel">'
+            f'<div class="code-header">{ESC(header)}</div>'
+            f'<pre class="code-body">{chr(10).join(lines)}</pre>'
+            f"</div>"
+        )
+    return (
+        f'<section style="--accent: {accent}; --code-size: {s.code_size / 13:.3f}rem">'
+        f"{_header(s.title, theme.tab_label_for(s))}"
+        f'<div class="code-row">{"".join(panels)}</div>'
+        f"{_footer_html(s.footer)}"
+        f"</div>"
+        f"{_notes(s.notes, s.minutes)}"
+        f"</section>"
+    )
+
+
 RENDERERS = {
     "title": render_title,
+    "code": render_code,
     "bullets": render_bullets,
     "image": render_image,
     "image_pair": render_image_pair,
@@ -338,6 +378,7 @@ CSS = f"""
   --mac-yellow: {theme.MAC_YELLOW};
   --mac-green: {theme.MAC_GREEN};
   --muted-bar: {theme.MUTED_BAR};
+  --code-comment: {theme.CODE_COMMENT};
 }}
 
 .reveal {{ font-family: "Segoe UI", "Calibri", Arial, sans-serif; color: var(--text-primary); }}
@@ -380,7 +421,7 @@ CSS = f"""
   padding-left: 1.1rem;
   border-left: 4px solid var(--accent);
 }}
-.slide-title {{ font-size: 1.55rem; font-weight: 700; margin: 0 0 1.1rem; color: var(--accent); flex-shrink: 0; }}
+.slide-title {{ font-family: "Segoe UI Semibold", "Segoe UI", Arial, sans-serif; text-transform: none; letter-spacing: normal; font-size: 1.55rem; font-weight: 700; margin: 0 0 1.1rem; color: var(--accent); flex-shrink: 0; }}
 
 .mono-prompt {{ font-family: Consolas, monospace; color: var(--accent); font-weight: 700; }}
 
@@ -484,7 +525,7 @@ td:first-child {{ font-weight: 600; }}
   margin: 0;
 }}
 .title-comment {{ font-family: Consolas, monospace; color: var(--dark-text-secondary); font-size: 1.05rem; margin: 3.5rem 0 0.5rem; }}
-.title-heading {{ font-size: 2.9rem; font-weight: 700; margin: 0 0 0.6rem; color: #ffffff; }}
+.title-heading {{ font-family: "Segoe UI Semibold", "Segoe UI", Arial, sans-serif; text-transform: none; letter-spacing: normal; font-size: 2.9rem; font-weight: 700; margin: 0 0 0.6rem; color: #ffffff; }}
 .title-subtitle {{ font-family: Consolas, monospace; font-size: 1.05rem; color: var(--dark-text-secondary); margin: 0 0 1.5rem; }}
 .title-cursor {{ margin: 0; }}
 .cursor-block {{ display: inline-block; width: 0.6rem; height: 1.1rem; background: var(--accent); margin-left: 0.4rem; vertical-align: middle; }}
@@ -554,4 +595,67 @@ td:first-child {{ font-weight: 600; }}
 .meter-dot {{ width: 10px; height: 10px; border-radius: 50%; background: var(--gridline); }}
 .meter-dot--on {{ background: var(--accent); }}
 .meter-count {{ font-family: Consolas, monospace; font-size: 0.75rem; color: var(--text-muted); margin-left: 0.5rem; }}
+
+/* --- "code" slides: dark editor panels, mirroring theme.build_code(). --- */
+.code-row {{ display: flex; gap: 1.2rem; flex: 1; min-height: 0; }}
+.code-panel {{
+  flex: 1;
+  min-width: 0;
+  background: var(--dark-bg);
+  border-radius: 8px;
+  padding: 0.6rem 1rem 0.8rem;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}}
+.code-header {{
+  font-family: Consolas, monospace;
+  font-size: 0.75rem;
+  color: var(--dark-text-secondary);
+  padding-bottom: 0.45rem;
+  margin-bottom: 0.55rem;
+  border-bottom: 1px solid var(--dark-gridline);
+}}
+.reveal pre.code-body {{
+  margin: 0;
+  width: auto;
+  box-shadow: none;
+  background: transparent;
+  font-family: Consolas, monospace;
+  font-size: var(--code-size);
+  line-height: 1.45;
+  color: var(--dark-text);
+  white-space: pre-wrap;
+}}
+.code-comment {{ color: var(--code-comment); }}
 """
+
+
+def _scope_under_reveal(css: str) -> str:
+    """Prefix every selector in `css` with `.reveal ` (unless it already
+    starts with `.reveal` or is `:root`).
+
+    Why: reveal.js's own theme (simple.css) styles elements through
+    `.reveal h2`, `.reveal ul`, `.reveal p` and so on. A bare class selector
+    like `.slide-title` has *lower* specificity than `.reveal h2`, so the
+    theme silently won - slide titles came out huge and black instead of in
+    the section accent color, and bullet lists got a disc bullet in front of
+    the deck's own `›` marker. Scoping every rule under `.reveal` adds one
+    class of specificity, enough to beat the theme's element-level rules
+    without sprinkling `!important` everywhere.
+
+    Deliberately simple (a regex over "selectors {"): the CSS above has no
+    @media blocks or nested rules - if one is ever added, revisit this.
+    """
+
+    def scope_selector_list(match: re.Match) -> str:
+        selectors = [s.strip() for s in match.group(1).split(",")]
+        scoped = [s if s.startswith((".reveal", ":root")) else f".reveal {s}" for s in selectors]
+        return ", ".join(scoped) + " {"
+
+    # A rule starts at the beginning of a line with something other than a
+    # brace or a `/*` comment, and runs up to its opening `{`.
+    return re.sub(r"(?m)^([^{}\s/][^{}]*?)\s*\{", scope_selector_list, css)
+
+
+CSS = _scope_under_reveal(CSS)

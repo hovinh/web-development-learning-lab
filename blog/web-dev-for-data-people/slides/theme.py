@@ -12,7 +12,7 @@ window-control dots and a monospace "filename" naming what the slide holds
 (e.g. `compare.py`, `functions.json`), auto-derived from the slide's title
 and kind by `tab_label_for()` - content.py never has to name it. Below the
 bar, a thin accent gutter (like an editor's line-number rail) runs down the
-left edge. The title slide and the closing "quote" slide go further and use
+left edge. The title slide and the thesis "quote" slide go further and use
 the tab-bar/terminal motif full-slide (a typed `$ command`, a block comment)
 since they're meant to be a moment, not a document. No icon badges anywhere -
 the tab-bar/terminal chrome itself is the personality, so a floating emoji
@@ -83,6 +83,15 @@ MAC_GREEN = "#28c840"
 # read as "not live" next to the accent-colored bars on the "web app" side.
 # Public for the same reason as the MAC_* colors above.
 MUTED_BAR = "#c9c7bb"
+
+# `# comment` text inside a "code" slide's dark panel. On those slides the
+# comments carry the point (they're the plain-language decisions written
+# next to the code/prompt), so they get a warm, high-contrast highlight
+# rather than the dim grey/green most editor themes give comments. The
+# section accent colors aren't used here: several of them (the darkened
+# green especially) are too low-contrast on DARK_BG. Public so
+# theme_html.py can reuse it.
+CODE_COMMENT = "#e5c07b"
 
 # The six-color categorical series, straight from the demo's own CSS.
 SERIES = [
@@ -213,20 +222,52 @@ _TAB_EXTENSIONS = {
     "comparison": "py",
     "ladder": "md",
     "quote": "md",
+    "code": "py",
+}
+
+# Words dropped when turning a title into a filename. Without this, a plain
+# "first three words" slug produced labels the audience read as typos
+# ("what-we-ll.md", "try-it-a.md", "live-demo-the.md") - filler words carry
+# no meaning in a filename, so skipping them leaves the words that do.
+_SLUG_STOPWORDS = {
+    "a", "an", "the", "to", "of", "in", "on", "for", "and", "or", "it", "is",
+    "we", "you", "your", "this", "that", "what", "how", "vs", "with", "from",
+    "at", "by", "can", "i", "only", "when", "just", "here", "into", "its",
 }
 
 
 def _slugify(text: str, max_words: int = 3) -> str:
-    words = re.findall(r"[a-zA-Z0-9]+", text.lower())[:max_words]
-    return "-".join(words) or "slide"
+    text = text.lower()
+    # Drop contractions whole ("we'll", "what's", "doesn't") - splitting on
+    # the apostrophe instead leaves fragments like "we-ll" or "what-s".
+    text = re.sub(r"\b\w+['’](ll|re|ve|s|t|d|m)\b", " ", text)
+    words = [w for w in re.findall(r"[a-z0-9]+", text) if w not in _SLUG_STOPWORDS]
+    return "-".join(words[:max_words]) or "slide"
 
 
 def tab_label_for(s) -> str:
-    """Auto-derive the tab bar's "filename" from a slide's kind and title.
+    """Auto-derive the tab bar's "filename" from a slide's kind and content.
 
     Keeps content.py free of a presentation-only field - the same reason
     theme.py owns color and layout instead of content.py.
+
+    - Screenshot slides are labeled with the screenshot's own path
+      (`django/alice-queue.png`), which is both truthful and unique - a
+      title-based slug gave three different "What we just saw" slides the
+      identical label.
+    - "code" slides use the filename at the end of their first panel's
+      header (`... PROMPT.md (abridged)` -> `PROMPT.md`), since that's the
+      file the panel actually shows.
+    - Everything else: a slug of the title plus a kind-based extension.
     """
+    if s.kind in ("image", "image_pair"):
+        path = s.image or s.image_left
+        if path:
+            return path
+    if s.kind == "code" and s.code_panels:
+        filenames = re.findall(r"[\w./-]+\.\w+", s.code_panels[0][0])
+        if filenames:
+            return filenames[-1].rsplit("/", 1)[-1]
     ext = _TAB_EXTENSIONS.get(s.kind, "md")
     return f"{_slugify(s.title)}.{ext}"
 
@@ -290,20 +331,40 @@ def _placeholder_box(slide, left, top, width, height, label):
     _set_run(p.add_run(), f"screenshot pending:\n{label}", size=12, italic=True, color=TEXT_MUTED)
 
 
+BULLET_INDENT = Inches(0.42)
+
+
 def _bulleted_paragraph(tf, text, *, accent_hex, size, first):
-    """One bullet: a monospace accent "prompt" marker, then body text."""
+    """One bullet: a monospace accent "prompt" marker, then body text.
+
+    The paragraph gets a *hanging indent* (marL = BULLET_INDENT, first-line
+    indent = -BULLET_INDENT) and the marker is followed by a tab, not
+    spaces. PowerPoint treats a hanging indent as a tab stop, so the tab
+    lands the text exactly at marL - and every wrapped line lines up under
+    the text, not back under the `›` marker (which is what happened with
+    the earlier "marker + two spaces" version: second lines started at the
+    left edge and read like a new, unmarked bullet).
+    """
     p = tf.paragraphs[0] if first else tf.add_paragraph()
     p.space_after = Pt(14)
-    _set_run(p.add_run(), "›  ", size=size, bold=True, color=accent_hex, font=FONT_MONO)
+    pPr = p._p.get_or_add_pPr()
+    pPr.set("marL", str(int(BULLET_INDENT)))
+    pPr.set("indent", str(-int(BULLET_INDENT)))
+    _set_run(p.add_run(), "›\t", size=size, bold=True, color=accent_hex, font=FONT_MONO)
     _set_run(p.add_run(), text, size=size, color=TEXT_PRIMARY)
     return p
+
+
+# Room reserved under a table/ladder/code block for its footer line - tall
+# enough for a footer that wraps to two lines at footer size.
+FOOTER_H = Inches(0.7)
 
 
 def _add_footer(slide, text, accent_hex, top):
     """A one-line conclusion under a table/comparison - a bold accent-colored
     callout, not another table row, so it reads as the takeaway.
     """
-    box = slide.shapes.add_textbox(CONTENT_LEFT, top, SLIDE_W - CONTENT_LEFT - MARGIN, Inches(0.45))
+    box = slide.shapes.add_textbox(CONTENT_LEFT, top, SLIDE_W - CONTENT_LEFT - MARGIN, FOOTER_H - Inches(0.1))
     tf = box.text_frame
     tf.word_wrap = True
     p = tf.paragraphs[0]
@@ -469,7 +530,7 @@ def build_table(prs, s, accent_hex, assets_dir):
     slide = _blank_slide(prs)
     content_top = _chrome(slide, accent_hex, s.title, tab_label_for(s))
 
-    footer_h = Inches(0.5) if s.footer else Inches(0)
+    footer_h = FOOTER_H if s.footer else Inches(0)
     n_rows = len(s.table_rows) + 1
     n_cols = len(s.table_headers)
     width = SLIDE_W - CONTENT_LEFT - MARGIN
@@ -477,6 +538,13 @@ def build_table(prs, s, accent_hex, assets_dir):
 
     gshape = slide.shapes.add_table(n_rows, n_cols, CONTENT_LEFT, content_top, width, height)
     table = gshape.table
+    # Optional relative column widths (content.Slide.col_weights) - without
+    # them python-pptx splits the width evenly, which gave the 12-row
+    # functionality table's one-character "#" column a third of the slide.
+    if s.col_weights:
+        total = sum(s.col_weights)
+        for i, weight in enumerate(s.col_weights):
+            table.columns[i].width = Emu(int(width * weight / total))
     _style_table(table, accent_hex, s.table_headers, s.table_rows)
     if s.footer:
         _add_footer(slide, s.footer, accent_hex, content_top + height + Inches(0.1))
@@ -487,7 +555,7 @@ def build_comparison(prs, s, accent_hex, assets_dir):
     slide = _blank_slide(prs)
     content_top = _chrome(slide, accent_hex, s.title, tab_label_for(s))
 
-    footer_h = Inches(0.5) if s.footer else Inches(0)
+    footer_h = FOOTER_H if s.footer else Inches(0)
     headers = ["", s.comp_left_header, s.comp_right_header]
     n_rows = len(s.comp_rows) + 1
     width = SLIDE_W - CONTENT_LEFT - MARGIN
@@ -510,7 +578,8 @@ def build_ladder(prs, s, accent_hex, assets_dir):
     content_top = _chrome(slide, accent_hex, s.title, tab_label_for(s))
 
     n = len(s.ladder_rungs)
-    total_h = SLIDE_H - content_top - Inches(0.3)
+    footer_h = FOOTER_H if s.footer else Inches(0)
+    total_h = SLIDE_H - content_top - Inches(0.3) - footer_h
     row_h = total_h / n
 
     for i, (num, name, desc, setup) in enumerate(s.ladder_rungs):
@@ -536,6 +605,10 @@ def build_ladder(prs, s, accent_hex, assets_dir):
 
         if i < n - 1:
             _add_rect(slide, CONTENT_LEFT, row_top + row_h - Pt(0.5), SLIDE_W - CONTENT_LEFT - MARGIN, Pt(0.5), GRIDLINE)
+    # A ladder can carry the rule that governs it (e.g. "start at the lowest
+    # rung...") as a footer, the same bold callout tables use.
+    if s.footer:
+        _add_footer(slide, s.footer, accent_hex, content_top + total_h + Inches(0.1))
     return slide
 
 
@@ -670,10 +743,24 @@ def build_cards(prs, s, accent_hex, assets_dir):
     return slide
 
 
+def meter_label(ticks: list[int]) -> str:
+    """"#3, #6" - the tick numbers, as the audience saw them in the
+    functionality table. Shared with theme_html.py so both decks agree.
+    """
+    return ", ".join(f"#{t}" for t in ticks)
+
+
 def build_bullets_meter(prs, s, accent_hex, assets_dir):
-    """Each item gets a 12-dot tick meter (out of the 12 functionalities)
-    instead of asking the audience to recall a number by heart; a plain
-    `bullets` line still renders below as an ordinary closing sentence.
+    """Each item gets a 12-dot tick meter (one dot per row of the
+    12-functionality table) instead of asking the audience to recall a
+    number by heart; a plain `bullets` line still renders below as an
+    ordinary closing sentence.
+
+    Dot N lights up only if functionality N is ticked - the dots are
+    *positions*, not a count. An earlier version filled the first N dots,
+    which silently contradicted the talk (it showed "Explore a dataset" as
+    #1-2 when its ticks are #3 and #6). Positions also make the real point
+    visible: the further right the lit dots sit, the heavier the tool.
     """
     slide = _blank_slide(prs)
     content_top = _chrome(slide, accent_hex, s.title, tab_label_for(s))
@@ -685,7 +772,7 @@ def build_bullets_meter(prs, s, accent_hex, assets_dir):
     dot_gap = Inches(0.045)
 
     top = content_top
-    for text, n in s.meter_items:
+    for text, ticks in s.meter_items:
         box = slide.shapes.add_textbox(CONTENT_LEFT, top, text_w, row_h)
         tf = box.text_frame
         tf.word_wrap = True
@@ -696,11 +783,11 @@ def build_bullets_meter(prs, s, accent_hex, assets_dir):
         dots_top = top + row_h / 2 - dot_size / 2
         for d in range(12):
             dx = int(meter_left + d * (dot_size + dot_gap))
-            color = accent_hex if d < n else GRIDLINE
+            color = accent_hex if (d + 1) in ticks else GRIDLINE
             _add_dot(slide, dx, int(dots_top), dot_size, color)
         count_box = slide.shapes.add_textbox(meter_left, dots_top + dot_size + Inches(0.04), Inches(2.0), Inches(0.25))
         p2 = count_box.text_frame.paragraphs[0]
-        _set_run(p2.add_run(), f"{n} of 12", size=10.5, color=TEXT_MUTED, font=FONT_MONO)
+        _set_run(p2.add_run(), meter_label(ticks), size=10.5, color=TEXT_MUTED, font=FONT_MONO)
 
         top += row_h
 
@@ -748,8 +835,80 @@ def build_quote(prs, s, accent_hex, assets_dir):
     return slide
 
 
+def split_code_line(line: str) -> tuple[str, str]:
+    """Split one line of a "code" slide into (code, comment).
+
+    A line whose first non-space character is `#` is all comment. Otherwise
+    a trailing comment starts at the first "  #" (two spaces then `#`) -
+    requiring the spaces keeps a `#` inside code, like a URL fragment or
+    "#7", from being mistaken for a comment. Shared with theme_html.py so
+    both decks color the exact same characters.
+    """
+    if line.lstrip().startswith("#"):
+        return "", line
+    idx = line.find("  #")
+    if idx == -1:
+        return line, ""
+    return line[:idx], line[idx:]
+
+
+def build_code(prs, s, accent_hex, assets_dir):
+    """One or two dark, editor-like panels of monospace text (a prompt, or
+    code), each with a small header naming the file it came from; plus an
+    optional footer.
+
+    Exists for the two slides that show *evidence* rather than claims: the
+    real request (PROMPT.md) that built a demo, and the same ownership rule
+    as it actually appears in two codebases. `#` comments get CODE_COMMENT's
+    highlight because on these slides the comments are the message - the
+    plain-language decisions sitting next to the code.
+    """
+    slide = _blank_slide(prs)
+    content_top = _chrome(slide, accent_hex, s.title, tab_label_for(s))
+
+    footer_h = FOOTER_H if s.footer else Inches(0)
+    n = max(len(s.code_panels), 1)
+    gap = Inches(0.3)
+    total_w = SLIDE_W - CONTENT_LEFT - MARGIN
+    panel_w = (total_w - gap * (n - 1)) / n
+    panel_h = SLIDE_H - content_top - Inches(0.3) - footer_h
+    pad = Inches(0.25)
+
+    for i, (header, code) in enumerate(s.code_panels):
+        left = CONTENT_LEFT + i * (panel_w + gap)
+        panel = _add_rect(slide, left, content_top, panel_w, panel_h, DARK_BG, rounded=True)
+        panel.adjustments[0] = 0.03  # a subtle corner radius, not a pill
+
+        head = slide.shapes.add_textbox(left + pad, content_top + Inches(0.12), panel_w - 2 * pad, Inches(0.35))
+        p = head.text_frame.paragraphs[0]
+        _set_run(p.add_run(), header, size=11, color=DARK_TEXT_SECONDARY, font=FONT_MONO)
+        _add_rect(slide, left + pad, content_top + Inches(0.5), panel_w - 2 * pad, Pt(0.75), DARK_GRIDLINE)
+
+        body = slide.shapes.add_textbox(left + pad, content_top + Inches(0.6), panel_w - 2 * pad,
+                                        panel_h - Inches(0.75))
+        tf = body.text_frame
+        tf.word_wrap = True
+        for j, line in enumerate(code.split("\n")):
+            p = tf.paragraphs[0] if j == 0 else tf.add_paragraph()
+            p.space_after = Pt(1)
+            code_part, comment_part = split_code_line(line)
+            if code_part:
+                _set_run(p.add_run(), code_part, size=s.code_size, color=DARK_TEXT, font=FONT_MONO)
+            if comment_part:
+                _set_run(p.add_run(), comment_part, size=s.code_size, color=CODE_COMMENT, font=FONT_MONO)
+            if not line:
+                # An empty paragraph collapses to nothing in some renderers;
+                # a single space keeps the blank line's height.
+                _set_run(p.add_run(), " ", size=s.code_size, color=DARK_TEXT, font=FONT_MONO)
+
+    if s.footer:
+        _add_footer(slide, s.footer, accent_hex, content_top + panel_h + Inches(0.1))
+    return slide
+
+
 BUILDERS = {
     "title": build_title,
+    "code": build_code,
     "bullets": build_bullets,
     "image": build_image,
     "image_pair": build_image_pair,

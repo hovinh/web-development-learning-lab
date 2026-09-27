@@ -59,6 +59,40 @@ def test_every_slide_kind_is_a_known_html_renderer():
     assert not unknown, f"content.py uses slide kind(s) theme_html.py has no renderer for: {unknown}"
 
 
+def test_meter_ticks_are_functionality_positions():
+    # bullets_meter dots are *positions* in the 12-row functionality table
+    # (dot N lit = functionality N ticked), not a count - an earlier content
+    # format stored a count, and the meter silently lit the wrong rows.
+    for section in SECTIONS:
+        for slide in section.slides:
+            for text, ticks in slide.meter_items:
+                assert ticks, f"meter item has no ticks: {text!r}"
+                assert all(1 <= t <= 12 for t in ticks), f"tick outside 1-12 in {text!r}: {ticks}"
+                assert len(set(ticks)) == len(ticks), f"duplicate tick in {text!r}: {ticks}"
+
+
+def test_code_slides_have_one_or_two_panels():
+    # theme.build_code / theme_html.render_code lay panels out side by side;
+    # more than two won't fit legibly at slide scale.
+    for section in SECTIONS:
+        for slide in section.slides:
+            if slide.kind == "code":
+                assert 1 <= len(slide.code_panels) <= 2, f"{slide.title!r} has {len(slide.code_panels)} panels"
+
+
+def test_tab_labels_are_unique():
+    # Three "What we just saw" slides once all showed the identical tab label;
+    # duplicate "filenames" in an editor-tab motif read as a mistake.
+    labels = [
+        theme.tab_label_for(slide)
+        for section in SECTIONS
+        for slide in section.slides
+        if slide.kind not in ("title", "quote")
+    ]
+    duplicates = sorted({label for label in labels if labels.count(label) > 1})
+    assert not duplicates, f"duplicate tab labels: {duplicates}"
+
+
 def test_html_deck_generates_one_section_per_slide():
     # A light smoke test on generate_html_deck.py: it should run cleanly and
     # produce exactly one <section> per planned slide, with no unresolved
