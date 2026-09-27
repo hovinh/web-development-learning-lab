@@ -97,7 +97,9 @@ flask-sqlalchemy==3.1.1
 fonttools==4.63.0
     # via matplotlib
 greenlet==3.5.3
-    # via sqlalchemy
+    # via
+    #   playwright
+    #   sqlalchemy
 gunicorn==26.0.0
     # via -r requirements.in
 h11==0.16.0
@@ -143,6 +145,7 @@ kiwisolver==1.5.0
 lxml==6.1.1
     # via
     #   parsel
+    #   python-pptx
     #   scrapy
 mako==1.3.12
     # via alembic
@@ -184,8 +187,11 @@ pillow==12.3.0
     # via
     #   -r requirements.in
     #   matplotlib
+    #   python-pptx
 platformdirs==4.10.0
     # via requests-cache
+playwright==1.63.0
+    # via -r requirements.in
 pluggy==1.6.0
     # via pytest
 pokebase==1.4.1
@@ -202,6 +208,8 @@ pydantic-core==2.46.5
     # via pydantic
 pydispatcher==2.0.7
     # via scrapy
+pyee==13.0.1
+    # via playwright
 pygments==2.20.0
     # via pytest
 pyjwt==2.15.0
@@ -217,6 +225,8 @@ pytest==9.1.1
 python-dateutil==2.9.0.post0
     # via matplotlib
 python-multipart==0.0.32
+    # via -r requirements.in
+python-pptx==1.0.2
     # via -r requirements.in
 queuelib==1.9.0
     # via scrapy
@@ -262,7 +272,9 @@ typing-extensions==4.16.0
     #   fastapi
     #   pydantic
     #   pydantic-core
+    #   pyee
     #   pyopenssl
+    #   python-pptx
     #   sqlalchemy
     #   starlette
     #   twisted
@@ -292,6 +304,8 @@ werkzeug==3.1.8
     #   flask
     #   flask-cors
     #   flask-smorest
+xlsxwriter==3.2.9
+    # via python-pptx
 zope-interface==8.5
     # via
     #   scrapy

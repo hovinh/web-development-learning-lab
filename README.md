@@ -41,6 +41,7 @@ Cross-cutting, not book folders:
 - [`sandpit/`](sandpit/README.md) — scratch area for quick, throwaway experiments (not a curriculum stage).
 - [`deploy/`](deploy/README.md) — puts `dataviz-python-js/data-serve`+`d3-interactive-web` (Render + GitHub Pages, auto-deploying on every push) and `django-impatient/moviereviews` ([PythonAnywhere](deploy/pythonanywhere.md), manual redeploy) on free public hosting.
 - [`demos/`](demos/README.md) — four runnable demos (Django labeling app, FastAPI+React labeling app, Huey/SQLite long-jobs app, and a static D3 PSA terminal map) that back specific claims in the `blog/` post `web-dev-for-data-people` and the `web-stack-advisor` skill's worked examples and ladder, rather than teaching a new curriculum topic.
+- [`blog/web-dev-for-data-people/slides/`](blog/web-dev-for-data-people/slides/README.md) — a ~90-minute talk deck built from that post and its demos, generated from one Python content model into both a `.pptx` and a browser-based reveal.js deck, with real demo screenshots captured via `playwright`.
 
 ## Python setup
 

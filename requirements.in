@@ -134,3 +134,14 @@ httpx
 # only supports with python-multipart installed - not bundled with
 # fastapi itself.
 python-multipart
+
+# blog/web-dev-for-data-people/slides: generates the talk deck (.pptx)
+# from a Python content model so it stays reproducible/fine-tunable in
+# code rather than hand-edited in PowerPoint.
+python-pptx
+
+# blog/web-dev-for-data-people/slides: drives a real browser to capture
+# screenshots from the four demos (and to rasterize the blog post's
+# field-map.svg) for the deck - see capture_screenshots.py. Needs a
+# one-time `playwright install chromium` after syncing the venv.
+playwright

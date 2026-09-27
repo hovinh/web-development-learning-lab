@@ -15,6 +15,10 @@ folder as `YYYY-MM-DD-<topic-slug>.md`.
   broader claim that the skill's own ladder/functionality method is checkable rather than just
   written guidance. Whether to add demo links into the post body is the author's call, not
   done automatically (see blog-style.md's rule against linking this repo from a post).
+  `web-dev-for-data-people/slides/` turns this post and its four demos into a ~90-minute talk
+  deck, generated from one Python content model into both a `.pptx` and a browser-based
+  reveal.js deck, with real demo screenshots (`playwright`) rather than hand-built in a slides
+  app - see that folder's README.
 
 ## Candidate topics
 

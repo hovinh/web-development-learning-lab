@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Web Dev for Data People</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/simple.css">
+<style>
+:root {
+  --text-primary: #1a1a1a;
+  --text-secondary: #54524c;
+  --text-muted: #8b887f;
+  --gridline: #e3e1d9;
+  --panel: #f7f7f5;
+  --surface: #ffffff;
+}
+
+.reveal { font-family: "Segoe UI", "Calibri", Arial, sans-serif; color: var(--text-primary); }
+.reveal .slides section {
+  text-align: left;
+  top: 0 !important;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 2.2rem 3rem 1.5rem;
+  border-top: 5px solid var(--accent, var(--gridline));
+  background: var(--surface);
+  display: flex;
+  flex-direction: column;
+}
+
+.slide-header {
+  padding-bottom: 0.9rem;
+  border-bottom: 1px solid var(--gridline);
+  margin-bottom: 1.6rem;
+  flex-shrink: 0;
+}
+.slide-title { font-size: 1.65rem; font-weight: 600; margin: 0; color: var(--text-primary); }
+
+.bullet-list { list-style: none; margin: 0; padding: 0; }
+.bullet-list li {
+  position: relative;
+  padding-left: 1.5rem;
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+  line-height: 1.5;
+  color: var(--text-primary);
+}
+.bullet-list li::before {
+  content: "\2013";
+  position: absolute;
+  left: 0;
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.table-wrap { overflow: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 1rem; }
+th {
+  background: var(--accent);
+  color: #fff;
+  text-align: left;
+  padding: 0.65rem 0.9rem;
+  font-weight: 600;
+}
+td { padding: 0.6rem 0.9rem; border-bottom: 1px solid var(--gridline); font-size: 0.95rem; }
+tbody tr:nth-child(even) td { background: var(--panel); }
+td:first-child { font-weight: 600; }
+
+.ladder { display: flex; flex-direction: column; }
+.ladder-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--gridline);
+}
+.ladder-row:last-child { border-bottom: none; }
+.ladder-badge {
+  width: 2.4rem;
+  height: 2.4rem;
+  min-width: 2.4rem;
+  border: 1.5px solid var(--accent);
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  color: var(--accent);
+}
+.ladder-body { font-size: 1.1rem; color: var(--text-secondary); padding-top: 0.15rem; }
+.ladder-body b { color: var(--text-primary); }
+.ladder-setup {
+  display: block;
+  font-family: Consolas, monospace;
+  color: var(--accent);
+  font-size: 0.85rem;
+  margin-top: 0.3rem;
+}
+
+.img-single { display: flex; align-items: center; justify-content: center; margin-top: 0.75rem; }
+.img-single img { max-width: 100%; max-height: 460px; border: 1px solid var(--gridline); }
+.img-pair { display: flex; gap: 1.75rem; margin-top: 0.5rem; }
+.img-col { flex: 1; display: flex; flex-direction: column; align-items: center; min-width: 0; }
+.img-col img { max-width: 100%; max-height: 440px; border: 1px solid var(--gridline); }
+.img-bullets-row { display: flex; gap: 2rem; align-items: center; margin-top: 0.75rem; }
+.img-single--side { flex: 0 0 45%; }
+.img-single--side img { max-height: 400px; }
+.img-bullets-row .bullet-list { flex: 1; }
+.img-caption {
+  text-align: center;
+  color: var(--text-secondary);
+  font-style: italic;
+  font-size: 0.95rem;
+  margin: 0.75rem 0 0;
+}
+.img-placeholder {
+  width: 100%;
+  padding: 3rem 1rem;
+  text-align: center;
+  border: 1px dashed var(--gridline);
+  border-radius: 8px;
+  background: var(--panel);
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.title-slide, .quote-slide {
+  border-top: none !important;
+  border-left: 6px solid var(--accent);
+  justify-content: center;
+  padding-left: 4rem;
+  position: relative;
+}
+.title-heading { font-size: 2.9rem; font-weight: 700; margin: 0; color: var(--text-primary); }
+.accent-rule { width: 80px; border: none; border-top: 3px solid var(--accent); margin: 1.3rem 0; }
+.title-subtitle { font-size: 1.35rem; color: var(--text-secondary); margin: 0; }
+.title-footnote {
+  position: absolute;
+  bottom: 1.5rem;
+  right: 2.5rem;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.quote-mark { font-size: 5rem; font-weight: 700; color: var(--accent); line-height: 1; font-family: Georgia, serif; }
+.quote-kicker { font-size: 0.95rem; font-weight: 700; letter-spacing: 0.04em; color: var(--accent); margin: 0.5rem 0 1.5rem; }
+.quote-text { font-size: 1.85rem; font-weight: 700; color: var(--text-primary); line-height: 1.4; max-width: 46rem; }
+</style>
+</head>
+<body>
+<div class="reveal">
+  <div class="slides">
+<section class="title-slide" style="--accent: #2262af"><h1 class="title-heading">Web Dev for Data People</h1><hr class="accent-rule"><p class="title-subtitle">Choosing a stack, working with an LLM, and staying in control</p><p class="title-footnote">Presented as a web page, not a screenshot - see why in the next few minutes.</p><aside class="notes">[~1 min] Welcome. ~90 minutes total, including four live demos. Questions welcome any time, or hold them - your call as speaker.</aside></section>
+<section style="--accent: #2262af"><div class="slide-header"><h2 class="slide-title">What we'll cover</h2></div><ul class="bullet-list"><li>Why this matters for data people, not just engineers</li><li>A ladder for picking the lightest tool that works</li><li>Two gaps that quietly turn a demo into a product</li><li>How to use an LLM without losing control of your own codebase</li><li>Four live demos - screenshots included as a backup</li></ul><aside class="notes">[~2 min] Set expectations for the shape of the talk before diving in.</aside></section>
+<section style="--accent: #006b00"><div class="slide-header"><h2 class="slide-title">The moment every analysis hits</h2></div><ul class="bullet-list"><li>A chart in a notebook convinces you.</li><li>It rarely convinces a colleague who is never going to open that notebook.</li><li>A small web app can: move a slider, filter to their own region, type a value and watch the model's answer change.</li><li>That feels very different from a screenshot.</li></ul><aside class="notes">[~2 min] Open with the everyday moment - this is the 'why' before any tooling talk.</aside></section>
+<section style="--accent: #006b00"><div class="slide-header"><h2 class="slide-title">Where this quietly pays off</h2></div><ul class="bullet-list"><li>Makes exploring a dataset more interactive</li><li>Demonstrates a model as a live service</li><li>Prototypes a product idea before anyone spends engineering time on it</li><li>An LLM can write most of the boilerplate for you now</li><li>…but the difficulty didn't disappear. It moved: to picking the right tool.</li></ul><aside class="notes">[~2 min] Land the hook: the assistant will build whatever you name - the costly mistake now happens earlier, picking wrong and finding out three days in.</aside></section>
+<section style="--accent: #be6486"><div class="slide-header"><h2 class="slide-title">Where each tool lives</h2></div><div class="img-single"><img src="../assets/screenshots/field-map/field-map.png" alt="Where each tool lives"></div><p class="img-caption">Same band = alternatives. Different bands = usually combine.</p><aside class="notes">[~2.5 min] Walk top to bottom: Python-native UI, browser, server, and underneath it all, the pandas/model work that's already there.</aside></section>
+<section style="--accent: #be6486"><div class="slide-header"><h2 class="slide-title">Two easy things to miss</h2></div><ul class="bullet-list"><li>Tailwind isn't a rival to Django or React - it only styles, so it works with any of them.</li><li>React and Angular sit on the same rung: both still need something else to supply data and handle login.</li><li>If you live in Python: Streamlit and Dash need zero JavaScript, and for many tasks that's the whole answer.</li></ul><aside class="notes">[~2.5 min] These two misconceptions cause most of the 'framework wars' confusion.</aside></section>
+<section style="--accent: #c28400"><div class="slide-header"><h2 class="slide-title">Stop asking 'which framework?'</h2></div><ul class="bullet-list"><li>Ask instead: what does this app actually have to do?</li><li>Any web app is some combination of the same 12 capabilities.</li><li>Tick the rows your use case needs - the ticks are the decision.</li></ul><aside class="notes">[~2 min] This reframe is the whole method the rest of the talk builds on.</aside></section>
+<section style="--accent: #c28400"><div class="slide-header"><h2 class="slide-title">The 12 functionalities</h2></div><div class="table-wrap"><table><thead><tr><th>#</th><th>Functionality</th><th>What it means</th></tr></thead><tbody><tr><td>1</td><td>Presentation</td><td>Show static content</td></tr><tr><td>2</td><td>Styling &amp; layout</td><td>Make it look decent and consistent</td></tr><tr><td>3</td><td>Client interactivity</td><td>Filters and tooltips, no page reload</td></tr><tr><td>4</td><td>API: providing</td><td>Expose data or a model over HTTP</td></tr><tr><td>5</td><td>API: consuming</td><td>A page or service calls an API</td></tr><tr><td>6</td><td>Server-side compute</td><td>Run pandas or a model per request</td></tr><tr><td>7</td><td>Persistence</td><td>Save records</td></tr><tr><td>8</td><td>Forms &amp; CRUD</td><td>Validated create, edit, delete</td></tr><tr><td>9</td><td>Authentication</td><td>Who is this user?</td></tr><tr><td>10</td><td>Authorization</td><td>What may they do or see?</td></tr><tr><td>11</td><td>Session &amp; state</td><td>Remember a user's choices</td></tr><tr><td>12</td><td>Background / long jobs</td><td>Work that outlives one request</td></tr></tbody></table></div><aside class="notes">[~3 min] Dense slide on purpose - give it room. Don't read every row; point at a few (7-10) since they come back in the 'two gaps' section later.</aside></section>
+<section style="--accent: #c28400"><div class="slide-header"><h2 class="slide-title">Worked examples</h2></div><ul class="bullet-list"><li>Share a chart you're proud of  →  functions 1, 2, 3</li><li>Explore a dataset  →  functions 3, 6</li><li>A labeling tool  →  7 through 10 on top of the rest</li><li>The number of ticks is the signal: each tick from persistence onward is a reason to reach for a heavier tool.</li></ul><aside class="notes">[~3 min] Bridge straight into the ladder section.</aside></section>
+<section style="--accent: #168f64"><div class="slide-header"><h2 class="slide-title">Climb only when you must</h2></div><div class="ladder"><div class="ladder-row"><span class="ladder-badge">1</span><div class="ladder-body"><b>Static HTML + D3</b> — show a finished result, no server at all<span class="ladder-setup">no install, or: npm install http-server</span></div></div><div class="ladder-row"><span class="ladder-badge">2</span><div class="ladder-body"><b>Streamlit or Dash</b> — explore data, or build a tool for peers. Python only<span class="ladder-setup">pip install streamlit   /   pip install dash</span></div></div><div class="ladder-row"><span class="ladder-badge">3</span><div class="ladder-body"><b>Flask or FastAPI</b> — serve a model or data over HTTP<span class="ladder-setup">pip install fastapi uvicorn   /   pip install flask</span></div></div><div class="ladder-row"><span class="ladder-badge">4</span><div class="ladder-body"><b>Django + a Tailwind kit</b> — users, a database, forms, and an admin<span class="ladder-setup">pip install django  →  django-admin startproject</span></div></div><div class="ladder-row"><span class="ladder-badge">5</span><div class="ladder-body"><b>React or Angular over an API</b> — only when the UI is genuinely app-like<span class="ladder-setup">npm create vite@latest -- --template react</span></div></div></div><aside class="notes">[~3.5 min] Read the pull-quote: start at the lowest rung that covers every tick; climb only when you can name the specific thing the rung below can't do.</aside></section>
+<section style="--accent: #168f64"><div class="slide-header"><h2 class="slide-title">Applied to concrete cases</h2></div><div class="table-wrap"><table><thead><tr><th>Use case</th><th>Functions</th><th>Pick</th></tr></thead><tbody><tr><td>Share a finished chart</td><td>1, 2, 3</td><td>Static HTML + D3</td></tr><tr><td>Explore a dataset</td><td>3, 6</td><td>Streamlit</td></tr><tr><td>Peer dashboard</td><td>3, 6</td><td>Dash</td></tr><tr><td>Demo a model</td><td>4, 6</td><td>FastAPI - /docs is a free test form</td></tr><tr><td>Labeling or review tool</td><td>7-10</td><td>Django</td></tr><tr><td>Pipeline that ends in a page</td><td>1, 3</td><td>Python writes JSON, D3 renders it</td></tr></tbody></table></div><aside class="notes">[~3.5 min] Mention the honest caveat: React+Tailwind is 2 projects, a build step, and auth you write yourself - climb there only for app-like UI needs.</aside></section>
+<section style="--accent: #c0552a"><div class="slide-header"><h2 class="slide-title">Pretty enough for business users</h2></div><div class="table-wrap"><table><thead><tr><th>Option</th><th>Good for</th></tr></thead><tbody><tr><td>Django templates, Tailwind, daisyUI</td><td>A clean prototype with no React - the default</td></tr><tr><td>React, Tailwind, shadcn/ui</td><td>The best-looking and most customizable, highest setup cost</td></tr><tr><td>Dash + dash-bootstrap-components</td><td>Tidy dashboards out of the box</td></tr><tr><td>Django admin</td><td>Back-office screens for free</td></tr></tbody></table></div><aside class="notes">[~4 min] Raw Tailwind gives utility classes, not a design - a component kit is what makes it look 'standard'. Mention the standalone CLI, no-Node option.</aside></section>
+<section style="--accent: #2262af"><div class="slide-header"><h2 class="slide-title">Multi-user: six things to solve</h2></div><ul class="bullet-list"><li>Authentication — who is this user?</li><li>Authorization — what may they do?</li><li>Data isolation — user A never sees user B's rows</li><li>Per-user state, concurrent writes, and an audit trail</li><li>None of this shows up in a 'build a dashboard in 10 minutes' tutorial.</li></ul><aside class="notes">[~2.5 min] This and background jobs are the two gaps that bite the moment a demo becomes a product.</aside></section>
+<section style="--accent: #2262af"><div class="slide-header"><h2 class="slide-title">The tools differ sharply here</h2></div><div class="table-wrap"><table><thead><tr><th>Tool</th><th>What you get</th></tr></thead><tbody><tr><td>Django</td><td>Auth, sessions, groups &amp; permissions - all built in</td></tr><tr><td>FastAPI</td><td>Nothing built in - docs show an OAuth2/JWT pattern to write yourself</td></tr><tr><td>Streamlit</td><td>Built-in OIDC login (Google, Microsoft) - but no roles</td></tr><tr><td>Dash</td><td>dash-auth: HTTP Basic only, no logout</td></tr><tr><td>React, Angular</td><td>Login screens only - real security lives on the server</td></tr></tbody></table></div><aside class="notes">[~2.5 min] The rule to repeat: authorization is enforced on the server. Hiding a button in React protects nothing. Streamlit's cache is shared across all users.</aside></section>
+<section style="--accent: #006b00"><div class="slide-header"><h2 class="slide-title">A request must answer in seconds. Retraining a model doesn't.</h2></div><div class="ladder"><div class="ladder-row"><span class="ladder-badge">1</span><div class="ladder-body"><b>The request starts the job</b> and returns at once</div></div><div class="ladder-row"><span class="ladder-badge">2</span><div class="ladder-body"><b>The job runs</b> somewhere else</div></div><div class="ladder-row"><span class="ladder-badge">3</span><div class="ladder-body"><b>Its status is</b> stored</div></div><div class="ladder-row"><span class="ladder-badge">4</span><div class="ladder-body"><b>The page checks back</b> every few seconds</div></div></div><aside class="notes">[~2.5 min] The fix is always this same shape. This exact sequence reappears in demo 3, coming up shortly.</aside></section>
+<section style="--accent: #006b00"><div class="slide-header"><h2 class="slide-title">Surprising traps, especially on Windows</h2></div><div class="table-wrap"><table><thead><tr><th>Need</th><th>Tool</th><th>Catch</th></tr></thead><tbody><tr><td>Tiny work after a response</td><td>FastAPI BackgroundTasks</td><td>In-process, no persistence/retries</td></tr><tr><td>Simple queue, no Redis</td><td>Huey + SQLite</td><td>Smaller ecosystem</td></tr><tr><td>Simple queue + Redis</td><td>RQ</td><td>Uses os.fork - no native Windows support</td></tr><tr><td>Full-featured queue</td><td>Celery</td><td>Windows is unsupported by the project</td></tr><tr><td>Django's own API</td><td>django.tasks (6.0)</td><td>Defines enqueue, ships no worker</td></tr></tbody></table></div><aside class="notes">[~2.5 min] My default for a laptop: polling + a job-status table, Huey with SQLite for the worker. We'll prove that live in a few minutes.</aside></section>
+<section class="quote-slide" style="--accent: #be6486"><div class="quote-mark">&ldquo;</div><p class="quote-kicker">WEB IS SECONDARY HERE</p><p class="quote-text">An LLM makes writing the code cheap. That makes the choice of what to write - and who owns the logic - the one part worth your care.</p><aside class="notes">[~2.5 min] This is the thesis of the whole talk, not just the blog's closing line. Everything before this was building the vocabulary to make that choice well.</aside></section>
+<section style="--accent: #be6486"><div class="slide-header"><h2 class="slide-title">Let the LLM write boilerplate. You hold the backend logic.</h2></div><ul class="bullet-list"><li>✅ 'Write a Django view that filters by request.user' — you already decided the ownership rule</li><li>✅ 'Scaffold this FastAPI route from my Pydantic model' — you own the model</li><li>🚫 'Build me a labeling tool' and walking away — now the LLM decided your data model, your auth, your schema</li><li>The 12-functionality list is exactly how you stay the one deciding, not just the one asking</li><li>If everything is LLM-driven end to end, you stop being able to explain your own codebase</li></ul><aside class="notes">[~2.5 min] Land this before the head-to-head comparison - it reframes why the Django-vs-FastAPI contrast coming up matters beyond 'which is prettier'.</aside></section>
+<section style="--accent: #c28400"><div class="slide-header"><h2 class="slide-title">The test case: a labeling tool</h2></div><ul class="bullet-list"><li>A model has predicted a category for a batch of support tickets.</li><li>Reviewers label rows; admins see everyone's labels and manage users.</li><li>A reviewer sees only the rows assigned to them.</li><li>A long job re-scores the data with a new model.</li><li>That touches almost all 12 functionalities — a fair test.</li></ul><aside class="notes">[~2 min] Set up the comparison before showing the table.</aside></section>
+<section style="--accent: #c28400"><div class="slide-header"><h2 class="slide-title">Django vs. FastAPI + React + Tailwind</h2></div><div class="table-wrap"><table><thead><tr><th></th><th>Django (one project)</th><th>FastAPI + React (two projects)</th></tr></thead><tbody><tr><td>Login &amp; users</td><td>Built in</td><td>You build it</td></tr><tr><td>Ownership filtering</td><td>A queryset filter, one line</td><td>A check in every endpoint</td></tr><tr><td>Forms &amp; validation</td><td>Automatic</td><td>Pydantic + client-side form state</td></tr><tr><td>Back-office screens</td><td>Admin gives users &amp; labels for free</td><td>You build them</td></tr><tr><td>API for other systems</td><td>Add Django REST Framework</td><td>Built in, with automatic docs</td></tr><tr><td>Interface feel</td><td>Page loads, a little JS</td><td>Instant, app-like</td></tr></tbody></table></div><aside class="notes">[~2 min] For a small team, Django wins on time. FastAPI+React wins when the UI must be fast/keyboard-driven, another system needs the API, or a front-end engineer owns the UI.</aside></section>
+<section style="--accent: #168f64"><div class="slide-header"><h2 class="slide-title">Live demo: Django labeling tool</h2></div><ul class="bullet-list"><li>Log in as alice → see only her queue</li><li>Try one of bob's item ids as alice → 404, not a data leak</li><li>Log in as admin → /admin/ shows every reviewer's labels, zero view or template code written for it</li></ul><aside class="notes">[~3.5 min] SWITCH TO THE BROWSER NOW. http://127.0.0.1:8000/ - alice/demo-alice-pw, bob/demo-bob-pw, admin/demo-admin-pw. Fallback screenshots on the next slide.</aside></section>
+<section style="--accent: #168f64"><div class="slide-header"><h2 class="slide-title">What we just saw</h2></div><div class="img-pair"><div class="img-col"><img src="../assets/screenshots/django/alice-queue.png" alt="Alice's queue — only her tickets"><p class="img-caption">Alice's queue — only her tickets</p></div><div class="img-col"><img src="../assets/screenshots/django/admin-labels.png" alt="Admin: every reviewer's labels, free"><p class="img-caption">Admin: every reviewer's labels, free</p></div></div><aside class="notes">[~3.5 min] `Item.objects.filter(assigned_to=request.user)` is the whole ownership rule, one line. Auth is django.contrib.auth.urls - zero hand-written view code.</aside></section>
+<section style="--accent: #c0552a"><div class="slide-header"><h2 class="slide-title">Live demo: FastAPI + React labeling tool</h2></div><ul class="bullet-list"><li>Same task, same data, same three users</li><li>Log in as alice, label with the 1 / 2 / 3 keys — watch it auto-advance, no page reload</li><li>Open /docs — FastAPI's free Swagger test form</li><li>Ownership is checked in three separate places, not one</li></ul><aside class="notes">[~3.5 min] http://localhost:5173/ for the app, http://127.0.0.1:8000/docs for Swagger. Same credentials as the Django demo.</aside></section>
+<section style="--accent: #c0552a"><div class="slide-header"><h2 class="slide-title">What we just saw</h2></div><div class="img-pair"><div class="img-col"><img src="../assets/screenshots/fastapi-react/labeling-in-progress.png" alt="Keyboard-driven, instant, app-like"><p class="img-caption">Keyboard-driven, instant, app-like</p></div><div class="img-col"><img src="../assets/screenshots/fastapi-react/swagger-docs.png" alt="/docs — the free test form"><p class="img-caption">/docs — the free test form</p></div></div><aside class="notes">[~3.5 min] The payoff cost more code: JWTs minted by hand, ownership repeated across GET/POST/list endpoints instead of one queryset filter.</aside></section>
+<section style="--accent: #2262af"><div class="slide-header"><h2 class="slide-title">Same guarantee, two very different bills</h2></div><ul class="bullet-list"><li>Django: less code, an admin for free, a queryset filter for the hard part</li><li>FastAPI + React: more code, but an instant, keyboard-driven feel and a separate API other systems can call</li><li>Start with Django, outgrow it, add an API and put React in front later — you don't have to throw away the data model</li></ul><aside class="notes">[~3 min] Close the loop on the comparison before moving to the next demo.</aside></section>
+<section style="--accent: #006b00"><div class="slide-header"><h2 class="slide-title">Live demo: blocking vs. queued</h2></div><ul class="bullet-list"><li>Click 'Start blocking rescore' — the tab just sits there for ~15s, nothing to show for it</li><li>Click 'Start queued rescore' — a job id appears instantly, and a progress bar climbs 0 → 30 while the page stays fully responsive</li><li>Huey + SQLite: no Redis, nothing to install beyond Python — verified working on Windows with -k thread</li></ul><aside class="notes">[~3 min] http://127.0.0.1:8000/. The blocking button is the whole point: there's nothing to screenshot while it hangs, and that's exactly the problem.</aside></section>
+<section style="--accent: #006b00"><div class="slide-header"><h2 class="slide-title">What we just saw</h2></div><div class="img-pair"><div class="img-col"><img src="../assets/screenshots/long-jobs/blocking-stuck.png" alt="Blocking: button disabled, 'waiting for the server' - and that's it"><p class="img-caption">Blocking: button disabled, 'waiting for the server' - and that's it</p></div><div class="img-col"><img src="../assets/screenshots/long-jobs/queued-progress.png" alt="Queued: job id back at once, progress climbing, page stays responsive"><p class="img-caption">Queued: job id back at once, progress climbing, page stays responsive</p></div></div><aside class="notes">[~3 min] The blocking button really does just sit there disabled for ~15s with no progress signal - the contrast with the queued version is the whole lesson.</aside></section>
+<section style="--accent: #be6486"><div class="slide-header"><h2 class="slide-title">Live demo: the skill, as a runnable page</h2></div><ul class="bullet-list"><li>Static HTML + D3 + Tailwind — rung 1 of the ladder, because that's exactly what this use case needs</li><li>27 PSA container terminals worldwide, cross-filtered map + charts</li><li>The page shows its own working, not just the product</li></ul><aside class="notes">[~2.5 min] Served at whatever URL `npm run serve -- demos/psa-terminal-map` prints (typically http://localhost:8080).</aside></section>
+<section style="--accent: #be6486"><div class="slide-header"><h2 class="slide-title">The product</h2></div><div class="img-pair"><div class="img-col"><img src="../assets/screenshots/psa-map/map-overview.png" alt="27 terminals, filterable, zoomable"><p class="img-caption">27 terminals, filterable, zoomable</p></div><div class="img-col"><img src="../assets/screenshots/psa-map/detail-card.png" alt="Click a terminal → a sourced detail card"><p class="img-caption">Click a terminal → a sourced detail card</p></div></div><aside class="notes">[~2.5 min]</aside></section>
+<section style="--accent: #be6486"><div class="slide-header"><h2 class="slide-title">The skill, showing its work</h2></div><div class="img-pair"><div class="img-col"><img src="../assets/screenshots/psa-map/build-trail.png" alt="Act 2 — the 12-functionality verdict for THIS app"><p class="img-caption">Act 2 — the 12-functionality verdict for THIS app</p></div><div class="img-col"><img src="../assets/screenshots/psa-map/live-advisor.png" alt="Act 3 — try the advisor live, same logic, tested"><p class="img-caption">Act 3 — try the advisor live, same logic, tested</p></div></div><aside class="notes">[~3 min] The point: the skill's advice is a function you can run, not an opinion — asserted by a test suite against all 8 documented use cases.</aside></section>
+<section style="--accent: #c28400"><div class="slide-header"><h2 class="slide-title">Try it: a skill file</h2></div><ul class="bullet-list"><li>The whole framework, packaged as a Markdown file your AI assistant loads</li><li>Describe an app idea → it ticks the 12 functionalities and recommends the lightest stack</li><li>Flags the two gaps (multi-user, background jobs) automatically</li><li>Drop the folder into .claude/skills/ of any project</li></ul><aside class="notes">[~2 min] This is the 'go try it yourself' moment.</aside></section>
+<section style="--accent: #c28400"><div class="slide-header"><h2 class="slide-title">Setup cheat-sheet</h2></div><div class="table-wrap"><table><thead><tr><th>Rung</th><th>Install</th></tr></thead><tbody><tr><td>Static HTML + D3</td><td>Nothing — or npm install http-server to preview locally</td></tr><tr><td>Streamlit</td><td>pip install streamlit</td></tr><tr><td>Dash</td><td>pip install dash</td></tr><tr><td>Flask</td><td>pip install flask</td></tr><tr><td>FastAPI</td><td>pip install fastapi uvicorn</td></tr><tr><td>Django</td><td>pip install django  →  django-admin startproject</td></tr><tr><td>React (Vite)</td><td>npm create vite@latest</td></tr><tr><td>Tailwind, no Node</td><td>standalone CLI, or the CDN browser build — even pip-installable</td></tr><tr><td>daisyUI</td><td>npm package, or paired with Tailwind's CDN build</td></tr></tbody></table></div><aside class="notes">[~2 min] Honest caveat: everything here assumes it runs on your own machine. Deployment is a separate decision.</aside></section>
+<section style="--accent: #168f64"><div class="slide-header"><h2 class="slide-title">Three lessons</h2></div><ul class="bullet-list"><li>Audience matters as much as architecture — a peer forgives a plain page, a business user doesn't</li><li>Multi-user and background jobs are where a demo silently becomes a product</li><li>An LLM makes writing code cheap — which makes the choice of what to write the one part worth your care</li></ul><aside class="notes">[~2 min] Close on the throughline: decompose before you choose.</aside></section>
+<section class="title-slide" style="--accent: #168f64"><h1 class="title-heading">Questions?</h1><hr class="accent-rule"><p class="title-subtitle">Decompose before you choose.</p><aside class="notes">[~2 min] Thank you. Open the floor.</aside></section>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/notes/notes.js"></script>
+<script>
+  Reveal.initialize({
+    width: 1280,
+    height: 720,
+    margin: 0.03,
+    center: false,
+    hash: true,
+    controls: true,
+    progress: true,
+    slideNumber: 'c/t',
+    transition: 'fade',
+    plugins: [ RevealNotes ]
+  });
+</script>
+</body>
+</html>
